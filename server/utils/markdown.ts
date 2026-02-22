@@ -384,7 +384,7 @@ function preprocessEmbeds(markdown: string): string {
   const mermaidRegex = /^::mermaid\s*\n([\s\S]*?)\n::\s*$/gm
   markdown = markdown.replace(mermaidRegex, (_match, content) => {
     const trimmed = content.trim()
-    return `<div class="mermaid-container"><pre class="mermaid">${escapeHtml(trimmed)}</pre></div>`
+    return `<div class="mermaid-container"><pre class="mermaid" data-mermaid="true">${escapeHtml(trimmed)}</pre></div>`
   })
 
   return markdown
@@ -406,6 +406,89 @@ function stripEmbedsToPlainText(text: string): string {
   })
 
   return text
+}
+
+/**
+ * Pre-process markdown to convert :::api blocks to HTML.
+ * Runs BEFORE remark parsing to avoid paragraph-merging issues.
+ * 
+ * This replaces the remark plugin approach because remark merges
+ * adjacent lines without blank lines into single paragraph nodes,
+ * breaking regex matching on the AST.
+ */
+function preprocessApiBlocks(markdown: string): string {
+  const lines = markdown.split('\n')
+  const result: string[] = []
+  let i = 0
+
+  while (i < lines.length) {
+    const line = lines[i]
+    const match = line.match(/^:::api\s+(GET|POST|PUT|PATCH|DELETE|OPTIONS|HEAD)\s+(.+?)\s*$/i)
+
+    if (!match) {
+      result.push(line)
+      i++
+      continue
+    }
+
+    const [, method, path] = match
+    const methodLower = method.toLowerCase()
+
+    // Collect content until closing :::
+    i++
+    const contentLines: string[] = []
+    let inCodeBlock = false
+    let found = false
+
+    while (i < lines.length) {
+      const current = lines[i]
+
+      // Track fenced code blocks to avoid matching ::: inside them
+      if (current.trimStart().startsWith('```')) {
+        inCodeBlock = !inCodeBlock
+      }
+
+      if (!inCodeBlock && current.trim() === ':::') {
+        found = true
+        i++
+        break
+      }
+
+      contentLines.push(current)
+      i++
+    }
+
+    if (!found) {
+      // No closing ::: found — output original text unchanged
+      result.push(line)
+      result.push(...contentLines)
+      continue
+    }
+
+    // First non-empty line is the summary
+    const firstNonEmptyIdx = contentLines.findIndex(l => l.trim().length > 0)
+    const summary = firstNonEmptyIdx >= 0 ? contentLines[firstNonEmptyIdx].trim() : ''
+
+    // Everything after the summary line is the body (markdown content)
+    const bodyLines = firstNonEmptyIdx >= 0 ? contentLines.slice(firstNonEmptyIdx + 1) : contentLines
+    const body = bodyLines.join('\n').trim()
+
+    // Emit HTML wrapper — blank lines around body content ensure remark parses it as markdown
+    result.push(`<div class="api-endpoint api-endpoint-${methodLower}">`)
+    result.push(`<div class="api-endpoint-header"><span class="api-method api-method-${methodLower}">${method.toUpperCase()}</span><code class="api-path">${escapeHtml(path.trim())}</code></div>`)
+    if (summary) {
+      result.push(`<p class="api-endpoint-summary">${escapeHtml(summary)}</p>`)
+    }
+    if (body) {
+      result.push('')
+      result.push(body)
+      result.push('')
+    }
+    result.push('</div>')
+    result.push('')
+  }
+
+  return result.join('\n')
 }
 
 function remarkApiEndpoints() {
@@ -810,6 +893,7 @@ export function markdownToPlainText(content: string): string {
   text = stripEmbedsToPlainText(text)
   
   // Convert callouts to plain text (keep content, remove markers)
+  text = text.replace(/^:::api\s+(GET|POST|PUT|PATCH|DELETE|OPTIONS|HEAD)\s+(.+?)\s*$/gm, '$1 $2')
   text = text.replace(/:::(info|warning|error|success)\s*/g, '')
   text = text.replace(/:::\s*/g, '')
   
@@ -862,7 +946,7 @@ export async function parseMarkdown(content: string): Promise<ParsedMarkdown> {
   
   // Pre-process callouts before remark parsing
   // This converts :::type ... ::: blocks to HTML divs
-  const preprocessedContent = preprocessEmbeds(preprocessCallouts(mdContent))
+  const preprocessedContent = preprocessApiBlocks(preprocessEmbeds(preprocessCallouts(mdContent)))
   
   // Extract title from first H1 as fallback
   const extractedTitle = extractTitle(preprocessedContent)
@@ -945,6 +1029,7 @@ export function generateExcerpt(markdownBody: string, maxLength: number = 160): 
   text = text.replace(/`[^`]+`/g, '')
 
   // Remove callout markers
+  text = text.replace(/^:::api\s+(GET|POST|PUT|PATCH|DELETE|OPTIONS|HEAD)\s+.+?\s*$/gm, '')
   text = text.replace(/:::(info|warning|error|success|tip|note|danger)\s*/g, '')
   text = text.replace(/:::\s*/g, '')
 
