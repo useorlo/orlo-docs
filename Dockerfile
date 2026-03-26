@@ -1,5 +1,5 @@
 # =============================================================================
-# LITEDOCS - PRODUCTION DOCKERFILE
+# ORLO DOCS - PRODUCTION DOCKERFILE
 # =============================================================================
 #
 # Multi-stage build for optimal image size:
@@ -8,8 +8,8 @@
 # 3. runner  - Minimal production image
 #
 # Usage:
-#   docker build -t f0 .
-#   docker run -p 3000:3000 -v ./content:/app/content f0
+#   docker build -t orlo-docs .
+#   docker run -p 3000:3000 -v ./content:/app/content orlo-docs
 #
 # For Coolify:
 #   - Set build context to repository root
@@ -40,8 +40,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build arguments (can be overridden at build time)
-ARG NUXT_PUBLIC_SITE_NAME=LiteDocs
-ARG NUXT_PUBLIC_SITE_DESCRIPTION=Documentation
+ARG NUXT_PUBLIC_SITE_NAME=Orlo
+ARG NUXT_PUBLIC_SITE_DESCRIPTION=Orlo Documentation
 
 # Set build-time environment variables
 ENV NUXT_PUBLIC_SITE_NAME=$NUXT_PUBLIC_SITE_NAME

@@ -24,6 +24,11 @@ npm run dev
 
 Then open `http://localhost:3000`.
 
+## Deployment
+
+- [Deployment Guide](./DEPLOYMENT.md)
+- [Production Environment Template](./.env.production.example)
+
 ## Environment
 
 The docs site is configured as a public docs deployment by default.

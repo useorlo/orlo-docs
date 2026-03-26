@@ -12,6 +12,7 @@ dist/
 
 # Environment files (contain secrets!)
 .env
+.env.production
 .env.local
 .env.*.local
 
