@@ -10,6 +10,52 @@ The documentation itself references the Orlo Platform API at:
 
 - `https://api.useorlo.com`
 
+## Recommended path: Coolify
+
+For `docs.useorlo.com`, the recommended deployment target is a **Coolify Docker Compose application**.
+
+Use:
+
+- [`docker-compose.prod.yml`](./docker-compose.prod.yml)
+
+### Coolify setup
+
+1. Create a new Docker Compose application in Coolify
+2. Point it at:
+
+```text
+git@github.com:useorlo/orlo-docs.git
+```
+
+3. Select:
+
+- compose file: `docker-compose.prod.yml`
+
+4. In Coolify, configure the application domain for:
+
+- `docs.useorlo.com`
+
+5. In the Coolify domain field, include the internal container port so Coolify knows where to route traffic:
+
+- `https://docs.useorlo.com:3000`
+
+6. Add the environment variables from:
+
+- [`.env.production.example`](./.env.production.example)
+
+Coolify will detect the environment variables referenced in the compose file and surface them in the UI.
+
+### Why this compose file is different
+
+The production compose file is intentionally Coolify-friendly:
+
+- no host bind mounts
+- no checked-in env file dependency
+- content ships with the repo and image
+- environment is expected from Coolify
+
+That is the right default for this repo because the docs content is versioned in git and deployed together with the site.
+
 ## What to deploy
 
 You can deploy this repo in either of these ways:
@@ -50,10 +96,13 @@ Use:
 
 - [`docker-compose.prod.yml`](./docker-compose.prod.yml)
 
-On the server:
+On a self-managed server:
 
 ```bash
 cp .env.production.example .env.production
+set -a
+source .env.production
+set +a
 docker compose -f docker-compose.prod.yml build
 docker compose -f docker-compose.prod.yml up -d
 ```
@@ -112,6 +161,24 @@ If you later add brand assets, the natural place is:
 - `content/assets/images/`
 
 Then reference them from `content/_brand.md`.
+
+## Persistent volumes
+
+For the current Orlo docs repo, persistent volumes are **not required**.
+
+That is intentional:
+
+- the docs content is stored in git
+- the production image already contains the content tree
+- Coolify can redeploy safely from source without server-side content state
+
+Only introduce mounted content volumes later if you intentionally want server-local content edits outside git.
+
+## Coolify notes
+
+- Coolify treats the compose file as the source of truth for Docker Compose deployments.
+- Because this app listens on container port `3000`, the Coolify domain entry should include `:3000`.
+- You do not need host port mappings for this deployment style.
 
 ## Git remote setup
 

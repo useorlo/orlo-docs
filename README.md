@@ -29,6 +29,10 @@ Then open `http://localhost:3000`.
 - [Deployment Guide](./DEPLOYMENT.md)
 - [Production Environment Template](./.env.production.example)
 
+Recommended production target:
+
+- Coolify using `docker-compose.prod.yml`
+
 ## Environment
 
 The docs site is configured as a public docs deployment by default.
