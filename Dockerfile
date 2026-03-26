@@ -13,7 +13,7 @@
 #
 # For Coolify:
 #   - Set build context to repository root
-#   - Configure persistent volumes for /app/content and /app/private
+#   - No persistent volumes are required for standard Coolify deployments
 
 # =============================================================================
 # STAGE 1: Dependencies
@@ -26,7 +26,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies
-RUN npm ci --only=production=false
+RUN npm ci --include=dev
 
 # =============================================================================
 # STAGE 2: Builder
