@@ -1,82 +1,80 @@
 ---
-title: Welcome to f0
-description: AI-first documentation platform for Humans, Search Engines, and LLMs
+title: Orlo Documentation
+description: Public documentation for Orlo Open Core and Orlo Platform
 ---
 
-# Welcome to f0
+# Orlo Documentation
 
-f0 is a **zero-configuration** documentation platform designed for the AI era. Write Markdown, organize folders, deploy. One source of truth renders three ways: a visual UI for humans, SSR HTML for search engines, and structured plain text for AI agents.
+Orlo helps teams **prove AI works, deploy it safely, and keep it governed in production**.
 
-## Getting Started
+This documentation site covers two connected surfaces:
 
-1. **Browse** — Use the sidebar to navigate sections
-2. **Search** — Press `Cmd+K` to find content instantly
-3. **AI Access** — Agents fetch `/llms.txt` or scoped sections via `/llms.txt?section=guides`
+- **Orlo Open Core** — public packages for validation, runtime adapters, Web Components, and agent-governance SDKs
+- **Orlo Platform** — the hosted/private multi-tenant control plane and the APIs used to integrate with it
 
-## Platform Features
+## Start Here
 
-### Filesystem as CMS
+- [What Is Orlo?](/guides/what-is-orlo)
+- [Open Core vs Platform](/guides/open-core-vs-platform)
+- [Who Orlo Is For](/guides/who-orlo-is-for)
+- [Getting Started](/guides/getting-started)
 
-No database. No admin panel. Your directory structure under `/content` defines the entire site — navigation, hierarchy, routing, and content. Create a folder, drop in Markdown, and it's live.
+## Open Core
 
-### Tri-brid Rendering
+Orlo Open Core is for developers and platform builders who want reusable building blocks:
 
-Every page is rendered three ways from the same source file:
+- deterministic validation
+- runtime adapters
+- agent-governance SDKs
+- framework-agnostic Studio Web Components
 
-- **Visual UI** — Vue.js interface with syntax highlighting, responsive images, callout boxes, and dark mode
-- **SEO HTML** — Server-side rendered with OpenGraph meta, Twitter Cards, canonical URLs, and auto-generated sitemap
-- **LLM Context** — Stripped plain text at `/llms.txt` with hierarchical path headers and section filtering
+If you want to understand or adopt the open packages first, start with:
 
-### White-Label Branding
+- [Open Core Guides](/guides/open-core)
+- [Packages](/packages)
 
-Deploy for any client without touching source code. Drop a `_brand.md` file in your content directory to configure logo, favicon, accent color, footer, and custom CSS. One Docker image, unlimited branded deployments.
+## Orlo Platform
 
-### Image Processing
+Orlo Platform is the full product experience described in the original platform thesis:
 
-Images are automatically optimized on demand. The pipeline generates responsive `<picture>` elements with WebP srcset at multiple widths, lazy loading, and disk-cached variants. Authors write standard Markdown image paths that preview correctly in GitHub and VS Code.
+- task definition and versioning
+- dataset upload and evaluation
+- deployment and inference
+- retrieval and document ingestion
+- governed feedback promotion
+- multi-tenant control-plane behavior
+- agent-step governance APIs
 
-### Embed System
+If you are integrating against the product, start with:
 
-Embed content from multiple platforms with a single directive:
-
-```
-::embed[Demo Video]{url=https://www.loom.com/share/abc123}
-::embed[Design Mockup]{url=https://www.figma.com/file/xyz}
-```
-
-Supports YouTube, Loom, Figma, GitHub Gists, and any URL. Mermaid diagrams render inline with `::mermaid` blocks.
-
-### AI Agent APIs
-
-f0 treats AI agents as first-class consumers:
-
-- **`/llms.txt`** — Full documentation as context-dense plain text (~3ms cached)
-- **`/llms.txt?section=guides`** — Scoped to a specific section for context window management
-- **`/llms-index.txt`** — Discovery endpoint with section list, page counts, and token estimates
-- **`/api/agents/search`** — Semantic search across all content
-
-### Blog Engine
-
-Date-prefixed Markdown files in a blog directory get automatic listing pages, tag filtering, RSS feed, and article-specific OpenGraph meta — without any configuration beyond `layout: blog` in a `_config.md`.
-
-### Infrastructure
-
-- **Health probes** at `/_health` and `/_ready` for container orchestration
-- **Startup validation** — fail-fast on misconfigurations, cache pre-warming for instant first requests
-- **Structured JSON logging** — parseable by Datadog, Loki, CloudWatch, or grep
-- **`Server-Timing` headers** on every response for performance monitoring
-- **Content validation CLI** — `npm run validate` checks frontmatter, image refs, heading hierarchy, and more
+- [Platform Overview](/guides/platform/platform-overview)
+- [Platform API](/api)
 
 :::info
-f0 operates under strict architectural constraints. The filesystem is always the single source of truth. Content caches use mtime comparison, never TTL. Image processing fails gracefully to originals. Fatal misconfigurations are caught at startup, not request time.
+Orlo Platform sits behind an auth gateway on `api.useorlo.com`. Orlo itself relies on trusted upstream authentication and org-scoped request context rather than owning end-user identity directly.
 :::
 
-## Quick Links
+## Choose the Right Path
 
-- [Getting Started Guide](/guides/getting-started) — Set up your first docs
-- [Authentication](/guides/authentication/overview) — Secure your documentation
-- [API Reference](/api) — Explore available endpoints
+### Use Open Core when
 
-## For AI Agents
+- you want to evaluate Orlo's technical primitives
+- you want reusable validation, adapter, or UI components
+- you are integrating Orlo-style governance into an existing engineering stack
 
-If you're an AI agent, start with `/llms-index.txt` to see what sections are available and their token counts. Then fetch `/llms.txt` for the full context, or `/llms.txt?section=guides` for just the section you need. For targeted retrieval, use `/api/agents/search?q=your+query`.
+### Use Orlo Platform when
+
+- you want the full evaluation-to-deployment loop
+- you need tenant isolation, auditability, approvals, and governance in one system
+- you want a domain team to use AI safely without becoming an AI platform team
+
+## Core Concepts
+
+- **Task** — the unit of domain work
+- **Task Version** — immutable snapshot of schemas, prompts, and validation
+- **Dataset** — labeled examples for evaluation
+- **Evaluation** — budget-bounded, uncertainty-aware model comparison
+- **Deployment** — a frozen model + task-version + strategy binding
+- **Inference** — governed execution through the Orlo runtime path
+- **Feedback** — corrections and promotion into improved datasets
+- **Agent Session** — a governed trajectory of agent steps

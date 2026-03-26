@@ -62,9 +62,9 @@ export default defineNuxtConfig({
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || '',
       
       // Site metadata
-      siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'f0',
-      siteDescription: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Documentation',
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
+      siteName: process.env.NUXT_PUBLIC_SITE_NAME || 'Orlo',
+      siteDescription: process.env.NUXT_PUBLIC_SITE_DESCRIPTION || 'Orlo Documentation',
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://docs.useorlo.com',
     }
   },
 

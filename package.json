@@ -1,7 +1,7 @@
 {
-  "name": "f0",
+  "name": "orlo-docs",
   "version": "1.0.0",
-  "description": "Folder Zero - AI-First Documentation Platform for Humans, SEO, and LLMs",
+  "description": "Standalone documentation site for Orlo",
   "private": true,
   "type": "module",
   "scripts": {
