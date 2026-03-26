@@ -29,5 +29,6 @@ The main integration surface is the Platform API at `https://api.useorlo.com`.
 
 Start with:
 
+- [Platform Quickstarts](/guides/platform/quickstarts)
 - [Authentication and Org Model](/guides/platform/authentication-and-org-model)
-- [Platform API](/api)
+- [Platform API](/platform-api)

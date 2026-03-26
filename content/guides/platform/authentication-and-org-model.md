@@ -5,22 +5,9 @@ description: How auth and tenant context work in Orlo Platform
 
 # Authentication and Org Model
 
-Orlo Platform assumes authentication is handled by an upstream gateway in front of `api.useorlo.com`.
+Orlo Platform uses authenticated, org-scoped request context on `api.useorlo.com`.
 
-## Responsibility split
-
-### Auth gateway
-
-The gateway is responsible for:
-
-- authenticating the caller
-- applying access policy
-- mapping the caller to an organization
-- forwarding trusted tenant context to Orlo
-
-### Orlo API
-
-The Orlo API is responsible for:
+## What Orlo expects
 
 - validating the trusted org context
 - applying org-scoped request handling
@@ -31,10 +18,6 @@ The Orlo API is responsible for:
 Orlo expects a trusted `X-Orlo-Org-Id` header on org-scoped requests.
 
 If the header is missing, malformed, or unknown, the request is rejected.
-
-:::warning
-For hosted deployments, callers should integrate through the auth gateway rather than manually inventing tenant headers in untrusted client code.
-:::
 
 ## Task header
 

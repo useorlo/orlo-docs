@@ -9,7 +9,7 @@ description: Embed Orlo Studio Web Components
 
 ## What it is best for today
 
-- embedding Orlo-native UI into internal portals
+- embedding Orlo-native UI into team portals
 - shipping a standalone Orlo Studio shell
 - reusing evaluation and governance widgets
 

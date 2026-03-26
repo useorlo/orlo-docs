@@ -1,6 +1,6 @@
 ---
 title: Boundary Rules
-description: Keep Open Core and private Platform responsibilities separate
+description: Keep Open Core and Platform responsibilities separate
 order: 4
 ---
 
@@ -8,11 +8,11 @@ order: 4
 
 ## Open Core must not depend on
 
-- private API modules
-- worker internals
+- platform API modules
+- background job modules
 - database migrations
-- private control-plane persistence
-- private retrieval orchestration
+- platform persistence
+- platform retrieval orchestration
 
 ## Why
 

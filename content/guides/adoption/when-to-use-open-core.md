@@ -12,4 +12,4 @@ Use Open Core when:
 - you already own your own app/runtime/control plane
 - you want validation, adapters, or embeddable UI pieces
 
-Open Core is a strong fit for developers and internal platform builders.
+Open Core is a strong fit for developers and platform builders.

@@ -27,7 +27,6 @@ flowchart LR
 - evaluation informs deployment
 - feedback and promotion feed future dataset versions
 
-## Why this is safe to publish
+## Why it matters
 
-It communicates the product shape without revealing the statistical or orchestration internals that make the loop work.
-
+It shows how Orlo turns evaluation, deployment, inference, and feedback into a continuous improvement loop.

@@ -5,7 +5,7 @@ description: Architecture guides for Orlo Open Core and Platform boundaries
 
 # Architecture
 
-These pages explain how Orlo is split between public packages and the private platform.
+These pages explain how Orlo is split between public packages and the managed platform.
 
 - [Open Core Boundaries](/guides/architecture/open-core-boundaries)
 - [Package Map](/guides/architecture/package-map)

@@ -10,7 +10,7 @@ Orlo helps teams **prove AI works, deploy it safely, and keep it governed in pro
 This documentation site covers two connected surfaces:
 
 - **Orlo Open Core** — public packages for validation, runtime adapters, Web Components, and agent-governance SDKs
-- **Orlo Platform** — the hosted/private multi-tenant control plane and the APIs used to integrate with it
+- **Orlo Platform** — the managed multi-tenant platform and the APIs used to integrate with it
 
 ## Start Here
 
@@ -35,23 +35,23 @@ If you want to understand or adopt the open packages first, start with:
 
 ## Orlo Platform
 
-Orlo Platform is the full product experience described in the original platform thesis:
+Orlo Platform is the full managed product experience:
 
 - task definition and versioning
 - dataset upload and evaluation
 - deployment and inference
 - retrieval and document ingestion
 - governed feedback promotion
-- multi-tenant control-plane behavior
+- multi-tenant platform behavior
 - agent-step governance APIs
 
 If you are integrating against the product, start with:
 
 - [Platform Overview](/guides/platform/platform-overview)
-- [Platform API](/api)
+- [Platform API](/platform-api)
 
 :::info
-Orlo Platform sits behind an auth gateway on `api.useorlo.com`. Orlo itself relies on trusted upstream authentication and org-scoped request context rather than owning end-user identity directly.
+Orlo Platform APIs are available at `api.useorlo.com`.
 :::
 
 ## Choose the Right Path

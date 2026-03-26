@@ -25,8 +25,12 @@ Start here if you want code, packages, and reusable primitives.
 Start here if you want to use the product APIs.
 
 1. Read [Platform Overview](/guides/platform/platform-overview)
-2. Read [Authentication and Org Model](/guides/platform/authentication-and-org-model)
-3. Start with [Platform API](/api)
+2. Pick a quickstart:
+   - [Fraud Triage Quickstart](/guides/platform/quickstarts/fraud-triage)
+   - [Support Classification Quickstart](/guides/platform/quickstarts/support-classification)
+   - [Document Summarization Quickstart](/guides/platform/quickstarts/document-summarization)
+3. Read [Authentication and Org Model](/guides/platform/authentication-and-org-model)
+4. Use the full [Platform API](/platform-api) reference as needed
 
 ## Path 3: Evaluate Fit
 

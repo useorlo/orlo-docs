@@ -15,9 +15,9 @@ description: Map the public Orlo packages to their responsibilities
 | `@orlo/agent-sdk` | thin governance client and wrappers |
 | `@orlo/studio` | Web Components UI |
 
-## Private packages
+## Platform-only packages
 
 | Package | Purpose |
 |---|---|
-| `@orlo/control-plane` | internal defaults, queue names, timeout constants |
+| `@orlo/control-plane` | platform defaults, queue names, timeout constants |
 | `@orlo/db` | migrations and DB tooling |

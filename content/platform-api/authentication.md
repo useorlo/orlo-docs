@@ -1,22 +1,15 @@
 ---
 title: Authentication
-description: Gateway-managed authentication and Orlo request context
+description: Authentication requirements and Orlo request context
 ---
 
 # Authentication
 
-Orlo Platform is exposed at `https://api.useorlo.com`, but **authentication is owned by the upstream gateway**, not by Orlo itself.
+Orlo Platform is exposed at `https://api.useorlo.com`.
 
-## Responsibility split
+Authentication requirements vary by deployment. This page focuses on the request context and headers that Orlo expects after a caller has been authenticated.
 
-### The auth gateway handles
-
-- caller authentication
-- access policy
-- mapping the caller to an Orlo tenant
-- forwarding trusted request context to Orlo
-
-### Orlo handles
+## What Orlo validates
 
 - validating tenant context headers
 - org-scoped request processing
@@ -54,17 +47,8 @@ curl https://api.useorlo.com/v1/tasks \
   -d '{"name":"Fraud case classification"}'
 ```
 
-Your deployment may also require gateway-specific auth headers, cookies, or tokens. Those are outside the Orlo API contract and should be documented by the gateway owner.
+Your deployment may also require additional authentication headers, cookies, or tokens. Document those alongside your environment setup.
 
-## Public vs non-public APIs
+## API scope
 
-This public API reference covers:
-
-- tenant-facing `/v1/*` routes
-- public health endpoints
-
-It does not cover:
-
-- `/v1/internal/*`
-- `/v1/admin/*`
-
+This API reference focuses on the routes used by applications and integrations.

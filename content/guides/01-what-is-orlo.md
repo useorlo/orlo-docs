@@ -33,7 +33,7 @@ These are useful to developers, ML engineers, and platform teams building on Orl
 
 ## Orlo Platform
 
-Orlo Platform is the full multi-tenant control plane:
+Orlo Platform is the full managed platform:
 
 - task and dataset management
 - evaluation and recommendation
@@ -42,7 +42,7 @@ Orlo Platform is the full multi-tenant control plane:
 - feedback promotion
 - agent governance APIs
 
-This is the surface that delivers the original product promise to domain teams and infrastructure leaders.
+This is the surface for teams that want the full evaluation, deployment, and governance loop in one system.
 
 ## What Orlo Is Not
 

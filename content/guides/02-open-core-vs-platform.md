@@ -6,7 +6,7 @@ order: 2
 
 # Open Core vs Platform
 
-This page is the most important boundary in the public docs.
+This page explains how the public packages relate to the full Orlo product.
 
 ## Open Core
 
@@ -36,12 +36,12 @@ Platform gives you the full governed product:
 
 ## What is public today
 
-The public-docs project documents **both**:
+This documentation set includes **both**:
 
 - the public packages and how to use them
 - the Platform APIs that customers integrate against
 
-That does **not** mean the full Platform source is open.
+The public packages and the Platform APIs serve different needs.
 
 ## Rule of Thumb
 
@@ -50,5 +50,5 @@ If you want building blocks, start with Open Core.
 If you want the full loop from proving a task to operating it safely in production, you need Orlo Platform.
 
 :::warning
-Do not assume that “documented publicly” means “open-source implementation.” The Platform API is publicly documented for integrators, while the control plane remains private.
+The Platform API is documented for integrators. Open Core packages are published separately for developers who want the reusable building blocks.
 :::

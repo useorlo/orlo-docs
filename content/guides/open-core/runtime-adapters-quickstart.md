@@ -5,7 +5,7 @@ description: Use Orlo runtime adapters in your own host application
 
 # Runtime Adapters Quickstart
 
-`@orlo/runtime-adapters` gives you reusable adapter implementations while leaving control-plane behavior in your host app.
+`@orlo/runtime-adapters` gives you reusable adapter implementations while leaving platform behavior in your host app.
 
 ## Design model
 
@@ -43,4 +43,4 @@ const response = await adapter.infer({
 
 ## Best fit
 
-Use this package if you want transport adapters without importing Orlo’s private API or database logic.
+Use this package if you want transport adapters without importing Orlo’s platform API or database logic.

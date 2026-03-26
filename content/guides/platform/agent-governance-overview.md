@@ -16,11 +16,11 @@ Orlo governs agentic execution **step by step** without becoming an agent runtim
 - approvals
 - trajectory events and traces
 
-## What Orlo does not do
+## Scope boundaries
 
 - planning loops
 - workflow orchestration
-- agent memory ownership
+- long-lived agent memory systems
 - general-purpose tool execution runtime
 
 ## Adoption model

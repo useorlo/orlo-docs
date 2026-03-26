@@ -5,7 +5,7 @@ description: List the active model catalog visible to an org
 
 # Models
 
-The model catalog is tenant-facing and filtered by provider credential availability.
+The model catalog is org-scoped and filtered by provider credential availability.
 
 ## Endpoints
 
@@ -27,4 +27,3 @@ Get one model.
 ## Notes
 
 - The catalog is not org-owned data, but Orlo filters it through org credential availability for a better tenant experience.
-

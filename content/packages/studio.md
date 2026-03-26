@@ -9,7 +9,7 @@ description: Framework-agnostic Web Components for Orlo
 
 ## Best fit today
 
-- internal tools
+- team tools
 - demos
 - Orlo-native dashboards
 - custom portals that already speak the Orlo API contract

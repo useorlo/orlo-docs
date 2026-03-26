@@ -29,9 +29,8 @@ flowchart LR
 
 ## Why this matters
 
-This keeps Orlo aligned with its core platform purpose:
+This shows Orlo’s role in an agentic system:
 
 - not a workflow runtime
 - not a general-purpose agent orchestrator
 - a governance and control layer for production AI behavior
-

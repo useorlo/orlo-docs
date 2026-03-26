@@ -19,6 +19,6 @@ Use `@orlo/shared` for Orlo’s public contracts and reusable types.
 ## Does not include
 
 - queue names
-- internal defaults
-- control-plane constants
+- platform defaults
+- platform constants
 - persistence logic

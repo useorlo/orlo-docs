@@ -16,4 +16,4 @@ Use `@orlo/runtime-adapters` for reusable model transport implementations.
 
 ## Design rule
 
-Adapters accept injected dependencies. They do not own credential storage, tenancy, or routing policy.
+Adapters accept injected dependencies. They do not own credential storage, org management, or routing policy.

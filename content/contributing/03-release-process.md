@@ -6,7 +6,7 @@ order: 3
 
 # Release Process
 
-The public packages should be released from the public repo, not from the private control-plane repo.
+Public packages should be released from the public repo.
 
 ## Release expectations
 

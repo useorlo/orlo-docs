@@ -1,6 +1,6 @@
 - [Home](/)
 - [Guides](/guides)
-- [Platform API](/api)
+- [Platform API](/platform-api)
 - [Packages](/packages)
 - [Contributing](/contributing)
-- [GitHub](https://github.com/useorlo/orlo-docs)
+- [GitHub](https://github.com/useorlo)

@@ -3,7 +3,7 @@
   "info": {
     "title": "Orlo Platform API",
     "version": "0.1.0",
-    "description": "Tenant-facing API surface for Orlo Platform. Requests are served from api.useorlo.com behind an upstream auth gateway. This spec documents Orlo-specific headers and request shapes; it does not define the gateway's end-user authentication mechanism."
+    "description": "Tenant-facing API surface for Orlo Platform. Requests are served from api.useorlo.com. This spec documents Orlo-specific headers and request shapes; deployment-specific authentication can be layered around this API."
   },
   "servers": [
     {
@@ -2035,7 +2035,7 @@
         "name": "X-Orlo-Org-Id",
         "in": "header",
         "required": true,
-        "description": "Trusted org context injected by the upstream auth gateway.",
+        "description": "Trusted org context for the request.",
         "schema": { "type": "string", "format": "uuid" }
       },
       "TaskIdHeader": {

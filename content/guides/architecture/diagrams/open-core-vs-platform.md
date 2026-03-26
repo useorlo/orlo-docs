@@ -6,7 +6,7 @@ order: 1
 
 # Open Core vs Platform
 
-This is the safest public architectural view of Orlo.
+This diagram shows the high-level relationship between Open Core and Orlo Platform.
 
 ```mermaid
 flowchart TB
@@ -33,6 +33,5 @@ flowchart TB
 ## What this shows
 
 - Open Core provides reusable packages and UI surfaces.
-- Orlo Platform is the hosted/private system that turns those primitives into a multi-tenant governed product.
+- Orlo Platform is the managed system that turns those primitives into a multi-tenant governed product.
 - The public packages are designed to complement the platform, not replace the full control plane.
-

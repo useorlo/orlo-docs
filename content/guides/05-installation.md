@@ -46,5 +46,5 @@ npm test
 - `packages/agent-sdk` — thin developer-facing agent governance client
 
 :::info
-Open Core is intentionally separate from the private control plane. You can explore and build the public packages without needing the full private Platform source tree.
+Open Core can be installed and used on its own. You do not need the full managed platform to build with the public packages.
 :::

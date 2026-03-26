@@ -15,7 +15,7 @@ Validation and control logic should be deterministic and auditable.
 
 ## Keep the boundary honest
 
-Public packages should stay reusable and free of private control-plane coupling.
+Public packages should stay reusable and free of platform-specific coupling.
 
 ## Fast gate, deep audit
 

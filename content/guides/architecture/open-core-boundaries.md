@@ -1,6 +1,6 @@
 ---
 title: Open Core Boundaries
-description: What belongs in Orlo Open Core and what stays private
+description: What belongs in Orlo Open Core and what belongs to Orlo Platform
 ---
 
 # Open Core Boundaries
@@ -15,13 +15,13 @@ Open Core is where Orlo exposes reusable primitives.
 - Studio components
 - agent governance SDK
 
-## Private Platform includes
+## Orlo Platform includes
 
 - API control plane
 - workers
 - database schema and migrations
 - retrieval orchestration
-- feedback promotion internals
+- feedback promotion services
 - persistent governance state
 
-This boundary is deliberate. It keeps Open Core useful while preserving the platform’s operational and enterprise moat.
+This boundary keeps Open Core easy to adopt while leaving the managed platform responsible for long-lived system behavior and operations.

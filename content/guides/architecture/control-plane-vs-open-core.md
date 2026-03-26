@@ -1,13 +1,13 @@
 ---
 title: Control Plane vs Open Core
-description: How Orlo separates reusable code from the hosted control plane
+description: How Orlo separates reusable code from the managed platform
 ---
 
 # Control Plane vs Open Core
 
 Open Core gives you code.
 
-The control plane gives you governed operation.
+The platform adds governed operation.
 
 ## Open Core
 
@@ -24,4 +24,4 @@ The control plane is where Orlo becomes a product:
 - deployment lifecycle
 - retrieval orchestration
 
-That is why staging and production demos should still run from the private repo.
+That is why production deployments use Orlo Platform, while Open Core remains a portable package surface.
