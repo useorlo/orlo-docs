@@ -5,7 +5,9 @@ description: Define routing objectives and SLA preferences per task
 
 # Routing Policies
 
-Routing policies store task-level preferences for model selection and fallback.
+Routing policies store task-level preferences for deployment selection and fallback.
+
+When a live inference request does not pin a deployment explicitly, Orlo can evaluate the routing policy against the task's evaluated deployment candidates and choose the best available option.
 
 ## Endpoints
 
@@ -33,8 +35,14 @@ Common fields:
 
 List policies, optionally filtered by `task_id`.
 
+## Runtime effect
+
+When routing is active for a request, Orlo exposes the result in two places:
+
+- `x-orlo-routing-mode` on `POST /v1/chat/completions`
+- `debug.routing` on `POST /v1/tasks/:task_id/run` when `explain` is `debug` or `audit`
+
 ## Notes
 
+- Routing policies work against evaluated deployment candidates, not arbitrary models with no deployment snapshot.
 - Routing policy records are part of Orlo's control-plane data model.
-- Deployment snapshots can freeze the latest routing policy for a task at deployment time.
-

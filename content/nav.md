@@ -1,4 +1,5 @@
 - [Home](/)
+- [Getting Started](/guides/getting-started)
 - [Guides](/guides)
 - [Platform API](/platform-api)
 - [Packages](/packages)

@@ -8,6 +8,8 @@ order: 3
 
 Orlo serves multiple audiences, but not every surface is equally useful to every audience.
 
+The common thread is simple: Orlo is most useful when AI is on a consequential production path and the cost of being wrong is not trivial.
+
 ## Open Core is best for
 
 ### Platform and ML engineers
@@ -47,6 +49,8 @@ Use Orlo Platform if you want to:
 - deploy a winner
 - review feedback
 - operate AI safely without building the stack yourself
+
+This is especially relevant when a bad answer, stale retrieval result, unreviewed write action, or weak approval path can create a real business consequence.
 
 ## Honest Boundary
 

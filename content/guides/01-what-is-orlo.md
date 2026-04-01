@@ -6,11 +6,20 @@ order: 1
 
 # What Is Orlo?
 
-Orlo is a **governed AI platform** built around a simple question:
+Orlo is a **governed domain AI control plane** built for a specific operational surface:
 
-> Will this AI system work for our task, and can we operate it safely in production?
+> the path between model output and real-world consequence
 
-Orlo answers that question with a combination of:
+That path shows up in concrete places:
+
+- a fraud or support decision served through a live inference endpoint
+- a retrieval step pulling from documents that change over time
+- an agent asking to call a write-capable tool
+- a production correction that should become a better dataset instead of disappearing into a ticket queue
+
+Orlo exists to make that path measurable, governable, and improvable.
+
+Orlo answers that with a combination of:
 
 - evaluation
 - deterministic validation
@@ -50,5 +59,6 @@ This is the surface for teams that want the full evaluation, deployment, and gov
 - not a workflow orchestrator
 - not just an LLM gateway
 - not only a prompt management tool
+- not an endpoint security product
 
-Orlo is strongest in the governed middle layer between model providers and production use cases.
+Orlo is strongest in the governed middle layer between model providers, production systems, and consequential domain use cases.

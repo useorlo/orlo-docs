@@ -12,27 +12,61 @@
     }
   ],
   "tags": [
-    { "name": "health" },
-    { "name": "tasks" },
-    { "name": "datasets" },
-    { "name": "evaluations" },
-    { "name": "deployments" },
-    { "name": "inference" },
-    { "name": "feedback" },
-    { "name": "documents" },
-    { "name": "credentials" },
-    { "name": "models" },
-    { "name": "adapters" },
-    { "name": "org-config" },
-    { "name": "routing" },
-    { "name": "rubrics" },
-    { "name": "monitoring" },
-    { "name": "agent-governance" }
+    {
+      "name": "health"
+    },
+    {
+      "name": "tasks"
+    },
+    {
+      "name": "datasets"
+    },
+    {
+      "name": "evaluations"
+    },
+    {
+      "name": "deployments"
+    },
+    {
+      "name": "inference"
+    },
+    {
+      "name": "feedback"
+    },
+    {
+      "name": "documents"
+    },
+    {
+      "name": "credentials"
+    },
+    {
+      "name": "models"
+    },
+    {
+      "name": "adapters"
+    },
+    {
+      "name": "org-config"
+    },
+    {
+      "name": "routing"
+    },
+    {
+      "name": "rubrics"
+    },
+    {
+      "name": "monitoring"
+    },
+    {
+      "name": "agent-governance"
+    }
   ],
   "paths": {
     "/health": {
       "get": {
-        "tags": ["health"],
+        "tags": [
+          "health"
+        ],
         "summary": "Full health check",
         "responses": {
           "200": {
@@ -42,10 +76,19 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string" },
-                    "service": { "type": "string" },
-                    "timestamp": { "type": "string", "format": "date-time" },
-                    "checks": { "$ref": "#/components/schemas/GenericObject" }
+                    "status": {
+                      "type": "string"
+                    },
+                    "service": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "checks": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -58,8 +101,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string" },
-                    "checks": { "$ref": "#/components/schemas/GenericObject" }
+                    "status": {
+                      "type": "string"
+                    },
+                    "checks": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -70,7 +117,9 @@
     },
     "/health/live": {
       "get": {
-        "tags": ["health"],
+        "tags": [
+          "health"
+        ],
         "summary": "Liveness probe",
         "responses": {
           "200": {
@@ -80,7 +129,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "string", "example": "ok" }
+                    "status": {
+                      "type": "string",
+                      "example": "ok"
+                    }
                   }
                 }
               }
@@ -91,17 +143,25 @@
     },
     "/v1/tasks": {
       "post": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "Create a task and first task version",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/TaskCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/TaskCreateRequest"
+              }
             }
           }
         },
@@ -110,17 +170,27 @@
             "description": "Task created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TaskCreatedResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/TaskCreatedResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       },
       "get": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "List tasks",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Task list",
@@ -131,7 +201,9 @@
                   "properties": {
                     "tasks": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -143,37 +215,57 @@
     },
     "/v1/tasks/{id}": {
       "get": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "Get one task",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Task detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TaskDetail" }
+                "schema": {
+                  "$ref": "#/components/schemas/TaskDetail"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "put": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "Update a task by creating a new task version",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/TaskUpdateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdateRequest"
+              }
             }
           }
         },
@@ -182,21 +274,31 @@
             "description": "Task updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/TaskVersionResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/TaskVersionResponse"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/tasks/{id}/versions": {
       "get": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "List task versions",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
@@ -208,24 +310,34 @@
                   "properties": {
                     "versions": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/tasks/{id}/preview-impact": {
       "post": {
-        "tags": ["tasks"],
+        "tags": [
+          "tasks"
+        ],
         "summary": "Preview impact of proposed task changes",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -233,10 +345,16 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["proposed_changes"],
+                "required": [
+                  "proposed_changes"
+                ],
                 "properties": {
-                  "proposed_changes": { "$ref": "#/components/schemas/GenericObject" },
-                  "sample_size": { "type": "integer" }
+                  "proposed_changes": {
+                    "$ref": "#/components/schemas/GenericObject"
+                  },
+                  "sample_size": {
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -247,27 +365,39 @@
             "description": "Impact preview",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/datasets": {
       "post": {
-        "tags": ["datasets"],
+        "tags": [
+          "datasets"
+        ],
         "summary": "Create a dataset",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DatasetCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/DatasetCreateRequest"
+              }
             }
           }
         },
@@ -276,22 +406,33 @@
             "description": "Dataset created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/DatasetCreatedResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/DatasetCreatedResponse"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "get": {
-        "tags": ["datasets"],
+        "tags": [
+          "datasets"
+        ],
         "summary": "List datasets",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
           {
             "name": "task_id",
             "in": "query",
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -304,7 +445,9 @@
                   "properties": {
                     "datasets": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -316,30 +459,46 @@
     },
     "/v1/datasets/{id}": {
       "get": {
-        "tags": ["datasets"],
+        "tags": [
+          "datasets"
+        ],
         "summary": "Get one dataset",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Dataset detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/evaluations/templates": {
       "get": {
-        "tags": ["evaluations"],
+        "tags": [
+          "evaluations"
+        ],
         "summary": "List evaluation templates",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Template list",
@@ -350,7 +509,9 @@
                   "properties": {
                     "templates": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -362,15 +523,21 @@
     },
     "/v1/evaluations/templates/{key}": {
       "get": {
-        "tags": ["evaluations"],
+        "tags": [
+          "evaluations"
+        ],
         "summary": "Get one evaluation template",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
           {
             "name": "key",
             "in": "path",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -378,27 +545,39 @@
             "description": "Template detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/evaluations/run": {
       "post": {
-        "tags": ["evaluations"],
+        "tags": [
+          "evaluations"
+        ],
         "summary": "Queue an evaluation run",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/EvaluationRunRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationRunRequest"
+              }
             }
           }
         },
@@ -407,25 +586,38 @@
             "description": "Evaluation queued",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/evaluations": {
       "get": {
-        "tags": ["evaluations"],
+        "tags": [
+          "evaluations"
+        ],
         "summary": "List evaluations",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
           {
             "name": "task_id",
             "in": "query",
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -438,7 +630,9 @@
                   "properties": {
                     "evaluations": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -450,38 +644,56 @@
     },
     "/v1/evaluations/{id}": {
       "get": {
-        "tags": ["evaluations"],
+        "tags": [
+          "evaluations"
+        ],
         "summary": "Get evaluation result",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Evaluation detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/deployments": {
       "post": {
-        "tags": ["deployments"],
+        "tags": [
+          "deployments"
+        ],
         "summary": "Create a deployment",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DeploymentCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/DeploymentCreateRequest"
+              }
             }
           }
         },
@@ -490,23 +702,36 @@
             "description": "Deployment created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "get": {
-        "tags": ["deployments"],
+        "tags": [
+          "deployments"
+        ],
         "summary": "List deployments",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
           {
             "name": "task_id",
             "in": "query",
-            "schema": { "type": "string", "format": "uuid" }
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
@@ -519,7 +744,9 @@
                   "properties": {
                     "deployments": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -531,62 +758,96 @@
     },
     "/v1/deployments/{id}/activate": {
       "put": {
-        "tags": ["deployments"],
+        "tags": [
+          "deployments"
+        ],
         "summary": "Activate a deployment",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Deployment activated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/deployments/{id}/deactivate": {
       "put": {
-        "tags": ["deployments"],
+        "tags": [
+          "deployments"
+        ],
         "summary": "Deactivate a deployment",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Deployment deactivated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/chat/completions": {
       "post": {
-        "tags": ["inference"],
+        "tags": [
+          "inference"
+        ],
         "summary": "OpenAI-compatible chat completions",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/TaskIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ChatCompletionRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ChatCompletionRequest"
+              }
             }
           }
         },
@@ -594,64 +855,117 @@
           "200": {
             "description": "Chat completion",
             "headers": {
-              "x-orlo-model": { "schema": { "type": "string" } },
-              "x-orlo-trace-id": { "schema": { "type": "string" } },
-              "x-orlo-validation": { "schema": { "type": "string" } },
-              "x-orlo-task-version": { "schema": { "type": "string" } }
+              "x-orlo-model": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-orlo-trace-id": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-orlo-validation": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-orlo-task-version": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "x-orlo-routing-mode": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "explicit",
+                    "policy",
+                    "active_fallback"
+                  ]
+                },
+                "description": "How Orlo selected the deployment for this request."
+              }
             },
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/tasks/{taskId}/run": {
       "post": {
-        "tags": ["inference"],
+        "tags": [
+          "inference"
+        ],
         "summary": "Task-native inference",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/TaskRunRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunRequest"
+              }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Inference result",
+            "description": "Inference result. When explain is debug or audit, the response includes retrieval and routing metadata.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/feedback": {
       "post": {
-        "tags": ["feedback"],
+        "tags": [
+          "feedback"
+        ],
         "summary": "Submit feedback",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/FeedbackCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackCreateRequest"
+              }
             }
           }
         },
@@ -660,21 +974,44 @@
             "description": "Feedback submitted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "get": {
-        "tags": ["feedback"],
+        "tags": [
+          "feedback"
+        ],
         "summary": "List feedback",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "status", "in": "query", "schema": { "type": "string" } },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -686,7 +1023,9 @@
                   "properties": {
                     "feedback": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -698,12 +1037,20 @@
     },
     "/v1/feedback/{id}/status": {
       "put": {
-        "tags": ["feedback"],
+        "tags": [
+          "feedback"
+        ],
         "summary": "Transition feedback status",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -711,9 +1058,17 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["status"],
+                "required": [
+                  "status"
+                ],
                 "properties": {
-                  "status": { "type": "string", "enum": ["staged", "rejected"] }
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "staged",
+                      "rejected"
+                    ]
+                  }
                 }
               }
             }
@@ -724,51 +1079,79 @@
             "description": "Status changed",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/tasks/{taskId}/feedback/promote": {
       "post": {
-        "tags": ["feedback"],
+        "tags": [
+          "feedback"
+        ],
         "summary": "Promote staged feedback into a new dataset",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Feedback promoted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/tasks/{taskId}/documents": {
       "post": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "Create a document from inline text, pre-chunked content, or inline PDF",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DocumentCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/DocumentCreateRequest"
+              }
             }
           }
         },
@@ -777,21 +1160,35 @@
             "description": "Document accepted for embedding or extraction",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "413": { "$ref": "#/components/responses/ErrorGeneric" },
-          "503": { "$ref": "#/components/responses/ErrorGeneric" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "413": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          },
+          "503": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          }
         }
       },
       "get": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "List documents for a task",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/TaskIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          }
         ],
         "responses": {
           "200": {
@@ -803,7 +1200,9 @@
                   "properties": {
                     "documents": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -815,18 +1214,28 @@
     },
     "/v1/tasks/{taskId}/documents/uploads": {
       "post": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "Start a direct PDF upload",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/DocumentUploadRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUploadRequest"
+              }
             }
           }
         },
@@ -835,90 +1244,150 @@
             "description": "Upload initiated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "413": { "$ref": "#/components/responses/ErrorGeneric" },
-          "503": { "$ref": "#/components/responses/ErrorGeneric" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "413": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          },
+          "503": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          }
         }
       }
     },
     "/v1/tasks/{taskId}/documents/{id}/finalize": {
       "post": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "Finalize a direct PDF upload and enqueue extraction",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "202": {
             "description": "Extraction queued",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" },
-          "409": { "$ref": "#/components/responses/ErrorGeneric" },
-          "413": { "$ref": "#/components/responses/ErrorGeneric" },
-          "503": { "$ref": "#/components/responses/ErrorGeneric" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          },
+          "413": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          },
+          "503": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          }
         }
       }
     },
     "/v1/tasks/{taskId}/documents/{id}": {
       "get": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "Get one document",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/TaskIdPath" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Document detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
         }
       },
       "delete": {
-        "tags": ["documents"],
+        "tags": [
+          "documents"
+        ],
         "summary": "Delete a document",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/TaskIdPath" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/TaskIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
-          "204": { "description": "Document deleted" }
+          "204": {
+            "description": "Document deleted"
+          }
         }
       }
     },
     "/v1/credentials": {
       "post": {
-        "tags": ["credentials"],
+        "tags": [
+          "credentials"
+        ],
         "summary": "Store an encrypted provider credential",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CredentialCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/CredentialCreateRequest"
+              }
             }
           }
         },
@@ -927,17 +1396,27 @@
             "description": "Credential stored",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       },
       "get": {
-        "tags": ["credentials"],
+        "tags": [
+          "credentials"
+        ],
         "summary": "List credentials",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Credential list",
@@ -948,7 +1427,9 @@
                   "properties": {
                     "credentials": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -960,26 +1441,52 @@
     },
     "/v1/credentials/{id}": {
       "delete": {
-        "tags": ["credentials"],
+        "tags": [
+          "credentials"
+        ],
         "summary": "Deactivate a credential",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
-          "204": { "description": "Credential deactivated" }
+          "204": {
+            "description": "Credential deactivated"
+          }
         }
       }
     },
     "/v1/models": {
       "get": {
-        "tags": ["models"],
+        "tags": [
+          "models"
+        ],
         "summary": "List models visible to the org",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "runtime", "in": "query", "schema": { "type": "string" } },
-          { "name": "provider", "in": "query", "schema": { "type": "string" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "runtime",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -991,9 +1498,13 @@
                   "properties": {
                     "models": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     },
-                    "total": { "type": "integer" }
+                    "total": {
+                      "type": "integer"
+                    }
                   }
                 }
               }
@@ -1004,38 +1515,56 @@
     },
     "/v1/models/{id}": {
       "get": {
-        "tags": ["models"],
+        "tags": [
+          "models"
+        ],
         "summary": "Get one model",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Model detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/adapters": {
       "post": {
-        "tags": ["adapters"],
+        "tags": [
+          "adapters"
+        ],
         "summary": "Register a LoRA adapter",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/AdapterCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/AdapterCreateRequest"
+              }
             }
           }
         },
@@ -1044,20 +1573,37 @@
             "description": "Adapter registered",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "get": {
-        "tags": ["adapters"],
+        "tags": [
+          "adapters"
+        ],
         "summary": "List adapters",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1069,7 +1615,9 @@
                   "properties": {
                     "adapters": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1081,31 +1629,49 @@
     },
     "/v1/adapters/{id}": {
       "get": {
-        "tags": ["adapters"],
+        "tags": [
+          "adapters"
+        ],
         "summary": "Get one adapter",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Adapter detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "put": {
-        "tags": ["adapters"],
+        "tags": [
+          "adapters"
+        ],
         "summary": "Update an adapter",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1114,10 +1680,18 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "storage_path": { "type": "string" },
-                  "metadata": { "$ref": "#/components/schemas/GenericObject" },
-                  "active": { "type": "boolean" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "storage_path": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "$ref": "#/components/schemas/GenericObject"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
                 }
               }
             }
@@ -1128,39 +1702,61 @@
             "description": "Adapter updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "delete": {
-        "tags": ["adapters"],
+        "tags": [
+          "adapters"
+        ],
         "summary": "Archive an adapter",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Adapter archived",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/orgs/config": {
       "get": {
-        "tags": ["org-config"],
+        "tags": [
+          "org-config"
+        ],
         "summary": "Get org config",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Org config",
@@ -1169,7 +1765,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "config": { "$ref": "#/components/schemas/GenericObject" }
+                    "config": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -1178,11 +1776,17 @@
         }
       },
       "put": {
-        "tags": ["org-config"],
+        "tags": [
+          "org-config"
+        ],
         "summary": "Update org config",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1190,9 +1794,13 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["config"],
+                "required": [
+                  "config"
+                ],
                 "properties": {
-                  "config": { "$ref": "#/components/schemas/GenericObject" }
+                  "config": {
+                    "$ref": "#/components/schemas/GenericObject"
+                  }
                 }
               }
             }
@@ -1203,21 +1811,31 @@
             "description": "Org config updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/routing-policies": {
       "post": {
-        "tags": ["routing"],
+        "tags": [
+          "routing"
+        ],
         "summary": "Create a routing policy",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1225,21 +1843,51 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["task_id"],
+                "required": [
+                  "task_id"
+                ],
                 "properties": {
-                  "task_id": { "type": "string", "format": "uuid" },
-                  "weight_accuracy": { "type": "number" },
-                  "weight_latency": { "type": "number" },
-                  "weight_cost": { "type": "number" },
-                  "weight_validation": { "type": "number" },
-                  "min_accuracy": { "type": "number" },
-                  "max_latency_ms": { "type": "number" },
-                  "min_validation_rate": { "type": "number" },
-                  "max_cost_per_1k": { "type": "number" },
-                  "sla_latency_p95_ms": { "type": "number" },
-                  "sla_availability": { "type": "number" },
-                  "sla_max_error_rate": { "type": "number" },
-                  "fallback_model_id": { "type": "string", "format": "uuid" }
+                  "task_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "weight_accuracy": {
+                    "type": "number"
+                  },
+                  "weight_latency": {
+                    "type": "number"
+                  },
+                  "weight_cost": {
+                    "type": "number"
+                  },
+                  "weight_validation": {
+                    "type": "number"
+                  },
+                  "min_accuracy": {
+                    "type": "number"
+                  },
+                  "max_latency_ms": {
+                    "type": "number"
+                  },
+                  "min_validation_rate": {
+                    "type": "number"
+                  },
+                  "max_cost_per_1k": {
+                    "type": "number"
+                  },
+                  "sla_latency_p95_ms": {
+                    "type": "number"
+                  },
+                  "sla_availability": {
+                    "type": "number"
+                  },
+                  "sla_max_error_rate": {
+                    "type": "number"
+                  },
+                  "fallback_model_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
                 }
               }
             }
@@ -1250,19 +1898,34 @@
             "description": "Routing policy created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       },
       "get": {
-        "tags": ["routing"],
+        "tags": [
+          "routing"
+        ],
         "summary": "List routing policies",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1274,7 +1937,9 @@
                   "properties": {
                     "policies": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1286,11 +1951,17 @@
     },
     "/v1/rubrics": {
       "post": {
-        "tags": ["rubrics"],
+        "tags": [
+          "rubrics"
+        ],
         "summary": "Create a rubric",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1298,19 +1969,37 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["task_id", "name", "criteria"],
+                "required": [
+                  "task_id",
+                  "name",
+                  "criteria"
+                ],
                 "properties": {
-                  "task_id": { "type": "string", "format": "uuid" },
-                  "name": { "type": "string" },
+                  "task_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
                   "criteria": {
                     "type": "array",
                     "items": {
                       "type": "object",
-                      "required": ["name", "description"],
+                      "required": [
+                        "name",
+                        "description"
+                      ],
                       "properties": {
-                        "name": { "type": "string" },
-                        "description": { "type": "string" },
-                        "weight": { "type": "number" }
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "weight": {
+                          "type": "number"
+                        }
                       }
                     }
                   }
@@ -1324,19 +2013,34 @@
             "description": "Rubric created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       },
       "get": {
-        "tags": ["rubrics"],
+        "tags": [
+          "rubrics"
+        ],
         "summary": "List rubrics",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1348,7 +2052,9 @@
                   "properties": {
                     "rubrics": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1360,30 +2066,46 @@
     },
     "/v1/rubrics/{id}": {
       "get": {
-        "tags": ["rubrics"],
+        "tags": [
+          "rubrics"
+        ],
         "summary": "Get one rubric",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "responses": {
           "200": {
             "description": "Rubric detail",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/monitoring/pgvector": {
       "get": {
-        "tags": ["monitoring"],
+        "tags": [
+          "monitoring"
+        ],
         "summary": "Get pgvector metrics",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "pgvector metrics",
@@ -1392,7 +2114,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "metrics": { "$ref": "#/components/schemas/GenericObject" }
+                    "metrics": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -1403,9 +2127,15 @@
     },
     "/v1/monitoring/circuit-breakers": {
       "get": {
-        "tags": ["monitoring"],
+        "tags": [
+          "monitoring"
+        ],
         "summary": "Get circuit breaker states",
-        "parameters": [{ "$ref": "#/components/parameters/OrgIdHeader" }],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Circuit breaker states",
@@ -1414,7 +2144,9 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "breakers": { "$ref": "#/components/schemas/GenericObject" }
+                    "breakers": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -1425,18 +2157,30 @@
     },
     "/v1/monitoring/judge-drift": {
       "get": {
-        "tags": ["monitoring"],
+        "tags": [
+          "monitoring"
+        ],
         "summary": "Get judge drift analysis",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "threshold", "in": "query", "schema": { "type": "number" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Judge drift analysis",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -1445,17 +2189,25 @@
     },
     "/v1/agent-sessions": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Create an agent session",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/AgentSessionCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/AgentSessionCreateRequest"
+              }
             }
           }
         },
@@ -1464,21 +2216,48 @@
             "description": "Agent session created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       },
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "List agent sessions",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
-          { "name": "status", "in": "query", "schema": { "type": "string" } },
-          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1490,7 +2269,9 @@
                   "properties": {
                     "sessions": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1502,31 +2283,49 @@
     },
     "/v1/agent-sessions/{sessionId}": {
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Get one agent session",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "responses": {
           "200": {
-            "description": "Session detail",
+            "description": "Session detail including steps, events, trajectory_result, and trajectory_step_results",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       },
       "patch": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Update session status",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1534,11 +2333,20 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["status"],
+                "required": [
+                  "status"
+                ],
                 "properties": {
                   "status": {
                     "type": "string",
-                    "enum": ["active", "paused", "completed", "failed", "cancelled", "timed_out"]
+                    "enum": [
+                      "active",
+                      "paused",
+                      "completed",
+                      "failed",
+                      "cancelled",
+                      "timed_out"
+                    ]
                   }
                 }
               }
@@ -1550,28 +2358,42 @@
             "description": "Session updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/agent-sessions/{sessionId}/steps/govern": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Govern one agent step",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/GovernAgentStepRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/GovernAgentStepRequest"
+              }
             }
           }
         },
@@ -1580,22 +2402,34 @@
             "description": "Governance result",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GovernAgentStepResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/GovernAgentStepResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/agent-sessions/{sessionId}/traces/import": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Import trace steps and events",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1606,11 +2440,15 @@
                 "properties": {
                   "steps": {
                     "type": "array",
-                    "items": { "$ref": "#/components/schemas/GenericObject" }
+                    "items": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   },
                   "events": {
                     "type": "array",
-                    "items": { "$ref": "#/components/schemas/GenericObject" }
+                    "items": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
                   }
                 }
               }
@@ -1622,7 +2460,9 @@
             "description": "Trace imported",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -1631,18 +2471,28 @@
     },
     "/v1/agent-sessions/{sessionId}/steps": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Import a single step",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/GenericObject" }
+              "schema": {
+                "$ref": "#/components/schemas/GenericObject"
+              }
             }
           }
         },
@@ -1651,7 +2501,9 @@
             "description": "Step imported",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -1660,11 +2512,17 @@
     },
     "/v1/agent-sessions/{sessionId}/events": {
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "List session events",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "responses": {
           "200": {
@@ -1676,7 +2534,9 @@
                   "properties": {
                     "events": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1688,18 +2548,28 @@
     },
     "/v1/agent-sessions/{sessionId}/tools/check": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Check a tool call against policy",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolCheckRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolCheckRequest"
+              }
             }
           }
         },
@@ -1708,22 +2578,44 @@
             "description": "Tool policy result",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ToolCheckResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/ToolCheckResponse"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/tool-policies": {
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "List tool policies",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
-          { "name": "deployment_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "deployment_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1735,7 +2627,9 @@
                   "properties": {
                     "policies": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1745,17 +2639,25 @@
         }
       },
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Create a tool policy",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolPolicyCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolPolicyCreateRequest"
+              }
             }
           }
         },
@@ -1764,28 +2666,42 @@
             "description": "Tool policy created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/tool-policies/{id}": {
       "put": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Update a tool policy",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/ToolPolicyCreateRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/ToolPolicyCreateRequest"
+              }
             }
           }
         },
@@ -1794,22 +2710,44 @@
             "description": "Tool policy updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/runtime-limits": {
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "List runtime limits",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
-          { "name": "deployment_id", "in": "query", "schema": { "type": "string", "format": "uuid" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "deployment_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1821,7 +2759,9 @@
                   "properties": {
                     "limits": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1831,17 +2771,25 @@
         }
       },
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Create or upsert runtime limits",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RuntimeLimitUpsertRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RuntimeLimitUpsertRequest"
+              }
             }
           }
         },
@@ -1850,7 +2798,9 @@
             "description": "Runtime limits stored",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -1859,18 +2809,28 @@
     },
     "/v1/runtime-limits/{id}": {
       "put": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Update runtime limits",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/IdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/RuntimeLimitUpsertRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/RuntimeLimitUpsertRequest"
+              }
             }
           }
         },
@@ -1879,7 +2839,9 @@
             "description": "Runtime limits updated",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -1888,13 +2850,36 @@
     },
     "/v1/agent-approvals": {
       "get": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "List approvals",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "name": "status", "in": "query", "schema": { "type": "string" } },
-          { "name": "task_id", "in": "query", "schema": { "type": "string", "format": "uuid" } },
-          { "name": "limit", "in": "query", "schema": { "type": "integer" } }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -1906,7 +2891,9 @@
                   "properties": {
                     "approvals": {
                       "type": "array",
-                      "items": { "$ref": "#/components/schemas/GenericObject" }
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
                     }
                   }
                 }
@@ -1918,13 +2905,23 @@
     },
     "/v1/agent-sessions/{sessionId}/steps/{stepId}/request-approval": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Request approval for a step",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/SessionIdPath" },
-          { "$ref": "#/components/parameters/StepIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          },
+          {
+            "$ref": "#/components/parameters/StepIdPath"
+          }
         ],
         "requestBody": {
           "required": true,
@@ -1932,12 +2929,27 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["policy_reason"],
+                "required": [
+                  "policy_reason"
+                ],
                 "properties": {
-                  "policy_reason": { "type": "string" },
-                  "request_payload": { "$ref": "#/components/schemas/GenericObject" },
-                  "approval_timeout_seconds": { "type": "integer" },
-                  "timeout_action": { "type": "string", "enum": ["reject", "escalate", "contain"] }
+                  "policy_reason": {
+                    "type": "string"
+                  },
+                  "request_payload": {
+                    "$ref": "#/components/schemas/GenericObject"
+                  },
+                  "approval_timeout_seconds": {
+                    "type": "integer"
+                  },
+                  "timeout_action": {
+                    "type": "string",
+                    "enum": [
+                      "reject",
+                      "escalate",
+                      "contain"
+                    ]
+                  }
                 }
               }
             }
@@ -1948,22 +2960,34 @@
             "description": "Approval requested",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "400": { "$ref": "#/components/responses/Error400" }
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          }
         }
       }
     },
     "/v1/agent-approvals/{id}/approve": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Approve a pending step",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/ApprovalIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ApprovalIdPath"
+          }
         ],
         "requestBody": {
           "required": false,
@@ -1972,8 +2996,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "decided_by": { "type": "string" },
-                  "comment": { "type": "string" }
+                  "decided_by": {
+                    "type": "string"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -1984,22 +3012,34 @@
             "description": "Approval accepted",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     },
     "/v1/agent-approvals/{id}/reject": {
       "post": {
-        "tags": ["agent-governance"],
+        "tags": [
+          "agent-governance"
+        ],
         "summary": "Reject a pending step",
         "parameters": [
-          { "$ref": "#/components/parameters/OrgIdHeader" },
-          { "$ref": "#/components/parameters/IdempotencyKey" },
-          { "$ref": "#/components/parameters/ApprovalIdPath" }
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/ApprovalIdPath"
+          }
         ],
         "requestBody": {
           "required": false,
@@ -2008,8 +3048,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "decided_by": { "type": "string" },
-                  "comment": { "type": "string" }
+                  "decided_by": {
+                    "type": "string"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -2020,11 +3064,260 @@
             "description": "Approval rejected",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GenericObject" }
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "404": { "$ref": "#/components/responses/Error404" }
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/agent-sessions/{sessionId}/events/stream": {
+      "get": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Stream session events over SSE",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/SessionIdPath"
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Optional cursor. Only newer events are streamed."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-sent event stream",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "example": "event: connected\\ndata: {\"session_id\":\"...\"}\\n\\nevent: step.governed\\ndata: {...}\\n\\n"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/trace-samples": {
+      "get": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "List trace samples",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "candidate",
+                "approved",
+                "rejected",
+                "promoted"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trace sample list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "trace_samples": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/trace-samples/{id}": {
+      "get": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Get one trace sample",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trace sample detail including annotations, trajectory_result, and trajectory_step_results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/trace-samples/{id}/annotations": {
+      "post": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Annotate a trace sample",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "annotation_type",
+                  "label"
+                ],
+                "properties": {
+                  "annotation_type": {
+                    "type": "string"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "payload": {
+                    "$ref": "#/components/schemas/GenericObject"
+                  },
+                  "created_by": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Trace sample annotation created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/trace-samples/{id}/promote-to-dataset": {
+      "post": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Promote a trace sample to a dataset sample",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrgIdHeader"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IdPath"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "dataset_id"
+                ],
+                "properties": {
+                  "dataset_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Trace sample promoted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
         }
       }
     }
@@ -2036,51 +3329,73 @@
         "in": "header",
         "required": true,
         "description": "Trusted org context for the request.",
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
       "TaskIdHeader": {
         "name": "X-Orlo-Task-Id",
         "in": "header",
         "required": true,
         "description": "Trusted task context used on the OpenAI-compatible chat path.",
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
       "IdempotencyKey": {
         "name": "Idempotency-Key",
         "in": "header",
         "required": false,
         "description": "Optional key for retry-safe mutation replay.",
-        "schema": { "type": "string" }
+        "schema": {
+          "type": "string"
+        }
       },
       "TaskIdPath": {
         "name": "taskId",
         "in": "path",
         "required": true,
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
       "IdPath": {
         "name": "id",
         "in": "path",
         "required": true,
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
       "SessionIdPath": {
         "name": "sessionId",
         "in": "path",
         "required": true,
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       },
       "StepIdPath": {
         "name": "stepId",
         "in": "path",
         "required": true,
-        "schema": { "type": "string" }
+        "schema": {
+          "type": "string"
+        }
       },
       "ApprovalIdPath": {
         "name": "id",
         "in": "path",
         "required": true,
-        "schema": { "type": "string", "format": "uuid" }
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
       }
     },
     "responses": {
@@ -2088,7 +3403,9 @@
         "description": "Bad request",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -2096,7 +3413,9 @@
         "description": "Not found",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       },
@@ -2104,7 +3423,9 @@
         "description": "Error response",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       }
@@ -2117,83 +3438,165 @@
       "Error": {
         "type": "object",
         "properties": {
-          "error": { "type": "string" },
-          "message": { "type": "string" }
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
         }
       },
       "TaskCreateRequest": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "input_schema": { "$ref": "#/components/schemas/GenericObject" },
-          "output_schema": { "$ref": "#/components/schemas/GenericObject" },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
           "examples": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/GenericObject" }
+            "items": {
+              "$ref": "#/components/schemas/GenericObject"
+            }
           },
-          "validation_config": { "$ref": "#/components/schemas/GenericObject" },
-          "prompt_template": { "type": "string" },
-          "config": { "$ref": "#/components/schemas/GenericObject" }
+          "validation_config": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "prompt_template": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "TaskUpdateRequest": {
         "type": "object",
         "properties": {
-          "description": { "type": "string" },
-          "input_schema": { "$ref": "#/components/schemas/GenericObject" },
-          "output_schema": { "$ref": "#/components/schemas/GenericObject" },
+          "description": {
+            "type": "string"
+          },
+          "input_schema": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "output_schema": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
           "examples": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/GenericObject" }
+            "items": {
+              "$ref": "#/components/schemas/GenericObject"
+            }
           },
-          "validation_config": { "$ref": "#/components/schemas/GenericObject" },
-          "prompt_template": { "type": "string" },
-          "config": { "$ref": "#/components/schemas/GenericObject" }
+          "validation_config": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "prompt_template": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "TaskCreatedResponse": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "name": { "type": "string" },
-          "version": { "$ref": "#/components/schemas/GenericObject" },
-          "created_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "TaskVersionResponse": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "version": { "$ref": "#/components/schemas/GenericObject" }
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "TaskDetail": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "name": { "type": "string" },
-          "config": { "$ref": "#/components/schemas/GenericObject" },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" },
-          "current_version": { "$ref": "#/components/schemas/GenericObject" }
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "config": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "current_version": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "DatasetCreateRequest": {
         "type": "object",
-        "required": ["task_id", "name", "samples"],
+        "required": [
+          "task_id",
+          "name",
+          "samples"
+        ],
         "properties": {
-          "task_id": { "type": "string", "format": "uuid" },
-          "name": { "type": "string" },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
           "samples": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["input", "expected_output"],
+              "required": [
+                "input",
+                "expected_output"
+              ],
               "properties": {
-                "input": { "$ref": "#/components/schemas/GenericObject" },
-                "expected_output": { "$ref": "#/components/schemas/GenericObject" }
+                "input": {
+                  "$ref": "#/components/schemas/GenericObject"
+                },
+                "expected_output": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           }
@@ -2202,181 +3605,430 @@
       "DatasetCreatedResponse": {
         "type": "object",
         "properties": {
-          "id": { "type": "string", "format": "uuid" },
-          "version": { "type": "integer" },
-          "sample_count": { "type": "integer" },
-          "created_at": { "type": "string", "format": "date-time" }
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "sample_count": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "EvaluationRunRequest": {
         "type": "object",
-        "required": ["task_id", "dataset_id", "models"],
+        "required": [
+          "task_id",
+          "dataset_id",
+          "models"
+        ],
         "properties": {
-          "task_id": { "type": "string", "format": "uuid" },
-          "dataset_id": { "type": "string", "format": "uuid" },
-          "rubric_id": { "type": "string", "format": "uuid" },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dataset_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rubric_id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "models": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "extends": { "type": "string" },
-          "budget": { "$ref": "#/components/schemas/GenericObject" },
-          "scoring": { "$ref": "#/components/schemas/GenericObject" },
-          "config": { "$ref": "#/components/schemas/GenericObject" }
+          "extends": {
+            "type": "string"
+          },
+          "budget": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "scoring": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "config": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "DeploymentCreateRequest": {
         "type": "object",
-        "required": ["task_id", "task_version_id", "model_id"],
+        "required": [
+          "task_id",
+          "task_version_id",
+          "model_id"
+        ],
         "properties": {
-          "task_id": { "type": "string", "format": "uuid" },
-          "task_version_id": { "type": "string", "format": "uuid" },
-          "model_id": { "type": "string" },
-          "strategy": { "type": "string", "enum": ["prompt", "rag", "lora"] },
-          "adapter_id": { "type": "string", "format": "uuid" }
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "task_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "model_id": {
+            "type": "string"
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "prompt",
+              "rag",
+              "lora"
+            ]
+          },
+          "adapter_id": {
+            "type": "string",
+            "format": "uuid"
+          }
         }
       },
       "ChatCompletionRequest": {
         "type": "object",
-        "required": ["messages"],
+        "required": [
+          "messages"
+        ],
         "properties": {
-          "model": { "type": "string" },
+          "model": {
+            "type": "string"
+          },
           "messages": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["role", "content"],
+              "required": [
+                "role",
+                "content"
+              ],
               "properties": {
-                "role": { "type": "string" },
-                "content": { "type": "string" }
+                "role": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
               }
             }
           },
-          "temperature": { "type": "number" },
-          "max_tokens": { "type": "integer" }
+          "temperature": {
+            "type": "number"
+          },
+          "max_tokens": {
+            "type": "integer"
+          }
         }
       },
       "TaskRunRequest": {
         "type": "object",
-        "required": ["input"],
+        "required": [
+          "input"
+        ],
         "properties": {
-          "input": { "$ref": "#/components/schemas/GenericObject" },
-          "deployment_id": { "type": "string", "format": "uuid" },
-          "explain": { "type": "string", "enum": ["default", "debug", "audit"] }
+          "input": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "deployment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "explain": {
+            "type": "string",
+            "enum": [
+              "default",
+              "debug",
+              "audit"
+            ]
+          }
         }
       },
       "FeedbackCreateRequest": {
         "type": "object",
-        "required": ["inference_log_id", "score"],
+        "required": [
+          "inference_log_id",
+          "score"
+        ],
         "properties": {
-          "inference_log_id": { "type": "string", "format": "uuid" },
-          "score": { "type": "integer", "enum": [-1, 0, 1] },
-          "correction": { "$ref": "#/components/schemas/GenericObject" }
+          "inference_log_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "score": {
+            "type": "integer",
+            "enum": [
+              -1,
+              0,
+              1
+            ]
+          },
+          "correction": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "DocumentCreateRequest": {
         "type": "object",
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "content": { "type": "string" },
-          "content_base64": { "type": "string" },
-          "content_type": { "type": "string" },
+          "name": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "content_base64": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
           "chunks": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["content"],
+              "required": [
+                "content"
+              ],
               "properties": {
-                "content": { "type": "string" },
-                "metadata": { "$ref": "#/components/schemas/GenericObject" }
+                "content": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               }
             }
           },
-          "metadata": { "$ref": "#/components/schemas/GenericObject" }
+          "metadata": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "DocumentUploadRequest": {
         "type": "object",
-        "required": ["name", "size_bytes"],
+        "required": [
+          "name",
+          "size_bytes"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "content_type": { "type": "string" },
-          "size_bytes": { "type": "integer" },
-          "sha256": { "type": "string" },
-          "metadata": { "$ref": "#/components/schemas/GenericObject" }
+          "name": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "integer"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "CredentialCreateRequest": {
         "type": "object",
-        "required": ["provider", "label", "api_key"],
+        "required": [
+          "provider",
+          "label",
+          "api_key"
+        ],
         "properties": {
           "provider": {
             "type": "string",
-            "enum": ["openai", "anthropic", "vllm", "llama_cpp", "custom", "object_storage"]
+            "enum": [
+              "openai",
+              "anthropic",
+              "vllm",
+              "llama_cpp",
+              "custom",
+              "object_storage"
+            ]
           },
-          "label": { "type": "string" },
-          "api_key": { "type": "string" },
-          "base_url": { "type": "string" }
+          "label": {
+            "type": "string"
+          },
+          "api_key": {
+            "type": "string"
+          },
+          "base_url": {
+            "type": "string"
+          }
         }
       },
       "AdapterCreateRequest": {
         "type": "object",
-        "required": ["task_id", "base_model_id", "name", "storage_path"],
+        "required": [
+          "task_id",
+          "base_model_id",
+          "name",
+          "storage_path"
+        ],
         "properties": {
-          "task_id": { "type": "string", "format": "uuid" },
-          "base_model_id": { "type": "string" },
-          "name": { "type": "string" },
-          "format": { "type": "string", "enum": ["safetensors", "gguf_lora", "peft"] },
-          "storage_path": { "type": "string" },
-          "size_bytes": { "type": "integer" },
-          "rank": { "type": "integer" },
-          "alpha": { "type": "integer" },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "base_model_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "safetensors",
+              "gguf_lora",
+              "peft"
+            ]
+          },
+          "storage_path": {
+            "type": "string"
+          },
+          "size_bytes": {
+            "type": "integer"
+          },
+          "rank": {
+            "type": "integer"
+          },
+          "alpha": {
+            "type": "integer"
+          },
           "target_modules": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "metadata": { "$ref": "#/components/schemas/GenericObject" }
+          "metadata": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "AgentSessionCreateRequest": {
         "type": "object",
-        "required": ["task_id"],
+        "required": [
+          "task_id"
+        ],
         "properties": {
-          "task_id": { "type": "string", "format": "uuid" },
-          "external_run_id": { "type": "string" },
-          "goal": { "type": "string" },
-          "expected_outcome": { "$ref": "#/components/schemas/GenericObject" },
-          "framework": { "type": "string" },
-          "risk_tier": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "external_run_id": {
+            "type": "string"
+          },
+          "goal": {
+            "type": "string"
+          },
+          "expected_outcome": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "framework": {
+            "type": "string"
+          },
+          "risk_tier": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
           "autonomy_level": {
             "type": "string",
-            "enum": ["manual", "assisted", "semi_autonomous", "autonomous"]
+            "enum": [
+              "manual",
+              "assisted",
+              "semi_autonomous",
+              "autonomous"
+            ]
           },
-          "metadata": { "$ref": "#/components/schemas/GenericObject" }
+          "metadata": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
         }
       },
       "GovernAgentStepRequest": {
         "type": "object",
-        "required": ["step_id", "step_type"],
+        "required": [
+          "step_id",
+          "step_type"
+        ],
         "properties": {
-          "step_id": { "type": "string" },
-          "parent_step_id": { "type": "string" },
+          "step_id": {
+            "type": "string"
+          },
+          "parent_step_id": {
+            "type": "string"
+          },
           "step_type": {
             "type": "string",
-            "enum": ["model_call", "model_output", "tool_request", "tool_result", "retrieval", "decision"]
+            "enum": [
+              "model_call",
+              "model_output",
+              "tool_request",
+              "tool_result",
+              "retrieval",
+              "decision"
+            ]
           },
-          "tool_name": { "type": "string" },
-          "model_name": { "type": "string" },
-          "action_class": { "type": "string", "enum": ["read", "write", "delete", "network", "control"] },
-          "environment": { "type": "string" },
-          "input": { "$ref": "#/components/schemas/GenericObject" },
-          "output": { "$ref": "#/components/schemas/GenericObject" },
-          "retrieval": { "$ref": "#/components/schemas/GenericObject" },
-          "metadata": { "$ref": "#/components/schemas/GenericObject" },
-          "trace_id": { "type": "string" },
-          "span_id": { "type": "string" },
-          "parent_span_id": { "type": "string" }
+          "tool_name": {
+            "type": "string"
+          },
+          "model_name": {
+            "type": "string"
+          },
+          "action_class": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write",
+              "delete",
+              "network",
+              "control"
+            ]
+          },
+          "environment": {
+            "type": "string"
+          },
+          "input": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "output": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "retrieval": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "span_id": {
+            "type": "string"
+          },
+          "parent_span_id": {
+            "type": "string"
+          }
         }
       },
       "GovernAgentStepResponse": {
@@ -2384,13 +4036,37 @@
         "properties": {
           "decision": {
             "type": "string",
-            "enum": ["allow", "allow_with_warning", "reject", "require_approval", "contain"]
+            "enum": [
+              "allow",
+              "allow_with_warning",
+              "reject",
+              "require_approval",
+              "contain"
+            ]
           },
-          "reason": { "type": ["string", "null"] },
-          "trace_id": { "type": "string" },
-          "risk_tier": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "trace_id": {
+            "type": "string"
+          },
+          "risk_tier": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          },
           "containment": {
-            "type": ["string", "null"],
+            "type": [
+              "string",
+              "null"
+            ],
             "enum": [
               "increase_monitoring",
               "restrict_toolset",
@@ -2401,37 +4077,88 @@
             ]
           },
           "validation": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
-              "valid": { "type": "boolean" },
-              "warnings": { "type": "array", "items": { "type": "string" } },
-              "score": { "type": "number" },
-              "abstain": { "type": "boolean" },
-              "escalate": { "type": "boolean" }
+              "valid": {
+                "type": "boolean"
+              },
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "score": {
+                "type": "number"
+              },
+              "abstain": {
+                "type": "boolean"
+              },
+              "escalate": {
+                "type": "boolean"
+              }
             }
           },
           "retrieval": {
-            "type": ["object", "null"],
+            "type": [
+              "object",
+              "null"
+            ],
             "properties": {
               "chunks": {
                 "type": "array",
-                "items": { "$ref": "#/components/schemas/GenericObject" }
+                "items": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
               },
-              "attribution": { "$ref": "#/components/schemas/GenericObject" }
+              "attribution": {
+                "$ref": "#/components/schemas/GenericObject"
+              }
             }
           }
         }
       },
       "ToolCheckRequest": {
         "type": "object",
-        "required": ["step_id", "tool_name"],
+        "required": [
+          "step_id",
+          "tool_name"
+        ],
         "properties": {
-          "step_id": { "type": "string" },
-          "tool_name": { "type": "string" },
-          "arguments": { "$ref": "#/components/schemas/GenericObject" },
-          "action_class": { "type": "string", "enum": ["read", "write", "delete", "network", "control"] },
-          "environment": { "type": "string" },
-          "risk_tier": { "type": "string", "enum": ["low", "medium", "high", "critical"] }
+          "step_id": {
+            "type": "string"
+          },
+          "tool_name": {
+            "type": "string"
+          },
+          "arguments": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "action_class": {
+            "type": "string",
+            "enum": [
+              "read",
+              "write",
+              "delete",
+              "network",
+              "control"
+            ]
+          },
+          "environment": {
+            "type": "string"
+          },
+          "risk_tier": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ]
+          }
         }
       },
       "ToolCheckResponse": {
@@ -2439,45 +4166,180 @@
         "properties": {
           "decision": {
             "type": "string",
-            "enum": ["allow", "allow_with_warning", "reject", "require_approval", "contain"]
+            "enum": [
+              "allow",
+              "allow_with_warning",
+              "reject",
+              "require_approval",
+              "contain"
+            ]
           },
-          "reason": { "type": ["string", "null"] },
-          "containment": { "type": ["string", "null"] },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "containment": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "matched_policies": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
       "ToolPolicyCreateRequest": {
         "type": "object",
-        "required": ["tool_name", "decision"],
+        "required": [
+          "tool_name",
+          "decision"
+        ],
         "properties": {
-          "task_id": { "type": ["string", "null"], "format": "uuid" },
-          "deployment_id": { "type": ["string", "null"], "format": "uuid" },
-          "tool_name": { "type": "string" },
-          "environment": { "type": ["string", "null"] },
-          "action_class": { "type": ["string", "null"], "enum": ["read", "write", "delete", "network", "control", null] },
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "deployment_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "tool_name": {
+            "type": "string"
+          },
+          "environment": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action_class": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "read",
+              "write",
+              "delete",
+              "network",
+              "control",
+              null
+            ]
+          },
           "decision": {
             "type": "string",
-            "enum": ["allow", "allow_with_warning", "reject", "require_approval"]
+            "enum": [
+              "allow",
+              "allow_with_warning",
+              "reject",
+              "require_approval"
+            ]
           },
-          "risk_tier": { "type": ["string", "null"], "enum": ["low", "medium", "high", "critical", null] },
-          "approval_timeout_seconds": { "type": ["integer", "null"] },
-          "timeout_action": { "type": ["string", "null"], "enum": ["reject", "escalate", "contain", null] }
+          "risk_tier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical",
+              null
+            ]
+          },
+          "approval_timeout_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "timeout_action": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "reject",
+              "escalate",
+              "contain",
+              null
+            ]
+          }
         }
       },
       "RuntimeLimitUpsertRequest": {
         "type": "object",
         "properties": {
-          "task_id": { "type": ["string", "null"], "format": "uuid" },
-          "deployment_id": { "type": ["string", "null"], "format": "uuid" },
-          "risk_tier": { "type": ["string", "null"], "enum": ["low", "medium", "high", "critical", null] },
-          "max_steps": { "type": ["integer", "null"] },
-          "max_tool_calls": { "type": ["integer", "null"] },
-          "max_write_actions": { "type": ["integer", "null"] },
-          "max_external_side_effects": { "type": ["integer", "null"] },
-          "inactivity_timeout_seconds": { "type": ["integer", "null"] }
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "deployment_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "risk_tier": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical",
+              null
+            ]
+          },
+          "max_steps": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "max_tool_calls": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "max_write_actions": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "max_external_side_effects": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "inactivity_timeout_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
         }
       }
     }

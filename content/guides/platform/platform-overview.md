@@ -5,7 +5,14 @@ description: Understand the full Orlo Platform
 
 # Platform Overview
 
-Orlo Platform is the full governed system behind the product experience.
+Orlo Platform is where Orlo becomes an operational system, not just a set of packages.
+
+It is the governed layer you put on the production decision path when:
+
+- the data changes every day
+- model behavior can drift under real traffic
+- retrieval quality matters to the answer
+- a bad write or bad approval can create a real-world consequence
 
 ## Core loop
 
@@ -13,15 +20,24 @@ Orlo Platform is the full governed system behind the product experience.
 Define → Evaluate → Deploy → Observe → Improve
 ```
 
+## The operational surface
+
+Orlo Platform covers the full production path:
+
+- **before production** — define tasks, version schemas and prompts, upload datasets, compare models
+- **during production** — route inference, validate outputs, retrieve grounded context, and govern agent steps
+- **after production** — review traces, stage feedback, promote corrections, and score trajectories
+
 ## What the Platform adds beyond Open Core
 
 - tenant isolation
-- persistent task, dataset, evaluation, and deployment state
+- persistent task, dataset, evaluation, deployment, and agent-governance state
 - async workers for evaluation and document processing
-- governed inference
+- governed inference with live routing metadata
 - retrieval orchestration
 - feedback promotion
-- agent-governance persistence and approval flows
+- trace review and trace-to-dataset promotion
+- agent-governance persistence, approvals, and trajectory scoring
 
 ## Primary integration surface
 

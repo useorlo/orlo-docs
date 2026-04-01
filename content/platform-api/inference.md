@@ -32,6 +32,13 @@ Orlo responds with an OpenAI-style `chat.completion` object and sets these heade
 - `x-orlo-trace-id`
 - `x-orlo-validation`
 - `x-orlo-task-version`
+- `x-orlo-routing-mode`
+
+`x-orlo-routing-mode` tells you how the final deployment was selected:
+
+- `explicit` — your request named a deployment directly
+- `policy` — Orlo selected a deployment using task routing policy and evaluated candidates
+- `active_fallback` — Orlo served the task's active deployment because no routing policy decision was usable
 
 ## `POST /v1/tasks/:task_id/run`
 
@@ -52,6 +59,15 @@ When `explain` is `debug` or `audit`, Orlo includes:
 - deployment metadata
 - validation result
 - retrieval attribution
+- routing metadata
+
+Routing metadata includes:
+
+- route mode
+- selected deployment ID
+- fallback deployment ID when present
+- ranked model candidates when available
+- abstain and escalation flags when the policy layer determined the request should not auto-route cleanly
 
 ## Example
 
@@ -69,4 +85,4 @@ curl https://api.useorlo.com/v1/tasks/<task-id>/run \
 
 - The chat path is useful when you want OpenAI-compatible client behavior.
 - The task-native path is better when you want explicit Orlo explainability controls.
-
+- Routing policy only applies when the request does not pin a deployment explicitly.

@@ -13,7 +13,8 @@ The Orlo Platform loop is:
 4. review the recommendation
 5. create and activate a deployment
 6. send inference traffic
-7. collect feedback and improve
+7. collect feedback, traces, and approvals
+8. promote useful traces or reviewed samples back into evaluation data
 
 ## Task versioning
 
@@ -26,3 +27,15 @@ Evaluations are async and budget-bounded. The result surface is uncertainty-awar
 ## Deployment posture
 
 Deployments freeze the task version, model, and strategy into a reproducible snapshot. Activation switches the active deployment for a task.
+
+## Runtime posture
+
+Live requests can now be served in three modes:
+
+- explicit deployment selection
+- routing-policy selection from evaluated candidates
+- active-deployment fallback when no routing policy decision can be applied cleanly
+
+## Improvement posture
+
+Orlo is not limited to offline dataset refresh. Teams can also turn reviewed trace samples and governed agent trajectories into new evaluation data.

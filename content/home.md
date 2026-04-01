@@ -5,19 +5,38 @@ description: Public documentation for Orlo Open Core and Orlo Platform
 
 # Orlo Documentation
 
-Orlo helps teams **prove AI works, deploy it safely, and keep it governed in production**.
+Orlo is the **governed domain AI control plane for production decision paths**.
+
+A model can look fine in staging and still fail in production. A retrieval call can pull stale policy. An agent can reach for a write tool without approval. A deployment can keep serving after validation quality slips. Orlo sits on that path and makes those decisions reviewable, governable, and improvable.
 
 This documentation site covers two connected surfaces:
 
 - **Orlo Open Core** — public packages for validation, runtime adapters, Web Components, and agent-governance SDKs
 - **Orlo Platform** — the managed multi-tenant platform and the APIs used to integrate with it
 
+## The Operational Surface
+
+Orlo is built for a concrete operational surface:
+
+- **before production** — define tasks, upload datasets, compare models, and freeze deployments
+- **on the decision path** — route inference, validate outputs, retrieve grounded context, and gate consequential actions
+- **after production traffic** — review traces, stage feedback, promote corrections, and improve the next deployment
+
 ## Start Here
 
+- [Getting Started](/guides/getting-started)
+- [Platform Quickstarts](/guides/platform/quickstarts)
 - [What Is Orlo?](/guides/what-is-orlo)
 - [Open Core vs Platform](/guides/open-core-vs-platform)
-- [Who Orlo Is For](/guides/who-orlo-is-for)
-- [Getting Started](/guides/getting-started)
+
+## Quickstarts
+
+If you want to see Orlo working quickly, start with one of these:
+
+- [Fraud Triage Quickstart](/guides/platform/quickstarts/fraud-triage)
+- [Support Classification Quickstart](/guides/platform/quickstarts/support-classification)
+- [Document Summarization Quickstart](/guides/platform/quickstarts/document-summarization)
+- [Validation Quickstart](/guides/open-core/validation-quickstart)
 
 ## Open Core
 
@@ -47,6 +66,7 @@ Orlo Platform is the full managed product experience:
 
 If you are integrating against the product, start with:
 
+- [Platform Quickstarts](/guides/platform/quickstarts)
 - [Platform Overview](/guides/platform/platform-overview)
 - [Platform API](/platform-api)
 

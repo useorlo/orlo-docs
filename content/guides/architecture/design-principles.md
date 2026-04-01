@@ -9,6 +9,14 @@ description: Core design principles behind Orlo
 
 Orlo governs meaningful steps. It does not aim to become a general-purpose workflow engine.
 
+## Anchor to the production decision path
+
+Orlo is designed for the operational surface where model output meets consequence: inference, retrieval, deployment, feedback, and agent-step decisions.
+
+## Consequence before capability
+
+A system that works in staging can still fail badly in production. Orlo is designed to make those failure modes visible before they become expensive, unsafe, or hard to unwind.
+
 ## Deterministic where possible
 
 Validation and control logic should be deterministic and auditable.

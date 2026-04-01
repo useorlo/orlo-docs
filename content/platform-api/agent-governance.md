@@ -1,6 +1,6 @@
 ---
 title: Agent Governance
-description: Sessions, steps, approvals, policies, and runtime limits
+description: Sessions, steps, approvals, policies, runtime limits, trace samples, and trajectory results
 ---
 
 # Agent Governance
@@ -10,10 +10,13 @@ Agent governance lets external runtimes route consequential steps through Orlo f
 ## Core concepts
 
 - **Agent session** — one governed trajectory
-- **Agent step** — one model/tool/retrieval/decision boundary
+- **Agent step** — one model, tool, retrieval, approval, or decision boundary
+- **Governed step envelope** — the normalized record Orlo stores for step request, result, citations, timing, policy decision, and state change
 - **Tool policy** — allow, warn, reject, or require approval
-- **Runtime limit** — max steps, tool calls, write actions, inactivity timeout
+- **Runtime limit** — max steps, tool calls, write actions, and inactivity timeout
 - **Approval** — human checkpoint for gated steps
+- **Trace sample** — a reviewed trajectory artifact that can later be promoted into evaluation data
+- **Trajectory result** — path-quality scoring computed from a session or trace sample
 
 ## Sessions
 
@@ -22,7 +25,15 @@ Agent governance lets external runtimes route consequential steps through Orlo f
 - `GET /v1/agent-sessions/:session_id`
 - `PATCH /v1/agent-sessions/:session_id`
 
-Create a session before beginning a governed trajectory. Sessions can later be marked `completed`, `failed`, or `cancelled`.
+Create a session before beginning a governed trajectory. Sessions can later be marked `completed`, `failed`, `cancelled`, or `timed_out`.
+
+Session detail returns:
+
+- session metadata
+- governed steps
+- lifecycle events
+- `trajectory_result`
+- `trajectory_step_results`
 
 ## Govern steps
 
@@ -38,18 +49,54 @@ Typical step types:
 - `tool_result`
 - `retrieval`
 - `decision`
+- `approval_request`
+- `approval_result`
+- `state_transition`
+
+Each governed step can carry:
+
+- normalized request payload
+- normalized result payload
+- citations
+- policy decision artifact
+- timing metadata
+- optional state change evidence
 
 ### `POST /v1/agent-sessions/:session_id/tools/check`
 
-Fast path for tool authorization checks.
+Fast path for tool authorization checks when a runtime wants a cheaper preflight than full step governance.
 
-## Trace import and events
+## Events and streaming
+
+- `GET /v1/agent-sessions/:session_id/events`
+- `GET /v1/agent-sessions/:session_id/events/stream`
+
+Use the polling route for snapshots and the SSE route for live operational views.
+
+The stream emits:
+
+- one `connected` event when the stream opens
+- one event per stored session event using its `event_type`
+- heartbeat comments to keep long-lived connections healthy
+
+## Trace import and review
 
 - `POST /v1/agent-sessions/:session_id/traces/import`
 - `POST /v1/agent-sessions/:session_id/steps`
-- `GET /v1/agent-sessions/:session_id/events`
+- `POST /v1/agent-sessions/:session_id/steps/:step_id/promote-to-trace-sample`
+- `GET /v1/trace-samples`
+- `GET /v1/trace-samples/:id`
+- `POST /v1/trace-samples/:id/annotations`
+- `POST /v1/trace-samples/:id/promote-to-dataset`
 
-These routes support imported traces, externally recorded steps, and formatted session event views.
+These routes support imported traces, externally recorded steps, reviewed trace samples, and the trace-to-dataset loop.
+
+Trace sample detail returns:
+
+- the stored trace sample
+- annotations
+- `trajectory_result`
+- `trajectory_step_results`
 
 ## Policies and limits
 
@@ -67,8 +114,10 @@ These routes support imported traces, externally recorded steps, and formatted s
 - `POST /v1/agent-approvals/:id/approve`
 - `POST /v1/agent-approvals/:id/reject`
 
+Approval records can expire according to the configured timeout and timeout action.
+
 ## Notes
 
 - Orlo is the governance layer, not the orchestration runtime.
-- The public API is designed to work well with thin wrappers and callbacks so application developers do not need to wire raw governance calls manually.
-
+- The public API is designed to work well with thin wrappers, callbacks, and proxy-based integrations.
+- Trajectory scoring is path-aware. It is not limited to final text quality.

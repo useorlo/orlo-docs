@@ -1,7 +1,7 @@
 ---
 title: Platform Quickstarts
 description: Fast-start walkthroughs for common Orlo Platform use cases
-order: 5
+order: 1
 ---
 
 # Platform Quickstarts

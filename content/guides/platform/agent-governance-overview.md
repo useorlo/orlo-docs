@@ -10,13 +10,38 @@ Orlo governs agentic execution **step by step** without becoming an agent runtim
 ## What Orlo governs
 
 - agent sessions
-- governed steps
+- governed step envelopes
 - tool permission checks
 - runtime limits
 - approvals
-- trajectory events and traces
+- event timelines and live event streams
+- trace samples and trace review
+- trajectory results and step-level path metrics
+
+## What Orlo returns
+
+At the API layer, Orlo can return:
+
+- policy decisions for individual steps
+- approval requirements and timeout behavior
+- citations and retrieval evidence
+- state change evidence
+- session-level trajectory results
+- step-level trajectory metrics
+
+## Why this matters
+
+This lets teams do more than validate final text. They can review whether an agent:
+
+- used the right tools
+- respected approval boundaries
+- changed state safely
+- retrieved relevant context
+- followed an acceptable path to the outcome
 
 ## Scope boundaries
+
+Orlo does not own:
 
 - planning loops
 - workflow orchestration

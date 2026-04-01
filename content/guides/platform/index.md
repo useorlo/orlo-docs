@@ -7,10 +7,16 @@ description: Guides for integrating with Orlo Platform
 
 Orlo Platform is the managed product and API surface.
 
+## Start here
+
+- [Platform Quickstarts](/guides/platform/quickstarts)
+- [Platform Overview](/guides/platform/platform-overview)
+- [Authentication and Org Model](/guides/platform/authentication-and-org-model)
+
 ## Core topics
 
-- [Platform Overview](/guides/platform/platform-overview)
 - [Platform Quickstarts](/guides/platform/quickstarts)
+- [Platform Overview](/guides/platform/platform-overview)
 - [Authentication and Org Model](/guides/platform/authentication-and-org-model)
 - [Evaluation to Deployment Loop](/guides/platform/evaluation-to-deployment-loop)
 - [Retrieval and Documents](/guides/platform/retrieval-and-documents)
