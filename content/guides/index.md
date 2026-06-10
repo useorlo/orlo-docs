@@ -21,6 +21,7 @@ Use these guides to understand Orlo, choose the right product surface, and conne
 | --- | --- |
 | Understand the category | [What Is Orlo?](/guides/what-is-orlo) |
 | Decide between public packages and the managed product | [Open Core vs Platform](/guides/open-core-vs-platform) |
+| Understand Orlo beside LLM gateways | [Orlo And LLM Gateways](/guides/architecture/orlo-and-llm-gateways) |
 | Run the managed production loop | [Platform Overview](/guides/platform/platform-overview) |
 | Operate Orlo through the dashboard | [Dashboard Surfaces](/guides/platform/dashboard) |
 | Govern internal AI use | [Governance](/governance) |
@@ -57,4 +58,5 @@ Use these guides to understand Orlo, choose the right product surface, and conne
 ## Architecture and Adoption
 
 - [Architecture](/guides/architecture)
+- [Orlo And LLM Gateways](/guides/architecture/orlo-and-llm-gateways)
 - [Adoption](/guides/adoption)

@@ -23,6 +23,7 @@ If you need a package, start with Open Core. If you need a repeatable operating 
 | A platform team is standardizing AI across teams | [Platform](/guides/platform) | Shared tasks, evaluations, deployments, monitoring, and governance |
 | A domain team needs to prove a model works | [Platform Quickstarts](/guides/platform/quickstarts) | Task-first workflow without building an eval harness |
 | Risk or compliance needs evidence | [Governance](/governance) | Policy-to-control mapping and operational proof |
+| You already use an LLM gateway | [Orlo And LLM Gateways](/guides/architecture/orlo-and-llm-gateways) | Boundary between model traffic management and decision evidence |
 | Agents can use tools or change state | [Agent Governance Overview](/guides/platform/agent-governance-overview) | Step-level policy, approvals, runtime limits, and traces |
 | Data residency or sovereign deployment matters | [Platform Overview](/guides/platform/platform-overview) | Provider-agnostic and self-hostable operating model |
 
@@ -84,5 +85,6 @@ Use Orlo as evidence infrastructure.
 
 - [When to Use Open Core](/guides/adoption/when-to-use-open-core)
 - [When You Need Orlo Platform](/guides/adoption/when-you-need-orlo-platform)
+- [Orlo And LLM Gateways](/guides/architecture/orlo-and-llm-gateways)
 - [Migration Path to Platform](/guides/adoption/migration-path-to-platform)
 - [Governance](/governance)

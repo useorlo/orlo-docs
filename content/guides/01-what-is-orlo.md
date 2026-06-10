@@ -86,6 +86,8 @@ For agents, Orlo governs consequential steps. It does not plan the workflow or r
 
 For compliance, Orlo produces runtime evidence. It does not replace legal classification, risk registers, formal sign-off, or regulatory filings.
 
+For model infrastructure, Orlo can work beside LLM gateways. Gateways manage model traffic. Orlo manages task-level proof, validation, decision artifacts, feedback, and governed agent steps. See [Orlo And LLM Gateways](/guides/architecture/orlo-and-llm-gateways).
+
 ## Open Core And Platform
 
 Orlo has two connected surfaces.
