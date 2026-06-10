@@ -51,3 +51,7 @@ Orlo does not own:
 ## Adoption model
 
 The most important developer surface is the SDK and adapter layer, but the machine interface remains the Platform API.
+
+## Try It
+
+Start with [Agent Governance Quickstart](/guides/platform/quickstarts/agent-governance), then use [Agent Governance API](/platform-api/agent-governance) for endpoint-level details.

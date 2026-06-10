@@ -222,3 +222,15 @@ By the end of this flow you have:
 - deployed it behind a stable task endpoint
 - recorded live inference with explainability
 - opened the path to dataset improvement through feedback
+
+## What Proof You Created
+
+| Proof | Where It Appears | Why It Matters |
+| --- | --- | --- |
+| Evaluation evidence | The evaluation result for `evaluation_id` | Shows which candidate model worked best on fraud examples, not on a generic benchmark |
+| Validation behavior | The live inference response in debug mode | Shows whether the response matched the expected fraud schema and constraints |
+| Deployment snapshot | The activated deployment | Shows the exact task version, model, and strategy used in production |
+| Audit/debug output | The inference log and debug metadata | Lets reviewers reconstruct routing, latency, validation, and runtime details |
+| Feedback correction | The feedback item tied to `inference_log_id` | Turns analyst disagreement into future evaluation data |
+
+This is the difference between "we tried an LLM on fraud alerts" and "we can prove which AI configuration was approved, what it returned, how it was checked, and how corrections improve the next evaluation."

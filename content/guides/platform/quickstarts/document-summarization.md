@@ -215,3 +215,15 @@ By the end of this flow you have a repeatable extraction workflow that:
 - compares models on real contract examples
 - returns structured output for review
 - captures reviewer corrections for future improvement
+
+## What Proof You Created
+
+| Proof | Where It Appears | Why It Matters |
+| --- | --- | --- |
+| Contract task definition | The contract extraction task and task version | Shows the intended legal ops workflow and required output fields |
+| Evaluation evidence | The evaluation across candidate models | Shows model choice was based on contract examples, not preference |
+| Deployment snapshot | The active deployment | Shows the exact task version and model used for extraction |
+| Validation output | The live extraction response | Shows whether required fields were present and structured |
+| Reviewer correction | The feedback item with corrected terms | Lets legal review become future evaluation data |
+
+This gives legal ops a controlled extraction workflow instead of an untracked prompt copied into a chat interface.

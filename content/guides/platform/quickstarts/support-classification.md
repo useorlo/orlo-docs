@@ -193,3 +193,15 @@ By the end of this flow you have a live ticket router that can:
 - handle onboarding and integration questions with the right team
 
 This is a strong first Orlo workflow because the task is easy to reason about and easy to validate.
+
+## What Proof You Created
+
+| Proof | Where It Appears | Why It Matters |
+| --- | --- | --- |
+| Task definition | The support routing task and task version | Shows the intended workflow, schema, prompt, and output contract |
+| Dataset evidence | The labeled support examples | Shows the model was tested against realistic routing cases |
+| Evaluation result | The completed evaluation | Shows which candidate model performed best for the support task |
+| Runtime validation | The live ticket classification result | Shows the output followed the required category, urgency, and team fields |
+| Operational trace | The inference log in debug mode | Lets support ops and platform teams review what happened later |
+
+The support quickstart is intentionally simple: it shows how a domain team can turn a repeated workflow into a measured, deployed, reviewable AI task.
