@@ -8,6 +8,8 @@ order: 1
 
 Orlo is the **control plane for domain intelligence**: the operating system that turns model choice, retrieval, validation, guardrails, approvals, monitoring, and feedback into an auditable production loop.
 
+It helps organizations turn expert judgment into governed AI systems that improve with every decision.
+
 It sits between applications, model providers, retrieval systems, tools, and the teams accountable for AI outcomes. Its job is to help organizations prove which AI configuration works for a domain task, deploy it safely, govern what happens at runtime, and improve the system from real feedback.
 
 The shortest version:

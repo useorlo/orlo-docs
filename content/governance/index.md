@@ -7,6 +7,8 @@ description: How Orlo turns internal AI policy into operational controls and evi
 
 Orlo helps organizations govern internal AI use by turning policy into a production operating loop.
 
+It also helps organizations turn expert judgment into governed AI systems that improve with every decision.
+
 It does not try to be a generic compliance management system. It does not replace legal judgement, risk classification, policy registers, remediation workflows, or audit sign-off. Orlo owns a different layer: the operational proof that an AI system was evaluated, deployed, controlled, observed, and improved.
 
 ## The Governance Job

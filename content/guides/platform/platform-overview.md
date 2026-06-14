@@ -9,6 +9,8 @@ Orlo Platform is where Orlo becomes an operational system, not just a set of pac
 
 It is the managed control plane teams use when AI is on a production decision path and the organization needs proof that the system was evaluated, deployed, governed, observed, and improved.
 
+It helps organizations turn expert judgment into governed AI systems that improve with every decision.
+
 ## When To Use Orlo Platform
 
 Use Orlo Platform when:
