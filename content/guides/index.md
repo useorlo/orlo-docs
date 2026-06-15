@@ -53,6 +53,7 @@ Use these guides to understand Orlo, choose the right product surface, and conne
 - [Internal AI Operating Model](/governance/internal-ai-operating-model)
 - [Operational Evidence](/governance/operational-evidence)
 - [Runtime Controls](/governance/runtime-controls)
+- [EU AI Act Operational Readiness](/governance/eu-ai-act-operational-readiness)
 - [AI Act Readiness Evidence](/governance/ai-act-readiness-evidence)
 
 ## Architecture and Adoption

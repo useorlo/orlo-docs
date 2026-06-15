@@ -7,6 +7,8 @@ description: How Orlo can support EU AI Act readiness work with operational proo
 
 Orlo can support EU AI Act readiness by producing operational evidence for AI systems that are evaluated, deployed, governed, monitored, and improved through the platform.
 
+For a practical guide that maps AI Act themes to runtime controls, evidence, and implementation steps, read [EU AI Act Operational Readiness](/governance/eu-ai-act-operational-readiness).
+
 Orlo is not a full EU AI Act compliance management system. It does not decide whether a system is prohibited, high-risk, limited-risk, or minimal-risk. It does not replace legal advice, conformity assessment, quality management systems, post-market procedures, fundamental-rights impact assessments, or regulatory documentation ownership.
 
 Its role is narrower and useful: Orlo helps teams prove how an AI system behaved in production.

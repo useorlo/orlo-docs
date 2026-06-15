@@ -42,7 +42,7 @@ In Orlo, guardrails are one control layer inside the broader control plane. A gu
 | Security | Can model, data, credential, and tool access be constrained? | [Runtime Controls](/governance/runtime-controls) |
 | Platform and IT | How do controls fit into production workflows? | [Platform Overview](/guides/platform/platform-overview) |
 | Internal audit | Can the organization reconstruct what happened later? | [Operational Evidence](/governance/operational-evidence) |
-| EU AI Act program owners | What evidence can Orlo produce for readiness work? | [AI Act Readiness Evidence](/governance/ai-act-readiness-evidence) |
+| EU AI Act program owners | How do AI Act themes map to runtime controls and evidence? | [EU AI Act Operational Readiness](/governance/eu-ai-act-operational-readiness) |
 
 For a hands-on walkthrough, start with [Internal AI Governance Quickstart](/guides/platform/quickstarts/internal-ai-governance).
 
@@ -63,3 +63,5 @@ For a hands-on walkthrough, start with [Internal AI Governance Quickstart](/guid
 Orlo gives governance teams operational evidence. It does not decide legal classification, replace a GRC system, or certify compliance by itself.
 
 That boundary is important. A policy register can say what must happen. Orlo helps prove what did happen.
+
+For a practical EU AI Act control map, read [EU AI Act Operational Readiness](/governance/eu-ai-act-operational-readiness).
