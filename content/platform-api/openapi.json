@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Orlo Platform API",
-    "version": "0.1.0",
-    "description": "Tenant-facing API surface for Orlo Platform. Requests are served from api.useorlo.com. This spec documents Orlo-specific headers and request shapes; deployment-specific authentication can be layered around this API."
+    "version": "0.2.0",
+    "description": "Application and agent integrations at api.useorlo.com. Authenticate with a runtime key scoped to one organization. Configure people-only actions in the Orlo console. Read the workflow guides at docs.useorlo.com/engineers."
   },
   "servers": [
     {
@@ -62,85 +62,6 @@
     }
   ],
   "paths": {
-    "/health": {
-      "get": {
-        "tags": [
-          "health"
-        ],
-        "summary": "Full health check",
-        "responses": {
-          "200": {
-            "description": "Healthy",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string"
-                    },
-                    "service": {
-                      "type": "string"
-                    },
-                    "timestamp": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "checks": {
-                      "$ref": "#/components/schemas/GenericObject"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "Degraded dependency state",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string"
-                    },
-                    "checks": {
-                      "$ref": "#/components/schemas/GenericObject"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/health/live": {
-      "get": {
-        "tags": [
-          "health"
-        ],
-        "summary": "Liveness probe",
-        "responses": {
-          "200": {
-            "description": "API process is alive",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "ok"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/v1/tasks": {
       "post": {
         "tags": [
@@ -148,9 +69,6 @@
         ],
         "summary": "Create a task and first task version",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -179,18 +97,18 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Required scope: `tasks.write`."
       },
       "get": {
         "tags": [
           "tasks"
         ],
         "summary": "List tasks",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Task list",
@@ -210,7 +128,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`."
       }
     },
     "/v1/tasks/{id}": {
@@ -220,9 +142,6 @@
         ],
         "summary": "Get one task",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -241,7 +160,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`."
       },
       "put": {
         "tags": [
@@ -249,9 +172,6 @@
         ],
         "summary": "Update a task by creating a new task version",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -282,8 +202,94 @@
           },
           "404": {
             "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "description": "TASK_VERSION_CHANGED: reload the task and review the latest version before saving.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Required scope: `tasks.write`."
+      },
+      "patch": {
+        "summary": "Rename a task without creating a version",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "task": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Required scope: `tasks.write`.",
+        "tags": [
+          "tasks"
+        ]
       }
     },
     "/v1/tasks/{id}/versions": {
@@ -293,9 +299,6 @@
         ],
         "summary": "List task versions",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -322,7 +325,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`."
       }
     },
     "/v1/tasks/{id}/preview-impact": {
@@ -330,13 +337,13 @@
         "tags": [
           "tasks"
         ],
-        "summary": "Preview impact of proposed task changes",
+        "summary": "Recheck recorded answers against proposed schema or validation rules",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/IdPath"
           },
           {
-            "$ref": "#/components/parameters/IdPath"
+            "$ref": "#/components/parameters/IdempotencyKey"
           }
         ],
         "requestBody": {
@@ -345,28 +352,51 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "proposed_changes"
-                ],
                 "properties": {
-                  "proposed_changes": {
-                    "$ref": "#/components/schemas/GenericObject"
+                  "expected_version_id": {
+                    "type": "string",
+                    "format": "uuid"
                   },
                   "sample_size": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 200,
+                    "default": 25
+                  },
+                  "proposed_changes": {
+                    "type": "object",
+                    "properties": {
+                      "output_schema": {
+                        "type": "object",
+                        "additionalProperties": true
+                      },
+                      "validation_config": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
                   }
-                }
+                },
+                "required": [
+                  "proposed_changes"
+                ]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Impact preview",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
+                  "type": "object",
+                  "properties": {
+                    "impact": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
                 }
               }
             }
@@ -374,7 +404,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Does not call models or test new instructions. Required scope: `tasks.write`."
       }
     },
     "/v1/datasets": {
@@ -384,9 +418,6 @@
         ],
         "summary": "Create a dataset",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -414,8 +445,22 @@
           },
           "404": {
             "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "description": "DATASET_BASE_CHANGED: reload the latest dataset before trying again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        }
+        },
+        "x-required-scopes": [
+          "datasets.write"
+        ],
+        "description": "Required scope: `datasets.write`."
       },
       "get": {
         "tags": [
@@ -423,9 +468,6 @@
         ],
         "summary": "List datasets",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -454,7 +496,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "datasets.read"
+        ],
+        "description": "Required scope: `datasets.read`."
       }
     },
     "/v1/datasets/{id}": {
@@ -465,19 +511,86 @@
         "summary": "Get one dataset",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
+            "$ref": "#/components/parameters/IdPath"
           },
           {
-            "$ref": "#/components/parameters/IdPath"
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            },
+            "description": "Omit to return all samples; use a limit for cursor pagination."
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Sample cursor from next_cursor; requires limit."
           }
         ],
         "responses": {
           "200": {
-            "description": "Dataset detail",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/DatasetCreatedResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "samples": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "input": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "expected_output": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "trace_sample_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "format": "uuid"
+                              },
+                              "provenance": {
+                                "type": "object",
+                                "additionalProperties": true
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        },
+                        "next_cursor": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -485,7 +598,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "datasets.read"
+        ],
+        "description": "Required scope: `datasets.read`."
       }
     },
     "/v1/evaluations/templates": {
@@ -494,11 +611,7 @@
           "evaluations"
         ],
         "summary": "List evaluation templates",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Template list",
@@ -518,7 +631,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`."
       }
     },
     "/v1/evaluations/templates/{key}": {
@@ -528,9 +645,6 @@
         ],
         "summary": "Get one evaluation template",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "key",
             "in": "path",
@@ -554,7 +668,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`."
       }
     },
     "/v1/evaluations/run": {
@@ -564,9 +682,6 @@
         ],
         "summary": "Queue an evaluation run",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -598,7 +713,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "evaluations.write"
+        ],
+        "description": "Required scope: `evaluations.write`."
       }
     },
     "/v1/evaluations": {
@@ -608,9 +727,6 @@
         ],
         "summary": "List evaluations",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -639,7 +755,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`."
       }
     },
     "/v1/evaluations/{id}": {
@@ -649,9 +769,6 @@
         ],
         "summary": "Get evaluation result",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -670,7 +787,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`."
       }
     },
     "/v1/deployments": {
@@ -680,9 +801,6 @@
         ],
         "summary": "Create a deployment",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -714,7 +832,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "deployments.write"
+        ],
+        "description": "Required scope: `deployments.write`."
       },
       "get": {
         "tags": [
@@ -722,9 +844,6 @@
         ],
         "summary": "List deployments",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -753,7 +872,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "deployments.read"
+        ],
+        "description": "Required scope: `deployments.read`."
       }
     },
     "/v1/deployments/{id}/activate": {
@@ -763,9 +886,6 @@
         ],
         "summary": "Activate a deployment",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -787,7 +907,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "deployments.write"
+        ],
+        "description": "Required scope: `deployments.write`."
       }
     },
     "/v1/deployments/{id}/deactivate": {
@@ -797,9 +921,6 @@
         ],
         "summary": "Deactivate a deployment",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -821,7 +942,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "deployments.write"
+        ],
+        "description": "Required scope: `deployments.write`."
       }
     },
     "/v1/chat/completions": {
@@ -831,9 +956,6 @@
         ],
         "summary": "OpenAI-compatible chat completions",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/TaskIdHeader"
           },
@@ -898,7 +1020,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "inference.run"
+        ],
+        "description": "Text, non-streaming chat using caller-supplied messages. Does not prepend saved prompt or skill instructions. Required scope: `inference.run`."
       }
     },
     "/v1/tasks/{taskId}/run": {
@@ -908,9 +1034,6 @@
         ],
         "summary": "Task-native inference",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -942,7 +1065,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "inference.run"
+        ],
+        "description": "Required scope: `inference.run`."
       }
     },
     "/v1/feedback": {
@@ -952,9 +1079,6 @@
         ],
         "summary": "Submit feedback",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -986,7 +1110,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "feedback.write"
+        ],
+        "description": "Required scope: `feedback.write`."
       },
       "get": {
         "tags": [
@@ -994,9 +1122,6 @@
         ],
         "summary": "List feedback",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "status",
             "in": "query",
@@ -1032,7 +1157,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "feedback.read"
+        ],
+        "description": "Required scope: `feedback.read`."
       }
     },
     "/v1/feedback/{id}/status": {
@@ -1042,9 +1171,6 @@
         ],
         "summary": "Transition feedback status",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1091,7 +1217,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "feedback.write"
+        ],
+        "description": "Required scope: `feedback.write`."
       }
     },
     "/v1/tasks/{taskId}/feedback/promote": {
@@ -1102,9 +1232,6 @@
         "summary": "Promote staged feedback into a new dataset",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
           {
@@ -1113,19 +1240,76 @@
         ],
         "responses": {
           "200": {
-            "description": "Feedback promoted",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
+                  "type": "object",
+                  "properties": {
+                    "dataset_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "new_version": {
+                      "type": "integer"
+                    },
+                    "promoted_count": {
+                      "type": "integer"
+                    },
+                    "sample_count": {
+                      "type": "integer"
+                    },
+                    "baseline_count": {
+                      "type": "integer"
+                    },
+                    "dataset": {
+                      "$ref": "#/components/schemas/DatasetCreatedResponse"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
             "$ref": "#/components/responses/Error400"
+          },
+          "409": {
+            "description": "FEEDBACK_CHANGED: staged corrections changed. DATASET_BASE_CHANGED: the dataset baseline changed. Refresh and review before trying again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
-        }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "base_dataset_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "expected_feedback_revision": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "datasets.write"
+        ],
+        "description": "Required scope: `datasets.write`."
       }
     },
     "/v1/tasks/{taskId}/documents": {
@@ -1135,9 +1319,6 @@
         ],
         "summary": "Create a document from inline text, pre-chunked content, or inline PDF",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1175,7 +1356,11 @@
           "503": {
             "$ref": "#/components/responses/ErrorGeneric"
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.write"
+        ],
+        "description": "Required scope: `documents.write`."
       },
       "get": {
         "tags": [
@@ -1183,9 +1368,6 @@
         ],
         "summary": "List documents for a task",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/TaskIdPath"
           }
@@ -1209,7 +1391,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.read"
+        ],
+        "description": "Required scope: `documents.read`."
       }
     },
     "/v1/tasks/{taskId}/documents/uploads": {
@@ -1219,9 +1405,6 @@
         ],
         "summary": "Start a direct PDF upload",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1259,7 +1442,11 @@
           "503": {
             "$ref": "#/components/responses/ErrorGeneric"
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.write"
+        ],
+        "description": "Required scope: `documents.write`."
       }
     },
     "/v1/tasks/{taskId}/documents/{id}/finalize": {
@@ -1269,9 +1456,6 @@
         ],
         "summary": "Finalize a direct PDF upload and enqueue extraction",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1308,7 +1492,11 @@
           "503": {
             "$ref": "#/components/responses/ErrorGeneric"
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.write"
+        ],
+        "description": "Required scope: `documents.write`."
       }
     },
     "/v1/tasks/{taskId}/documents/{id}": {
@@ -1318,9 +1506,6 @@
         ],
         "summary": "Get one document",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/TaskIdPath"
           },
@@ -1339,7 +1524,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.read"
+        ],
+        "description": "Required scope: `documents.read`."
       },
       "delete": {
         "tags": [
@@ -1347,9 +1536,6 @@
         ],
         "summary": "Delete a document",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1362,9 +1548,13 @@
         ],
         "responses": {
           "204": {
-            "description": "Document deleted"
+            "description": "Deleted; no response body"
           }
-        }
+        },
+        "x-required-scopes": [
+          "documents.write"
+        ],
+        "description": "Required scope: `documents.write`."
       }
     },
     "/v1/credentials": {
@@ -1374,9 +1564,6 @@
         ],
         "summary": "Store an encrypted provider credential",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -1405,18 +1592,18 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "credentials.write"
+        ],
+        "description": "Required scope: `credentials.write`."
       },
       "get": {
         "tags": [
           "credentials"
         ],
         "summary": "List credentials",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Credential list",
@@ -1436,7 +1623,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "credentials.read"
+        ],
+        "description": "Required scope: `credentials.read`."
       }
     },
     "/v1/credentials/{id}": {
@@ -1447,9 +1638,6 @@
         "summary": "Deactivate a credential",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
           {
@@ -1458,9 +1646,90 @@
         ],
         "responses": {
           "204": {
-            "description": "Credential deactivated"
+            "description": "Deleted; no response body"
           }
-        }
+        },
+        "x-required-scopes": [
+          "credentials.write"
+        ],
+        "description": "Required scope: `credentials.write`."
+      },
+      "patch": {
+        "summary": "Rename a saved credential",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "credential": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "base_url": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "label"
+                ]
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "credentials.write"
+        ],
+        "description": "Required scope: `credentials.write`.",
+        "tags": [
+          "credentials"
+        ]
       }
     },
     "/v1/models": {
@@ -1470,9 +1739,6 @@
         ],
         "summary": "List models visible to the org",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "runtime",
             "in": "query",
@@ -1490,7 +1756,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Model list",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
@@ -1499,7 +1765,7 @@
                     "models": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/GenericObject"
+                        "$ref": "#/components/schemas/Model"
                       }
                     },
                     "total": {
@@ -1510,7 +1776,11 @@
               }
             }
           }
-        }
+        },
+        "description": "Active models plus retired models still used by an active organization release. Availability reflects the most recent saved credential check, not a guarantee of a successful request.\n\nRequired scope: `models.read`.",
+        "x-required-scopes": [
+          "models.read"
+        ]
       }
     },
     "/v1/models/{id}": {
@@ -1521,19 +1791,16 @@
         "summary": "Get one model",
         "parameters": [
           {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
             "$ref": "#/components/parameters/IdPath"
           }
         ],
         "responses": {
           "200": {
-            "description": "Model detail",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
+                  "$ref": "#/components/schemas/Model"
                 }
               }
             }
@@ -1541,7 +1808,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "description": "Returns an active catalog model; inactive or unknown models return 404.\n\nRequired scope: `models.read`.",
+        "x-required-scopes": [
+          "models.read"
+        ]
       }
     },
     "/v1/adapters": {
@@ -1551,9 +1822,6 @@
         ],
         "summary": "Register a LoRA adapter",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -1585,7 +1853,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "models.write"
+        ],
+        "description": "Required scope: `models.write`."
       },
       "get": {
         "tags": [
@@ -1593,9 +1865,6 @@
         ],
         "summary": "List adapters",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -1624,7 +1893,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "models.read"
+        ],
+        "description": "Required scope: `models.read`."
       }
     },
     "/v1/adapters/{id}": {
@@ -1634,9 +1907,6 @@
         ],
         "summary": "Get one adapter",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -1655,7 +1925,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "models.read"
+        ],
+        "description": "Required scope: `models.read`."
       },
       "put": {
         "tags": [
@@ -1663,9 +1937,6 @@
         ],
         "summary": "Update an adapter",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1711,7 +1982,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "models.write"
+        ],
+        "description": "Required scope: `models.write`."
       },
       "delete": {
         "tags": [
@@ -1719,9 +1994,6 @@
         ],
         "summary": "Archive an adapter",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -1743,7 +2015,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "models.write"
+        ],
+        "description": "Required scope: `models.write`."
       }
     },
     "/v1/orgs/config": {
@@ -1752,11 +2028,7 @@
           "org-config"
         ],
         "summary": "Get org config",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Org config",
@@ -1773,7 +2045,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "org_config.read"
+        ],
+        "description": "Required scope: `org_config.read`."
       },
       "put": {
         "tags": [
@@ -1781,9 +2057,6 @@
         ],
         "summary": "Update org config",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -1820,7 +2093,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "org_config.write"
+        ],
+        "description": "Required scope: `org_config.write`."
       }
     },
     "/v1/routing-policies": {
@@ -1830,9 +2107,6 @@
         ],
         "summary": "Create a routing policy",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -1907,7 +2181,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "routing.write"
+        ],
+        "description": "Required scope: `routing.write`."
       },
       "get": {
         "tags": [
@@ -1915,9 +2193,6 @@
         ],
         "summary": "List routing policies",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -1946,7 +2221,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "routing.read"
+        ],
+        "description": "Required scope: `routing.read`."
       }
     },
     "/v1/rubrics": {
@@ -1956,9 +2235,6 @@
         ],
         "summary": "Create a rubric",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -2022,7 +2298,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "rubrics.write"
+        ],
+        "description": "Required scope: `rubrics.write`."
       },
       "get": {
         "tags": [
@@ -2030,9 +2310,6 @@
         ],
         "summary": "List rubrics",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -2061,7 +2338,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "rubrics.read"
+        ],
+        "description": "Required scope: `rubrics.read`."
       }
     },
     "/v1/rubrics/{id}": {
@@ -2071,9 +2352,6 @@
         ],
         "summary": "Get one rubric",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -2092,99 +2370,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
-      }
-    },
-    "/v1/monitoring/pgvector": {
-      "get": {
-        "tags": [
-          "monitoring"
+        },
+        "x-required-scopes": [
+          "rubrics.read"
         ],
-        "summary": "Get pgvector metrics",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "pgvector metrics",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "metrics": {
-                      "$ref": "#/components/schemas/GenericObject"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/monitoring/circuit-breakers": {
-      "get": {
-        "tags": [
-          "monitoring"
-        ],
-        "summary": "Get circuit breaker states",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Circuit breaker states",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "breakers": {
-                      "$ref": "#/components/schemas/GenericObject"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/monitoring/judge-drift": {
-      "get": {
-        "tags": [
-          "monitoring"
-        ],
-        "summary": "Get judge drift analysis",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "name": "threshold",
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Judge drift analysis",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          }
-        }
+        "description": "Required scope: `rubrics.read`."
       }
     },
     "/v1/agent-sessions": {
@@ -2194,9 +2384,6 @@
         ],
         "summary": "Create an agent session",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           }
@@ -2225,7 +2412,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       },
       "get": {
         "tags": [
@@ -2233,9 +2424,6 @@
         ],
         "summary": "List agent sessions",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -2278,7 +2466,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/agent-sessions/{sessionId}": {
@@ -2288,9 +2480,6 @@
         ],
         "summary": "Get one agent session",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/SessionIdPath"
           }
@@ -2309,7 +2498,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       },
       "patch": {
         "tags": [
@@ -2317,9 +2510,6 @@
         ],
         "summary": "Update session status",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2367,7 +2557,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/agent-sessions/{sessionId}/steps/govern": {
@@ -2377,9 +2571,6 @@
         ],
         "summary": "Govern one agent step",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2411,7 +2602,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/agent-sessions/{sessionId}/traces/import": {
@@ -2421,9 +2616,6 @@
         ],
         "summary": "Import trace steps and events",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2466,7 +2658,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/agent-sessions/{sessionId}/steps": {
@@ -2476,9 +2672,6 @@
         ],
         "summary": "Import a single step",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2507,7 +2700,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/agent-sessions/{sessionId}/events": {
@@ -2517,9 +2714,6 @@
         ],
         "summary": "List session events",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/SessionIdPath"
           }
@@ -2543,7 +2737,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/agent-sessions/{sessionId}/tools/check": {
@@ -2553,9 +2751,6 @@
         ],
         "summary": "Check a tool call against policy",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2587,7 +2782,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/tool-policies": {
@@ -2597,9 +2796,6 @@
         ],
         "summary": "List tool policies",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -2636,90 +2832,11 @@
               }
             }
           }
-        }
-      },
-      "post": {
-        "tags": [
-          "agent-governance"
-        ],
-        "summary": "Create a tool policy",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ToolPolicyCreateRequest"
-              }
-            }
-          }
         },
-        "responses": {
-          "201": {
-            "description": "Tool policy created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/Error400"
-          }
-        }
-      }
-    },
-    "/v1/tool-policies/{id}": {
-      "put": {
-        "tags": [
-          "agent-governance"
+        "x-required-scopes": [
+          "agent_governance.read"
         ],
-        "summary": "Update a tool policy",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          },
-          {
-            "$ref": "#/components/parameters/IdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ToolPolicyCreateRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Tool policy updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/Error404"
-          }
-        }
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/runtime-limits": {
@@ -2729,9 +2846,6 @@
         ],
         "summary": "List runtime limits",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -2768,84 +2882,11 @@
               }
             }
           }
-        }
-      },
-      "post": {
-        "tags": [
-          "agent-governance"
-        ],
-        "summary": "Create or upsert runtime limits",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RuntimeLimitUpsertRequest"
-              }
-            }
-          }
         },
-        "responses": {
-          "201": {
-            "description": "Runtime limits stored",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/runtime-limits/{id}": {
-      "put": {
-        "tags": [
-          "agent-governance"
+        "x-required-scopes": [
+          "agent_governance.read"
         ],
-        "summary": "Update runtime limits",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          },
-          {
-            "$ref": "#/components/parameters/IdPath"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RuntimeLimitUpsertRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Runtime limits updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          }
-        }
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/agent-approvals": {
@@ -2855,9 +2896,6 @@
         ],
         "summary": "List approvals",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "status",
             "in": "query",
@@ -2900,7 +2938,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/agent-sessions/{sessionId}/steps/{stepId}/request-approval": {
@@ -2910,9 +2952,6 @@
         ],
         "summary": "Request approval for a step",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -2969,111 +3008,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           }
-        }
-      }
-    },
-    "/v1/agent-approvals/{id}/approve": {
-      "post": {
-        "tags": [
-          "agent-governance"
-        ],
-        "summary": "Approve a pending step",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          },
-          {
-            "$ref": "#/components/parameters/ApprovalIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "decided_by": {
-                    "type": "string"
-                  },
-                  "comment": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
         },
-        "responses": {
-          "200": {
-            "description": "Approval accepted",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/Error404"
-          }
-        }
-      }
-    },
-    "/v1/agent-approvals/{id}/reject": {
-      "post": {
-        "tags": [
-          "agent-governance"
+        "x-required-scopes": [
+          "agent_governance.run"
         ],
-        "summary": "Reject a pending step",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
-          {
-            "$ref": "#/components/parameters/IdempotencyKey"
-          },
-          {
-            "$ref": "#/components/parameters/ApprovalIdPath"
-          }
-        ],
-        "requestBody": {
-          "required": false,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "decided_by": {
-                    "type": "string"
-                  },
-                  "comment": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Approval rejected",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GenericObject"
-                }
-              }
-            }
-          },
-          "404": {
-            "$ref": "#/components/responses/Error404"
-          }
-        }
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/agent-sessions/{sessionId}/events/stream": {
@@ -3083,9 +3022,6 @@
         ],
         "summary": "Stream session events over SSE",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/SessionIdPath"
           },
@@ -3111,7 +3047,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/trace-samples": {
@@ -3121,9 +3061,6 @@
         ],
         "summary": "List trace samples",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "name": "task_id",
             "in": "query",
@@ -3172,7 +3109,11 @@
               }
             }
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/trace-samples/{id}": {
@@ -3182,9 +3123,6 @@
         ],
         "summary": "Get one trace sample",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdPath"
           }
@@ -3203,7 +3141,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`."
       }
     },
     "/v1/trace-samples/{id}/annotations": {
@@ -3213,9 +3155,6 @@
         ],
         "summary": "Annotate a trace sample",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -3265,7 +3204,11 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
-        }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`."
       }
     },
     "/v1/trace-samples/{id}/promote-to-dataset": {
@@ -3275,9 +3218,6 @@
         ],
         "summary": "Promote a trace sample to a dataset sample",
         "parameters": [
-          {
-            "$ref": "#/components/parameters/OrgIdHeader"
-          },
           {
             "$ref": "#/components/parameters/IdempotencyKey"
           },
@@ -3318,22 +3258,1916 @@
           "404": {
             "$ref": "#/components/responses/Error404"
           }
+        },
+        "x-required-scopes": [
+          "datasets.write"
+        ],
+        "description": "Required scope: `datasets.write`."
+      }
+    },
+    "/v1/tasks/{id}/lifecycle": {
+      "get": {
+        "summary": "What a task has and which lifecycle actions apply",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/v1/tasks/{id}/model-settings": {
+      "get": {
+        "summary": "Task model shortlist and judge",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "second_judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "dual_judge": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "compare_models": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "effective": {
+                      "type": "object",
+                      "properties": {
+                        "judge": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        },
+                        "second_judge": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        },
+                        "dual_judge": {
+                          "type": "boolean"
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "task",
+                            "org",
+                            "automatic"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`.",
+        "tags": [
+          "tasks"
+        ]
+      },
+      "put": {
+        "summary": "Set task model shortlist and judge",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "second_judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "dual_judge": {
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "compare_models": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "format": "uuid"
+                      }
+                    },
+                    "effective": {
+                      "type": "object",
+                      "properties": {
+                        "judge": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        },
+                        "second_judge": {
+                          "type": [
+                            "object",
+                            "null"
+                          ]
+                        },
+                        "dual_judge": {
+                          "type": "boolean"
+                        },
+                        "source": {
+                          "type": "string",
+                          "enum": [
+                            "task",
+                            "org",
+                            "automatic"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "judge_model_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "second_judge_model_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "dual_judge": {
+                    "type": [
+                      "boolean",
+                      "null"
+                    ]
+                  },
+                  "compare_models": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "uuid"
+                    }
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Required scope: `tasks.write`.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/v1/tasks/{id}/versions/{versionId}": {
+      "get": {
+        "summary": "One task version",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "description": "Required scope: `tasks.read`.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/v1/tasks/{taskId}/documents/reembed": {
+      "post": {
+        "summary": "Embed the task\u2019s sources again with the current embedding model",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "documents.write"
+        ],
+        "description": "Required scope: `documents.write`.",
+        "tags": [
+          "tasks"
+        ]
+      }
+    },
+    "/v1/evaluations/check": {
+      "post": {
+        "summary": "Check comparison readiness using recorded model and key availability",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ready": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "availability": {
+                            "$ref": "#/components/schemas/ModelAvailability"
+                          }
+                        }
+                      }
+                    },
+                    "judges": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "provider": {
+                            "type": "string"
+                          },
+                          "availability": {
+                            "$ref": "#/components/schemas/ModelAvailability"
+                          }
+                        }
+                      }
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "config": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluationCheckRequest"
+              }
+            }
+          }
+        },
+        "description": "This preflight uses saved availability and configuration. It does not make fresh provider inference requests or guarantee a later run will succeed.\n\nRequired scope: `evaluations.write`.",
+        "x-required-scopes": [
+          "evaluations.write"
+        ],
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/evaluations/defaults": {
+      "get": {
+        "summary": "Default comparison budget",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "budget": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`.",
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/evaluations/{id}/status": {
+      "get": {
+        "summary": "Progress of a comparison",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "budget": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "error_details": {
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    },
+                    "completed_at": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`.",
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/evaluations/{id}/cancel": {
+      "post": {
+        "summary": "Cancel a running comparison",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.write"
+        ],
+        "description": "Required scope: `evaluations.write`.",
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/evaluations/{id}/retry": {
+      "post": {
+        "summary": "Retry a failed comparison",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evaluation": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "budget": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.write"
+        ],
+        "description": "Required scope: `evaluations.write`.",
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/deployments/{id}": {
+      "get": {
+        "summary": "One release",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "deployments.read"
+        ],
+        "description": "Required scope: `deployments.read`.",
+        "tags": [
+          "deployments"
+        ]
+      }
+    },
+    "/v1/orgs/judge": {
+      "get": {
+        "summary": "Organization judge choice",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "second_judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "dual_judge": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "org_config.read"
+        ],
+        "description": "Required scope: `org_config.read`.",
+        "tags": [
+          "orgs"
+        ]
+      },
+      "put": {
+        "summary": "Set organization judge",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "second_judge_model_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "dual_judge": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "judge_model_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "second_judge_model_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "dual_judge": {
+                    "type": "boolean"
+                  }
+                },
+                "minProperties": 1
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "org_config.write"
+        ],
+        "description": "Required scope: `org_config.write`.",
+        "tags": [
+          "orgs"
+        ]
+      }
+    },
+    "/v1/skills": {
+      "get": {
+        "summary": "List the skills library",
+        "parameters": [
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Use next_cursor from the preceding page."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "description": "Search name, owner, or description."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "skills": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "owner": {
+                            "type": "string"
+                          },
+                          "current_version_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "published_version_id": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "uuid"
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "description": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Runtime keys can read published, non-retired versions only. Manage drafts, publication, and retirement in the console.\n\nRequired scope: `skills.read`.",
+        "x-required-scopes": [
+          "skills.read"
+        ],
+        "tags": [
+          "skills"
+        ]
+      }
+    },
+    "/v1/skills/{id}": {
+      "get": {
+        "summary": "A skill with its versions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "owner": {
+                      "type": "string"
+                    },
+                    "current_version_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "published_version_id": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    },
+                    "version": {
+                      "type": "integer"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "current_version": {
+                      "$ref": "#/components/schemas/SkillVersion"
+                    },
+                    "versions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Runtime keys can read published, non-retired versions only. Manage drafts, publication, and retirement in the console.\n\nRequired scope: `skills.read`.",
+        "x-required-scopes": [
+          "skills.read"
+        ],
+        "tags": [
+          "skills"
+        ]
+      }
+    },
+    "/v1/skills/{id}/versions/{versionId}": {
+      "get": {
+        "summary": "One skill version",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillVersion"
+                }
+              }
+            }
+          }
+        },
+        "description": "Runtime keys can read published, non-retired versions only. Manage drafts, publication, and retirement in the console.\n\nRequired scope: `skills.read`.",
+        "x-required-scopes": [
+          "skills.read"
+        ],
+        "tags": [
+          "skills"
+        ]
+      }
+    },
+    "/v1/skills/{id}/versions/{versionId}/package": {
+      "get": {
+        "summary": "Published version as SKILL.md plus files",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillPackage"
+                }
+              }
+            }
+          }
+        },
+        "description": "Runtime keys can read published, non-retired versions only. Manage drafts, publication, and retirement in the console.\n\nRequired scope: `skills.read`.",
+        "x-required-scopes": [
+          "skills.read"
+        ],
+        "tags": [
+          "skills"
+        ]
+      }
+    },
+    "/v1/skills/{id}/versions/{versionId}/usage": {
+      "get": {
+        "summary": "Tasks, comparisons, and runs that use the version",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "versionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tasks": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "comparisons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "agent_runs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Runtime keys can read published, non-retired versions only. Manage drafts, publication, and retirement in the console.\n\nRequired scope: `skills.read`.",
+        "x-required-scopes": [
+          "skills.read"
+        ],
+        "tags": [
+          "skills"
+        ]
+      }
+    },
+    "/v1/quality-signals": {
+      "get": {
+        "summary": "List quality signals",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "signals": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "monitoring.read"
+        ],
+        "description": "Required scope: `monitoring.read`.",
+        "tags": [
+          "quality-signals"
+        ]
+      }
+    },
+    "/v1/quality-signals/{id}/dismiss": {
+      "post": {
+        "summary": "Dismiss a signal",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "signal": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "*"
+        ],
+        "description": "Requires an all-scopes runtime key. Prefer dismissing signals in the console.",
+        "tags": [
+          "quality-signals"
+        ]
+      }
+    },
+    "/v1/notification-endpoints": {
+      "get": {
+        "summary": "List notification endpoints",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "endpoints": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "email_notifier": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "org_config.read"
+        ],
+        "description": "Required scope: `org_config.read`.",
+        "tags": [
+          "notification-endpoints"
+        ]
+      },
+      "post": {
+        "summary": "Add a webhook; returns its secret once",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created; keep the signing secret securely. It is returned only here.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "secret": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "events": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "approval.requested",
+                        "approval.expiring",
+                        "approval.escalated",
+                        "approval.expired",
+                        "approval.approved",
+                        "approval.rejected"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "org_config.write"
+        ],
+        "description": "Register a public HTTPS receiver. Omitted events subscribe to all six approval events. Returns the signing secret once.",
+        "tags": [
+          "notification-endpoints"
+        ]
+      }
+    },
+    "/v1/notification-endpoints/{id}": {
+      "delete": {
+        "summary": "Remove a notification endpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted; no response body"
+          }
+        },
+        "x-required-scopes": [
+          "org_config.write"
+        ],
+        "description": "Required scope: `org_config.write`.",
+        "tags": [
+          "notification-endpoints"
+        ]
+      },
+      "patch": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Update webhook event subscriptions",
+        "description": "Replaces selected events without changing the address or signing secret.",
+        "x-required-scopes": [
+          "org_config.write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "events"
+                ],
+                "properties": {
+                  "events": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "approval.requested",
+                        "approval.expiring",
+                        "approval.escalated",
+                        "approval.expired",
+                        "approval.approved",
+                        "approval.rejected"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated endpoint with masked address and no secret"
+          },
+          "400": {
+            "description": "INVALID_WEBHOOK_EVENTS"
+          },
+          "404": {
+            "description": "Endpoint not found in this organization"
+          }
+        }
+      }
+    },
+    "/v1/audit-events": {
+      "get": {
+        "summary": "List audit events",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "maximum": 500
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "audit.read"
+        ],
+        "description": "Required scope: `audit.read`.",
+        "tags": [
+          "audit-events"
+        ]
+      }
+    },
+    "/v1/agent-steps": {
+      "get": {
+        "summary": "Steps across runs since a time",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5000,
+              "default": 2000
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "steps": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "additionalProperties": true
+                      }
+                    },
+                    "limit": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`.",
+        "tags": [
+          "agent-steps"
+        ]
+      }
+    },
+    "/v1/agent-sessions/{sessionId}/steps/{stepId}/add-to-standard": {
+      "post": {
+        "summary": "Add a step to the task\u2019s examples",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "This step was already added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Added to a new dataset version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "datasets.write"
+        ],
+        "description": "Required scope: `datasets.write`.",
+        "tags": [
+          "agent-sessions"
+        ]
+      }
+    },
+    "/v1/agent-sessions/{sessionId}/steps/{stepId}/promote-to-trace-sample": {
+      "post": {
+        "summary": "Save a step as a trace sample",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "trace_sample": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "expected_output": {
+                    "type": [
+                      "object",
+                      "null"
+                    ]
+                  },
+                  "expected_state_change": {
+                    "type": [
+                      "object",
+                      "null"
+                    ]
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`.",
+        "tags": [
+          "agent-sessions"
+        ]
+      }
+    },
+    "/v1/credentials/{id}/test": {
+      "post": {
+        "summary": "Test a provider key and record the models it lists",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "ok",
+                        "rejected",
+                        "unreachable",
+                        "refused",
+                        "unsupported"
+                      ]
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "model_count": {
+                      "type": "integer"
+                    },
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "maxItems": 50
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "credentials.write"
+        ],
+        "description": "Required scope: `credentials.write`.",
+        "tags": [
+          "credentials"
+        ]
+      }
+    },
+    "/v1/inference-logs": {
+      "get": {
+        "summary": "List answers (task_id, deployment_id, trace_id, limit)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenericObject"
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "inference_logs.read"
+        ],
+        "description": "Required scope: `inference_logs.read`.",
+        "tags": [
+          "inference-logs"
+        ]
+      }
+    },
+    "/v1/evaluations/{id}/examples": {
+      "get": {
+        "summary": "Per-example answers and scores behind a comparison",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "disagreement",
+                "lowest"
+              ],
+              "default": "disagreement"
+            },
+            "description": ""
+          },
+          {
+            "in": "query",
+            "name": "model_ids",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated model UUIDs."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": ""
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "examples": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sample_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "input": {},
+                          "expected_output": {},
+                          "provenance": {
+                            "type": "object",
+                            "additionalProperties": true
+                          },
+                          "spread": {
+                            "type": "number"
+                          },
+                          "results": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "additionalProperties": true
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "total": {
+                      "type": "integer"
+                    },
+                    "sort": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`.",
+        "tags": [
+          "evaluations"
+        ]
+      }
+    },
+    "/v1/agent-approvals/{id}": {
+      "get": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Read current approval status",
+        "description": "Applies elapsed deadlines before returning the approval. Requires agent_governance.read. Does not execute or authorize a tool by itself.",
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current approval; Cache-Control: no-store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AgentApproval"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "APPROVAL_NOT_FOUND in this organization"
+          }
         }
       }
     }
   },
   "components": {
     "parameters": {
-      "OrgIdHeader": {
-        "name": "X-Orlo-Org-Id",
-        "in": "header",
-        "required": true,
-        "description": "Trusted org context for the request.",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
       "TaskIdHeader": {
         "name": "X-Orlo-Task-Id",
         "in": "header",
@@ -3478,6 +5312,15 @@
           },
           "config": {
             "$ref": "#/components/schemas/GenericObject"
+          },
+          "skill_version_ids": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Published skill version ids to pin, in order. Omit on update to keep the previous references; an empty array removes them."
           }
         }
       },
@@ -3507,6 +5350,20 @@
           },
           "config": {
             "$ref": "#/components/schemas/GenericObject"
+          },
+          "skill_version_ids": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Published skill version ids to pin, in order. Omit on update to keep the previous references; an empty array removes them."
+          },
+          "expected_version_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The task version you edited. A changed version returns TASK_VERSION_CHANGED (409)."
           }
         }
       },
@@ -3598,7 +5455,24 @@
                   "$ref": "#/components/schemas/GenericObject"
                 }
               }
-            }
+            },
+            "minItems": 1
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "append",
+              "replace"
+            ],
+            "default": "append"
+          },
+          "base_dataset_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The latest dataset ID, or null when there is no dataset. Required for replace. A changed baseline returns DATASET_BASE_CHANGED (409)."
           }
         }
       },
@@ -3618,6 +5492,32 @@
           "created_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parent_dataset_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "added_count": {
+            "type": "integer"
+          },
+          "baseline_count": {
+            "type": "integer"
+          },
+          "change_kind": {
+            "type": "string"
+          },
+          "change_mode": {
+            "type": "string"
           }
         }
       },
@@ -3644,8 +5544,12 @@
           "models": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "maxItems": 12,
+            "uniqueItems": true
           },
           "extends": {
             "type": "string"
@@ -3658,6 +5562,10 @@
           },
           "config": {
             "$ref": "#/components/schemas/GenericObject"
+          },
+          "expected_task_version_id": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -3678,7 +5586,8 @@
             "format": "uuid"
           },
           "model_id": {
-            "type": "string"
+            "type": "string",
+            "format": "uuid"
           },
           "strategy": {
             "type": "string",
@@ -3691,6 +5600,11 @@
           "adapter_id": {
             "type": "string",
             "format": "uuid"
+          },
+          "evaluation_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Optional comparison evidence. The task version and candidate must match, and the candidate must have produced usable results."
           }
         }
       },
@@ -3962,6 +5876,33 @@
           },
           "metadata": {
             "$ref": "#/components/schemas/GenericObject"
+          },
+          "skill_versions": {
+            "type": "array",
+            "maxItems": 8,
+            "items": {
+              "type": "object",
+              "required": [
+                "skill_id",
+                "version_id",
+                "content_hash"
+              ],
+              "properties": {
+                "skill_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "content_hash": {
+                  "type": "string",
+                  "description": "SHA-256 of the version content"
+                }
+              }
+            },
+            "description": "Exact published skill versions the agent loaded; verified by Orlo and recorded on the run."
           }
         }
       },
@@ -4194,154 +6135,330 @@
           }
         }
       },
-      "ToolPolicyCreateRequest": {
+      "EvaluationCheckRequest": {
         "type": "object",
-        "required": [
-          "tool_name",
-          "decision"
-        ],
         "properties": {
           "task_id": {
-            "type": [
-              "string",
-              "null"
-            ],
+            "type": "string",
             "format": "uuid"
           },
-          "deployment_id": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid"
+          "models": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "maxItems": 12,
+            "uniqueItems": true
           },
-          "tool_name": {
+          "extends": {
             "type": "string"
           },
-          "environment": {
-            "type": [
-              "string",
-              "null"
-            ]
+          "scoring": {
+            "$ref": "#/components/schemas/GenericObject"
           },
-          "action_class": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "enum": [
-              "read",
-              "write",
-              "delete",
-              "network",
-              "control",
-              null
-            ]
+          "config": {
+            "$ref": "#/components/schemas/GenericObject"
           },
-          "decision": {
+          "expected_task_version_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "task_id",
+          "models"
+        ]
+      },
+      "ModelAvailability": {
+        "type": "object",
+        "properties": {
+          "status": {
             "type": "string",
             "enum": [
-              "allow",
-              "allow_with_warning",
-              "reject",
-              "require_approval"
+              "missing_key",
+              "key_rejected",
+              "unverified",
+              "listed",
+              "not_listed",
+              "retired"
             ]
           },
-          "risk_tier": {
+          "label": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "selectable": {
+            "type": "boolean"
+          },
+          "checked_at": {
             "type": [
               "string",
               "null"
             ],
-            "enum": [
-              "low",
-              "medium",
-              "high",
-              "critical",
-              null
-            ]
-          },
-          "approval_timeout_seconds": {
-            "type": [
-              "integer",
-              "null"
-            ]
-          },
-          "timeout_action": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "enum": [
-              "reject",
-              "escalate",
-              "contain",
-              null
-            ]
+            "format": "date-time"
           }
         }
       },
-      "RuntimeLimitUpsertRequest": {
+      "Model": {
         "type": "object",
         "properties": {
-          "task_id": {
-            "type": [
-              "string",
-              "null"
-            ],
+          "id": {
+            "type": "string",
             "format": "uuid"
           },
-          "deployment_id": {
+          "name": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "runtime": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "has_credentials": {
+            "type": "boolean"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/ModelAvailability"
+          },
+          "retired_at": {
             "type": [
               "string",
               "null"
             ],
+            "format": "date-time"
+          },
+          "retired_reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "is_embedding": {
+            "type": "boolean"
+          },
+          "price_input_per_million": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "price_output_per_million": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "price_source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "price_checked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "SkillVersion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
             "format": "uuid"
           },
-          "risk_tier": {
+          "skill_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          },
+          "compatibility": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ]
+            }
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published_at": {
             "type": [
               "string",
               "null"
             ],
+            "format": "date-time"
+          },
+          "retired_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "SkillPackage": {
+        "type": "object",
+        "properties": {
+          "skill_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer"
+          },
+          "content_hash": {
+            "type": "string"
+          },
+          "files": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "path",
+                "content"
+              ]
+            }
+          }
+        }
+      },
+      "AgentApproval": {
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "session_id",
+          "step_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
             "enum": [
-              "low",
-              "medium",
-              "high",
-              "critical",
-              null
+              "pending",
+              "approved",
+              "rejected",
+              "expired"
             ]
           },
-          "max_steps": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "org_id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "max_tool_calls": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "max_write_actions": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "step_id": {
+            "type": "string"
           },
-          "max_external_side_effects": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "inactivity_timeout_seconds": {
-            "type": [
-              "integer",
-              "null"
-            ]
+          "consumed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "decided_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "decided_by": {
+            "type": "string",
+            "nullable": true
+          },
+          "timeout_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "timeout_action": {
+            "type": "string",
+            "nullable": true
+          },
+          "request_payload": {
+            "type": "object"
+          },
+          "decision_payload": {
+            "type": "object",
+            "nullable": true
           }
         }
       }
+    },
+    "securitySchemes": {
+      "runtimeKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Runtime key created by an admin in Settings \u2192 Keys. Each operation lists its required scope."
+      }
     }
-  }
+  },
+  "security": [
+    {
+      "runtimeKey": []
+    }
+  ]
 }
