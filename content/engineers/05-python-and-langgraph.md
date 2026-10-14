@@ -6,7 +6,7 @@ order: 5
 
 # Python and LangGraph
 
-`orlo-langgraph` connects a LangGraph or LangChain application to agent governance. LangGraph owns the graph, your application owns the tools, and Orlo decides each step. It uses the standard library for HTTP and needs Python 3.10 or later.
+`orlo-langgraph` connects a LangGraph or LangChain application to agent governance. LangGraph owns the graph, your application calls its model and tools, and Orlo checks the steps you submit. It uses the standard library for HTTP and needs Python 3.10 or later.
 
 Use `orlo-langgraph` 0.1.1 from the public [SDK release](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.2). The console offers the same verified archive and install command. Download `orlo_langgraph-0.1.1.tar.gz` from that release and check its SHA-256 before installing:
 
@@ -56,6 +56,12 @@ async with OrloLangGraphSession(
 ```
 
 `govern_tool` asks Orlo before the function runs and stops it on `reject`. The callback handler records evidence for steps you did not wrap; it cannot stop a call by itself, so wrap every tool whose call must be decided first. `GovernedToolRegistry` registers tools in one place, as the TypeScript registry does.
+
+## Keep your model stream
+
+Your application still calls its provider directly. `GovernedChatModel` supports `invoke` and `ainvoke` on completed responses; it does not add `stream` or `astream`. To keep native streaming, use your existing model client or framework and wrap the tools it dispatches.
+
+Report the completed model output through the session. If the session marks `model_output` as blocking, wait for its decision before using the answer. Buffer the response when it must pass that check before display. [See the agent request diagram](/start/how-orlo-works#agent-permissions-check-actions-in-your-runtime).
 
 ## Approvals
 

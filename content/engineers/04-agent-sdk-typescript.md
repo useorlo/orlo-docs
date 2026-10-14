@@ -65,7 +65,7 @@ try {
 }
 ```
 
-`runToolStep` asks Orlo before `execute` runs and reports the result afterwards. A `reject` throws before the tool runs. `runModelStep` does the same around a model call. Declare the real action class of each tool; the SDK cannot infer it, and a rule for the tool can only make it stricter.
+`runToolStep` asks Orlo before `execute` runs and reports the result afterwards. A `reject` throws before the tool runs. `runModelStep` runs your supplied model function in your runtime and reports or checks its completed output according to the session contract. Declare the real action class of each tool; the SDK cannot infer it, and a rule for the tool can only make it stricter.
 
 ## Register tools once
 
@@ -109,6 +109,12 @@ const run = await OrloAgentRun.start(client, { task_id }, {
 ## Steps that do not wait
 
 When a session starts, Orlo returns `blocking_step_types`: tool requests and retrieval always wait for a decision; model outputs and tool results wait only when the task has rules to check them against. Other steps are reported in the background with `run.report()`. `run.flush()` waits for them; `run.unsentSteps` counts those that could not be sent. Background reports are retried in memory, so keep your own record of anything that must survive a crash.
+
+## Keep your model stream
+
+Orlo does not proxy the agent’s model request. Keep streaming through your provider client or framework, wrap its tool dispatcher, and report the completed output through the session. `runModelStep` operates on completed outputs; it is not a streaming adapter.
+
+When `blocking_step_types` includes `model_output`, await `run.governModelOutput()` before using the answer. If the check must happen before display, buffer the answer until that decision arrives. [The agent request diagram](/start/how-orlo-works#agent-permissions-check-actions-in-your-runtime) shows how model traffic and permission requests stay separate.
 
 ## Shared skills
 
