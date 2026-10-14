@@ -119,6 +119,7 @@ export default defineEventHandler(async (event) => {
         type: spec.format,
         title: spec.title,
         spec: {
+          format: spec.format,
           title: spec.title,
           description: spec.description,
           version: spec.version,

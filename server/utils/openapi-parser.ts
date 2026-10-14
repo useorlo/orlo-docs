@@ -22,6 +22,7 @@
  */
 
 import { readFile } from 'fs/promises'
+import { resolveLocalReferences, schemaType, schemaFields, mediaExamples, type SchemaExample } from './api-schema'
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -261,7 +262,8 @@ export interface ApiParameter {
  * Schema definition (simplified)
  */
 export interface ApiSchema {
-  type: string
+  type?: string | string[]
+  [key: string]: any
   format?: string
   description?: string
   properties?: Record<string, ApiSchema>
@@ -280,6 +282,7 @@ export interface ApiRequestBody {
   contentType: string
   schema?: ApiSchema
   example?: unknown
+  examples?: SchemaExample[]
 }
 
 /**
@@ -287,10 +290,12 @@ export interface ApiRequestBody {
  */
 export interface ApiResponse {
   statusCode: string
+  headers?: ApiParameter[]
   description: string
   contentType?: string
   schema?: ApiSchema
   example?: unknown
+  examples?: SchemaExample[]
 }
 
 /**
@@ -384,7 +389,8 @@ export function detectSpecType(json: unknown): 'openapi' | 'postman' | null {
 /**
  * Parse OpenAPI/Swagger spec to normalized format
  */
-function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
+function parseOpenApi(source: Record<string, unknown>, rawSpec: string): ApiSpec {
+  const spec = resolveLocalReferences(source, source) as Record<string, unknown>
   const info = spec.info as Record<string, unknown> || {}
   const isV3 = typeof spec.openapi === 'string'
   
@@ -434,16 +440,16 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
         ...(operation.parameters as unknown[] || []),
       ]
       
-      for (const param of paramList) {
+      for (const param of new Map(paramList.map((p: any) => [`${p.in}:${p.name}`, p])).values()) {
         const p = param as Record<string, unknown>
         parameters.push({
           name: p.name as string,
           location: p.in as ParameterLocation,
           description: p.description as string | undefined,
           required: p.required as boolean || false,
-          type: (p.type as string) || (p.schema as Record<string, unknown>)?.type as string || 'string',
+          type: schemaType((p.schema ?? p) as Record<string, unknown>),
           format: (p.format as string) || (p.schema as Record<string, unknown>)?.format as string | undefined,
-          example: p.example,
+          example: Object.hasOwn(p, 'example') ? p.example : mediaExamples({ schema: p.schema, examples: p.examples }, 'request')[0]?.value,
           schema: p.schema as ApiSchema | undefined,
         })
       }
@@ -453,7 +459,7 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
       if (isV3 && operation.requestBody) {
         const rb = operation.requestBody as Record<string, unknown>
         const content = rb.content as Record<string, Record<string, unknown>> || {}
-        const contentType = Object.keys(content)[0] || 'application/json'
+        const contentType = content['application/json'] ? 'application/json' : Object.keys(content)[0] || 'application/json'
         const contentSchema = content[contentType]
         
         requestBody = {
@@ -461,10 +467,18 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
           required: rb.required as boolean || false,
           contentType,
           schema: contentSchema?.schema as ApiSchema | undefined,
-          example: contentSchema?.example,
+          example: mediaExamples(contentSchema, 'request')[0]?.value,
+          examples: mediaExamples(contentSchema, 'request'),
         }
       }
       
+      if (!isV3) {
+        const body = parameters.find(p => p.location === 'body')
+        if (body) requestBody = { required: body.required, description: body.description,
+          contentType: (operation.consumes as string[] ?? spec.consumes as string[])?.[0] ?? 'application/json',
+          schema: body.schema, examples: mediaExamples({ schema: body.schema }, 'request') }
+      }
+
       // Parse responses
       const responses: ApiResponse[] = []
       const respDefs = operation.responses as Record<string, Record<string, unknown>> || {}
@@ -476,10 +490,10 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
         
         if (isV3 && response.content) {
           const content = response.content as Record<string, Record<string, unknown>>
-          contentType = Object.keys(content)[0]
+          contentType = content['application/json'] ? 'application/json' : Object.keys(content)[0]
           if (contentType) {
             schema = content[contentType].schema as ApiSchema | undefined
-            example = content[contentType].example
+            example = mediaExamples(content[contentType], 'response')[0]?.value
           }
         } else if (!isV3) {
           schema = response.schema as ApiSchema | undefined
@@ -488,6 +502,12 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
         
         responses.push({
           statusCode,
+          headers: Object.entries(response.headers as Record<string, any> ?? {}).map(([name, header]) => ({
+            name, location: 'header' as const, required: Boolean(header.required), type: schemaType(header.schema ?? header),
+            description: header.description, schema: header.schema, example: header.example ?? header.schema?.example,
+          })),
+          examples: isV3 && contentType ? mediaExamples((response.content as Record<string, any>)[contentType], 'response')
+            : mediaExamples({ schema, ...(example && typeof example === 'object' ? { example: Object.values(example)[0] } : {}) }, 'response'),
           description: response.description as string || '',
           contentType,
           schema,
@@ -501,7 +521,7 @@ function parseOpenApi(spec: Record<string, unknown>, rawSpec: string): ApiSpec {
         summary: operation.summary as string | undefined,
         description: markdownToHtml(operation.description as string | undefined),
         tags: (operation.tags as string[]) || ['default'],
-        parameters,
+        parameters: isV3 ? parameters : parameters.filter(p => p.location !== 'body'),
         requestBody,
         responses,
         deprecated: operation.deprecated as boolean || false,
@@ -833,6 +853,7 @@ export function apiSpecToPlainText(spec: ApiSpec): string {
         if (endpoint.requestBody.description) {
           lines.push(endpoint.requestBody.description)
         }
+        appendPayload(lines, endpoint.requestBody, 'request')
         lines.push('')
       }
       
@@ -841,6 +862,8 @@ export function apiSpecToPlainText(spec: ApiSpec): string {
         lines.push('**Responses:**')
         for (const response of endpoint.responses) {
           lines.push(`- ${response.statusCode}: ${response.description}`)
+          for (const header of response.headers ?? []) lines.push(`  Header: ${header.name} (${header.type}) ${header.description ?? ''}`)
+          appendPayload(lines, response, 'response')
         }
         lines.push('')
       }
@@ -848,4 +871,15 @@ export function apiSpecToPlainText(spec: ApiSpec): string {
   }
   
   return lines.join('\n')
+}
+
+/** Keep the agent-readable reference as useful as the browser reference. */
+function appendPayload(lines: string[], payload: ApiRequestBody | ApiResponse, direction: 'request' | 'response') {
+  for (const field of schemaFields(payload.schema, direction)) {
+    lines.push(`- \`${field.name}\`: ${field.type}${field.required ? ' (required)' : ''}. ${field.description}`)
+  }
+  const examples = payload.examples ?? (payload.example !== undefined ? [{ name: 'Example', value: payload.example }] : [])
+  for (const example of examples) {
+    lines.push('', example.name, '```json', JSON.stringify(example.value, null, 2), '```')
+  }
 }

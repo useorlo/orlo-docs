@@ -54,8 +54,13 @@
       </div>
     </section>
     
+    <div class="endpoint-filter">
+      <label for="endpoint-search">Find an endpoint</label>
+      <input id="endpoint-search" v-model="query" type="search" placeholder="Filter by path, method, or description" />
+      <p aria-live="polite">{{ endpointCount }} {{ endpointCount === 1 ? 'endpoint' : 'endpoints' }}</p>
+    </div>
     <!-- Endpoints by group -->
-    <section v-for="group in spec.groups" :key="group.name" class="api-section">
+    <section v-for="group in visibleGroups" :key="group.name" class="api-section">
       <h2>{{ group.name }}</h2>
       <div v-if="group.description" class="group-description" v-html="group.description"></div>
       
@@ -63,6 +68,7 @@
         <div 
           v-for="endpoint in group.endpoints" 
           :key="`${endpoint.method}-${endpoint.path}`"
+          :id="`${endpoint.method}-${endpoint.path.replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '')}`"
           class="endpoint"
           :class="{ deprecated: endpoint.deprecated }"
         >
@@ -92,14 +98,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="param in endpoint.parameters" :key="param.name">
+                <tr v-for="param in endpoint.parameters" :key="`${param.location}-${param.name}`">
                   <td>
                     <code>{{ param.name }}</code>
                     <span v-if="param.required" class="param-required">*</span>
                   </td>
                   <td>{{ param.location }}</td>
-                  <td><code>{{ param.type }}{{ param.format ? ` (${param.format})` : '' }}</code></td>
-                  <td>{{ param.description || '—' }}</td>
+                  <td><code>{{ param.type }}</code></td>
+                  <td>{{ param.description || '—' }}<div v-if="param.example !== undefined" class="param-example">Example: <code>{{ formatJson(param.example) }}</code></div></td>
                 </tr>
               </tbody>
             </table>
@@ -110,9 +116,8 @@
             <h4>Request Body</h4>
             <p><strong>Content-Type:</strong> <code>{{ endpoint.requestBody.contentType }}</code></p>
             <p v-if="endpoint.requestBody.description">{{ endpoint.requestBody.description }}</p>
-            <div v-if="endpoint.requestBody.example" class="code-example">
-              <pre><code>{{ formatJson(endpoint.requestBody.example) }}</code></pre>
-            </div>
+            <p v-if="endpoint.requestBody.required" class="payload-required">Body required</p>
+            <ApiPayload :payload="endpoint.requestBody" direction="request" />
           </div>
           
           <!-- Responses -->
@@ -125,9 +130,12 @@
                 </span>
                 <span class="response-description">{{ response.description }}</span>
               </div>
-              <div v-if="response.example" class="code-example">
-                <pre><code>{{ formatJson(response.example) }}</code></pre>
-              </div>
+              <p v-if="response.contentType" class="response-media"><code>{{ response.contentType }}</code></p>
+              <details v-if="response.headers?.length" class="response-headers">
+                <summary>Response headers</summary>
+                <dl v-for="header in response.headers" :key="header.name"><dt><code>{{ header.name }}</code> · {{ header.type }}</dt><dd>{{ header.description }}</dd></dl>
+              </details>
+              <ApiPayload v-if="response.schema || response.example !== undefined || response.examples?.length" :payload="response" direction="response" />
             </div>
           </div>
         </div>
@@ -137,6 +145,8 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+import ApiPayload from './ApiPayload.vue'
 import type { ApiSpec, ApiSecurityScheme } from '~/server/utils/openapi-parser'
 
 // ---------------------------------------------------------------------------
@@ -150,6 +160,11 @@ const props = defineProps<{
 // ---------------------------------------------------------------------------
 // HELPERS
 // ---------------------------------------------------------------------------
+const query = ref('')
+const visibleGroups = computed(() => props.spec.groups.map(group => ({ ...group,
+  endpoints: group.endpoints.filter(endpoint => `${endpoint.method} ${endpoint.path} ${endpoint.summary ?? ''} ${group.name}`.toLowerCase().includes(query.value.trim().toLowerCase())),
+})).filter(group => group.endpoints.length))
+const endpointCount = computed(() => visibleGroups.value.reduce((count, group) => count + group.endpoints.length, 0))
 
 /**
  * Format security scheme type for display
@@ -215,6 +230,13 @@ function downloadSpec() {
   max-width: var(--content-max-width);
 }
 
+.endpoint-filter { margin-bottom: var(--spacing-6); }
+.endpoint-filter label { display: block; font-size: var(--font-size-sm); margin-bottom: var(--spacing-2); }
+.endpoint-filter input { width: 100%; box-sizing: border-box; }
+.endpoint-filter p, .response-media, .payload-required, .param-example { color: var(--color-text-secondary); font-size: var(--font-size-xs); }
+.response-headers { margin: var(--spacing-3) 0; font-size: var(--font-size-sm); }
+.response-headers summary { cursor: pointer; }
+.endpoint { scroll-margin-top: 90px; }
 .api-header {
   margin-bottom: var(--spacing-8);
   padding-bottom: var(--spacing-6);

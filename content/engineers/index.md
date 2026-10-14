@@ -15,6 +15,7 @@ Application APIs and SDKs use a runtime key at `https://api.useorlo.com`. Employ
 | Page | For |
 | --- | --- |
 | [Authentication](/engineers/authentication) | Bearer keys, scopes, idempotency, errors, rate limits |
+| [Provider key security](/engineers/provider-key-security) | How credentials are protected, used, and revoked |
 | [Run a task](/engineers/run-a-task) | Call a task’s live release and act on the rule results |
 | [Chat completions](/engineers/chat-completions) | Call a task through the OpenAI-compatible endpoint without changing your client |
 | [Agent SDK for TypeScript](/engineers/agent-sdk-typescript) | Keep your model connection and check tool actions from Node.js |
