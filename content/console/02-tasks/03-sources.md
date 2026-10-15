@@ -23,13 +23,13 @@ A comparison on a task with sources uses the same retrieval for every candidate,
 
 ## Embed again
 
-Each passage records the embedding model that made it, and a question is matched only to passages the same model embedded. After the deployment’s embedding model changes, the Sources tab says how many passages need embedding again and offers **Embed again**. Until then meaning search skips the older passages, keyword search still covers them, and each answer’s record notes how many were skipped.
+Each passage records the embedding model that made it, and a question is matched only to passages the same model embedded. After the deployment’s embedding model changes, the Sources tab says how many passages need embedding again and offers **Embed again**. Re-embedding prepares sources for the next comparison and release. Existing releases retain their saved embeddings; when those are incompatible with the query embedding service, keyword search still covers the passages and each answer’s record notes the limitation.
 
 ## Changes to sources
 
-[Source changes apply to later requests](/console/tasks/source-changes), even without a new release. Compare representative questions after changing the collection or retrieval settings.
+[Source changes take effect with a new release](/console/tasks/source-changes). Wait for preparation to finish, compare representative questions, and release the chosen model. The current live release keeps its saved sources and settings.
 
 ## Good to know
 
 - The relevance floor is a setting, not a guarantee of correctness. A passage that scores well can still be the wrong one; use comparisons and review to check the answers it supports.
-- Deleting a document removes its passages from future retrieval. Answers that already cited it keep their record.
+- Removing a document excludes it from new comparisons and releases. Existing releases and earlier answers keep their saved source evidence.

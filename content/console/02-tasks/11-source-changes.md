@@ -7,14 +7,14 @@ order: 11
 
 # What happens when I change a task’s source documents?
 
-New task requests use the current document collection and retrieval settings. A release does not freeze its sources, so adding, removing, or re-embedding a document can change answers without a new release. Earlier request records keep their retrieval attribution.
+A live release keeps the sources and retrieval settings saved with it. Adding, removing, or re-embedding documents prepares the next release; it does not change the current one. Compare the updated sources, then release the chosen model to make those changes available in live answers.
 
 ## Check the effect
 
-After the change, compare representative questions and inspect the passages supplied with each answer. Confirm that new material is ready before relying on it; PDFs process in the background.
+Wait for source preparation to finish, then compare representative questions and inspect the passages supplied with each answer. Orlo will ask you to wait if sources are still being prepared. A document can be ready for keyword search even if meaning search is unavailable; the Sources tab explains its status.
 
 ## When the embedding model changes
 
-Each passage records the embedding model that made it, and a question is matched only to passages the same model embedded. After the deployment’s embedding model changes, the Sources tab says how many passages need embedding again and offers **Embed again**. Until then meaning search skips the older passages, keyword search still covers them, and each answer’s record notes how many were skipped.
+Use **Embed again** to prepare the current documents with the new embedding model. This leaves existing releases intact. A question and its passages must use compatible embeddings for meaning search; keyword search remains available when compatible embeddings are unavailable. Compare the prepared documents and create a new release before relying on the new embeddings in live answers.
 
-Deleting a document removes it from future retrieval. It does not erase the record of an earlier answer. [Add documents to a task](/console/tasks/sources).
+Removing a document excludes it from new source comparisons and releases. An existing release retains its saved passages, and earlier answers retain their source records. [Add documents to a task](/console/tasks/sources).
