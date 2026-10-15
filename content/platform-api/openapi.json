@@ -1391,7 +1391,7 @@
             }
           },
           "503": {
-            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Retrying after EVIDENCE_UNAVAILABLE may incur another model call.",
+            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Do not retry automatically when EVIDENCE_UNAVAILABLE includes details.retry_recommended=false; the provider may already have charged for the call.",
             "headers": {
               "Retry-After": {
                 "description": "Present for PROVIDER_BUSY or PROVIDER_PAUSED; seconds to wait.",
@@ -1421,7 +1421,12 @@
                   "EVIDENCE_UNAVAILABLE": {
                     "value": {
                       "error": "EVIDENCE_UNAVAILABLE",
-                      "message": "The answer could not be recorded. No answer was returned. Retrying can incur another model call."
+                      "message": "The provider answered, but its completion could not be recorded. Do not retry automatically; another call may incur a charge.",
+                      "details": {
+                        "provider_call_id": "08ef086a-67d0-4d32-8fdc-99a935ed07b8",
+                        "provider_completed": true,
+                        "retry_recommended": false
+                      }
                     }
                   },
                   "RUNTIME_UNAVAILABLE": {
@@ -1587,7 +1592,7 @@
             }
           },
           "503": {
-            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Retrying after EVIDENCE_UNAVAILABLE may incur another model call.",
+            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Do not retry automatically when EVIDENCE_UNAVAILABLE includes details.retry_recommended=false; the provider may already have charged for the call.",
             "headers": {
               "Retry-After": {
                 "description": "Present for PROVIDER_BUSY or PROVIDER_PAUSED; seconds to wait.",
@@ -1617,7 +1622,12 @@
                   "EVIDENCE_UNAVAILABLE": {
                     "value": {
                       "error": "EVIDENCE_UNAVAILABLE",
-                      "message": "The answer could not be recorded. No answer was returned. Retrying can incur another model call."
+                      "message": "The provider answered, but its completion could not be recorded. Do not retry automatically; another call may incur a charge.",
+                      "details": {
+                        "provider_call_id": "08ef086a-67d0-4d32-8fdc-99a935ed07b8",
+                        "provider_completed": true,
+                        "retry_recommended": false
+                      }
                     }
                   },
                   "RUNTIME_UNAVAILABLE": {
@@ -4713,7 +4723,7 @@
     },
     "/v1/tasks/{taskId}/documents/reembed": {
       "post": {
-        "summary": "Embed the task’s sources again with the current embedding model",
+        "summary": "Embed the task\u2019s sources again with the current embedding model",
         "parameters": [
           {
             "name": "taskId",
@@ -5994,7 +6004,7 @@
     },
     "/v1/agent-sessions/{sessionId}/steps/{stepId}/add-to-standard": {
       "post": {
-        "summary": "Add a step to the task’s examples",
+        "summary": "Add a step to the task\u2019s examples",
         "parameters": [
           {
             "name": "sessionId",
@@ -6630,7 +6640,7 @@
                   "enabled": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
                   }
                 }
               }
@@ -6716,7 +6726,7 @@
                   "enabled": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
                   }
                 }
               }
@@ -9967,7 +9977,7 @@
       "runtimeKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Runtime key created by an admin in Settings → Keys. Each operation lists its required scope."
+        "description": "Runtime key created by an admin in Settings \u2192 Keys. Each operation lists its required scope."
       }
     }
   },

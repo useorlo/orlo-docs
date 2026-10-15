@@ -102,7 +102,7 @@ Check the HTTP status before using an answer. Errors contain `error` and `messag
 | `503 PROVIDER_BUSY` | The selected provider connection has no capacity. Honor `Retry-After`, then retry with backoff. |
 | `503 PROVIDER_PAUSED` | Repeated temporary failures have paused the selected connection. Honor `Retry-After` and check provider availability. A configured fallback may answer first. |
 | `503 RUNTIME_UNAVAILABLE` | No model answered. Check the provider key, model access, quota, and the error message. |
-| `503 EVIDENCE_UNAVAILABLE` | Orlo could not record the result, so it returned no answer. Retrying may make another billable model call. |
+| `503 EVIDENCE_UNAVAILABLE` | Orlo could not save required evidence. Do not retry automatically when `details.retry_recommended` is `false`: the provider may already have charged for the call. Keep the trace ID and `details.provider_call_id`, when present, for investigation. |
 | `504 INFERENCE_TIMEOUT` | The request was cancelled or exceeded its time limit. Reduce input or generation size, or use a suitable faster model. |
 
-If a provider call fails and its failure record also cannot be saved, the original error remains and `details.evidence_recorded` is `false`. Keep the returned trace ID for troubleshooting. Retry temporary failures with bounded exponential backoff and jitter; do not retry configuration or validation errors without a change.
+If a provider call fails and its failure record also cannot be saved, the original error remains and `details.evidence_recorded` is `false`. Keep the returned trace ID for troubleshooting. Retry capacity and temporary provider failures with bounded exponential backoff and jitter. Treat evidence failures separately; do not retry configuration or validation errors without a change.
