@@ -58,3 +58,6 @@ coverage/
 # - .env (contains secrets)
 # - node_modules/
 # - .output/ (build artifacts)
+
+# Local console screenshot tooling is not part of the public docs site.
+tools/capture-console/

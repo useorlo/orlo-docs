@@ -1,6 +1,5 @@
 /**
  * =============================================================================
-import { logger } from '../../utils/logger'
  * F0 - ADMIN FILE UPLOAD API
  * =============================================================================
  * 
@@ -13,7 +12,7 @@ import { logger } from '../../utils/logger'
  * - Markdown (.md)
  * - OpenAPI specs (.json with openapi/swagger key)
  * - Postman collections (.json with postman schema)
- * - Images (.png, .jpg, .jpeg, .gif, .svg, .webp)
+ * - Images (.png, .jpg, .jpeg, .gif, .webp); SVG is rejected (can carry script)
  * 
  * REQUEST:
  * - Content-Type: multipart/form-data
@@ -28,13 +27,13 @@ import { logger } from '../../utils/logger'
  * - Size limit: 10MB
  */
 
-import { writeFile, mkdir } from 'fs/promises'
-import { join, dirname, extname, normalize } from 'path'
-import { invalidateNavigationCache } from '../../utils/navigation'
-import { invalidateContentCache } from '../../utils/cache'
-import { invalidateConfigCache } from '../../utils/config'
-import { invalidateLlmsCache } from '../../utils/llms-cache'
-import { invalidateBrandCache } from '../../utils/brand'
+import { lstat, writeFile, mkdir } from 'fs/promises'
+import { join, dirname, extname } from 'path'
+import { assertAdmin } from '../../utils/admin'
+import { logger } from '../../utils/logger'
+import { f0Config } from '../../utils/f0-config'
+import { invalidateContentCaches } from '../../utils/invalidation'
+import { isConfinedPath } from '../../utils/paths'
 
 // =============================================================================
 // CONFIGURATION
@@ -49,8 +48,9 @@ const ALLOWED_EXTENSIONS = [
   '.jpg',
   '.jpeg',
   '.gif',
-  '.svg',
   '.webp',
+  // .svg is deliberately not accepted: SVG can carry script. Add SVGs through
+  // git, where they are reviewed; they are served sandboxed (see assets route).
 ]
 
 // =============================================================================
@@ -62,13 +62,20 @@ const ALLOWED_EXTENSIONS = [
  * Prevents directory traversal and ensures path is within content directory
  */
 function sanitizePath(inputPath: string): string | null {
-  // Normalize the path
-  let cleanPath = normalize(inputPath)
-    .replace(/^[/\\]+/, '')  // Remove leading slashes
-    .replace(/\.\./g, '')     // Remove path traversal
+  if (typeof inputPath !== 'string' || inputPath.includes('\0') || inputPath.includes('\\')) {
+    return null
+  }
+  
+  // Judge whole segments: no '..' or '.', and no dotfiles or dot-folders
+  // (.git, .cache, .env ...). '_' names (_config.md, _partials/) are allowed.
+  const segments = inputPath.split('/').filter(Boolean)
+  if (segments.length === 0 || segments.some(segment => segment.startsWith('.'))) {
+    return null
+  }
+  const cleanPath = segments.join('/')
   
   // Block access to private directory
-  if (cleanPath.toLowerCase().startsWith('private')) {
+  if (segments[0].toLowerCase() === 'private') {
     return null
   }
   
@@ -110,17 +117,12 @@ function validateJsonFile(content: string): { valid: boolean; type?: string } {
 // =============================================================================
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  
-  // Verify authentication (middleware should handle this, but double-check)
-  if (config.authMode === 'private' && !event.context.auth?.authenticated) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: 'Unauthorized',
-      data: { message: 'Authentication required' },
-    })
-  }
-  
+  const settings = f0Config()
+
+  // Authorization: admin only, and never reachable in public mode.
+  // (In public mode there is no login, so anonymous writes must be rejected.)
+  const adminEmail = await assertAdmin(event)
+
   // Parse multipart form data
   const formData = await readMultipartFormData(event)
   
@@ -203,23 +205,31 @@ export default defineEventHandler(async (event) => {
   }
   
   // Build full path
-  const fullPath = join(config.contentDir, cleanPath)
+  const fullPath = join(settings.contentDir, cleanPath)
   
   try {
     // Ensure directory exists
     await mkdir(dirname(fullPath), { recursive: true })
     
+    // Never write through a symlink: the target folder must really be inside
+    // the content directory, and an existing file must not be a link
+    const existing = await lstat(fullPath).catch(() => null)
+    if (!(await isConfinedPath(dirname(fullPath), settings.contentDir)) || existing?.isSymbolicLink()) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Bad Request',
+        data: { message: 'Invalid file path' },
+      })
+    }
+    
     // Write file
     await writeFile(fullPath, fileData.data)
     
-    // Invalidate all caches
-    invalidateNavigationCache()
-    invalidateContentCache()
-    invalidateConfigCache()
-    invalidateLlmsCache()
-    invalidateBrandCache()
+    // Invalidate every content-derived cache (navigation, pages, config,
+    // brand, llms, search, sitemap ...)
+    invalidateContentCaches('admin upload')
     
-    logger.info('File uploaded', { path: cleanPath, email: event.context.auth?.email || 'anonymous' })
+    logger.info('File uploaded', { path: cleanPath, email: adminEmail })
     
     return {
       success: true,
@@ -229,6 +239,9 @@ export default defineEventHandler(async (event) => {
     }
     
   } catch (error) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
+      throw error
+    }
     logger.error('Failed to save uploaded file', { path: cleanPath, error: error instanceof Error ? error.message : String(error) })
     
     throw createError({

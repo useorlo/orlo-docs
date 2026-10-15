@@ -1,35 +1,33 @@
-version: '3.8'
-
+# docs.useorlo.com on Coolify. Builds this repository's Dockerfile (target
+# `site`: the f0 engine plus content/ and private/). Settings are runtime
+# environment under their NUXT_ names; the build reads none of them.
 services:
   orlo-docs:
     build:
       context: .
       dockerfile: Dockerfile
+      target: site
       args:
-        NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Orlo}
-        NUXT_PUBLIC_SITE_DESCRIPTION: ${NUXT_PUBLIC_SITE_DESCRIPTION:-Orlo Documentation}
+        NUXT_PUBLIC_SITE_NAME: Orlo
+        NUXT_PUBLIC_SITE_DESCRIPTION: Orlo documentation
     environment:
-      NODE_ENV: ${NODE_ENV:-production}
-      AUTH_MODE: ${AUTH_MODE:-public}
-      F0_MODE: ${F0_MODE:-docs}
-      HOST: ${HOST:-0.0.0.0}
-      PORT: ${PORT:-3000}
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "3000"
+      NUXT_AUTH_MODE: ${NUXT_AUTH_MODE:-public}
+      NUXT_F0_MODE: ${NUXT_F0_MODE:-docs}
       NUXT_PUBLIC_SITE_NAME: ${NUXT_PUBLIC_SITE_NAME:-Orlo}
-      NUXT_PUBLIC_SITE_DESCRIPTION: ${NUXT_PUBLIC_SITE_DESCRIPTION:-Orlo Documentation}
+      NUXT_PUBLIC_SITE_DESCRIPTION: ${NUXT_PUBLIC_SITE_DESCRIPTION:-Orlo documentation}
       NUXT_PUBLIC_SITE_URL: ${NUXT_PUBLIC_SITE_URL:-https://docs.useorlo.com}
       NUXT_PUBLIC_GTAG_ID: ${NUXT_PUBLIC_GTAG_ID:-}
-      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
-      AWS_REGION: ${AWS_REGION:-us-east-1}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      EMAIL_FROM: ${EMAIL_FROM:-no-reply@useorlo.com}
+      NUXT_PUBLIC_EDIT_URL: ${NUXT_PUBLIC_EDIT_URL:-}
       GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
     expose:
       - "3000"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
-      interval: 30s
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/_ready"]
+      interval: 10s
       timeout: 3s
-      retries: 3
+      retries: 6
       start_period: 10s

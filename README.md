@@ -1,18 +1,9 @@
 # Orlo Docs
 
-Standalone documentation site for Orlo, powered by `f0`.
+The documentation site for Orlo at `https://docs.useorlo.com`, built on the [f0](https://github.com/folder0/f0) documentation engine.
 
-## Hosts
-
-- Docs: `https://docs.useorlo.com`
-- Platform API: `https://api.useorlo.com`
-
-## What this repo contains
-
-This repo publishes documentation for two connected surfaces:
-
-- **Orlo Open Core** — public packages, Studio components, validation, runtime adapters, and SDKs
-- **Orlo Platform** — the hosted/private multi-tenant control plane and its public integration APIs
+- Content: `content/` (Markdown; `nav.md` sets the tabs, `_brand.md` the branding). See `docs/CONTENT-GUIDE.md`.
+- Engine: everything else, copied from upstream f0 at the commit recorded in `.f0-engine-version`. Don't edit engine files here; upgrade by copying the next upstream version over them (see below).
 
 ## Local development
 
@@ -22,35 +13,21 @@ cp .env.example .env
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
+Open `http://localhost:3000`. Check content before deploying:
 
-## Deployment
+```bash
+npm run validate -- ./content
+```
 
-- [Deployment Guide](./DEPLOYMENT.md)
-- [Production Environment Template](./.env.production.example)
+## Deploy
 
-Recommended production target:
+Coolify builds the repository's `Dockerfile` (default target `site`: the engine plus this repository's `content/` and `private/`). See [DEPLOYMENT.md](./DEPLOYMENT.md). Settings are read from the runtime environment under their `NUXT_` names; nothing is read at build time.
 
-- Coolify using `docker-compose.prod.yml`
+## Upgrade the engine
 
-## Environment
+1. Clone upstream f0 at the commit or tag you want.
+2. Run its census against this content and read the report: `node bin/f0-census.mjs ../orlo-docs/content`.
+3. Replace every tracked file here except `content/`, `private/`, and the Orlo files (`README.md`, `DEPLOYMENT.md`, `.env.example`, `.env.production.example`, `docker-compose.prod.yml`, `.gitignore`) with the upstream copies, and update `.f0-engine-version`.
+4. `npm install`, `npm run validate -- ./content`, `npm test`, `npm run build`, then build and run the image locally before deploying.
 
-The docs site is configured as a public docs deployment by default.
-
-Key values:
-
-- `AUTH_MODE=public`
-- `F0_MODE=docs`
-- `NUXT_PUBLIC_SITE_NAME=Orlo`
-- `NUXT_PUBLIC_SITE_DESCRIPTION=Orlo Documentation`
-- `NUXT_PUBLIC_SITE_URL=https://docs.useorlo.com`
-
-## Content source
-
-All docs content lives under `content/`.
-
-The authored source was prepared from the private Orlo monorepo and copied here so this repository can be published and deployed independently.
-
-## Powered by
-
-This site uses the `f0` documentation engine as its runtime and rendering layer.
+When f0 publishes its engine image publicly, this repository can drop the engine files and build `FROM ghcr.io/folder0/f0:<version>` instead; upstream's `templates/site/` has that layout.
