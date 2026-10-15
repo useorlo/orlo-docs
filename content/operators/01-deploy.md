@@ -1,12 +1,13 @@
 ---
-title: "Prepare a deployment"
+title: "How do I deploy Orlo in my own environment?"
 description: "Plan the configuration and checks for a self-hosted Orlo installation."
+sidebar_title: "Deploy in your environment"
 order: 1
 ---
 
-# Prepare a deployment
+# How do I deploy Orlo in my own environment?
 
-Use the deployment package and installation guide supplied for your licensed Orlo release. Keep the supported images and deployment configuration on the same release.
+Use the licensed deployment package for your release with persistent storage, protected secrets, and HTTPS console and API addresses. Orlo does not require Coolify; use the supported configuration for your host or orchestration platform and verify each workflow before production traffic.
 
 ## Before installation
 

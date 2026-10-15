@@ -38,6 +38,8 @@ New here? [Create an account or accept an invitation](/start/sign-up-and-keys). 
 
 ## Find a guide
 
+[Find a direct answer to your question](/start/find-an-answer), including setup, permissions, failure behavior, and recovery.
+
 - [Console](/console): tasks, skills, agent runs, review, and settings.
 - [Integrate](/engineers): task API, SDKs, and shared skills in applications.
 - [API reference](/platform-api): request fields, responses, permissions, and errors.

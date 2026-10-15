@@ -1,14 +1,15 @@
 ---
-title: "Compare and release"
+title: "How do I compare models and release one for a task?"
 description: "Run candidates on the same examples with the same scoring, read the confidence intervals, release the winner, and undo if you must."
+sidebar_title: "Compare and release"
 order: 1
 ---
 
-# Compare and release
+# How do I compare models and release one for a task?
+
+Open the task’s **Changes** tab, compare candidates on the same examples and rubric, inspect their returned answers, and release an eligible model. The release pins the task version and records the comparison when linked, so later requests can be traced to the configuration you chose.
 
 *Who can do this: Admins here. Task observers can read every comparison and release.*
-
-A comparison answers one question: does this candidate do my task as well as the one that is live, on my examples, by my rubric? A release puts the selected model in front of traffic with a pinned task version and a snapshot of its validation and routing settings.
 
 ## Start a comparison
 
@@ -42,8 +43,13 @@ A release that points at a draft skill or a retired skill version is refused, wi
 
 ## Undo
 
-The previous release stays. **Undo** makes an eligible earlier release live again; a retired model or unavailable configuration must be replaced instead. Every answer names the release that produced it, so the switch is visible in the record.
+[Undo an eligible release](/console/tasks/undo-a-release). Earlier releases remain in history, but an unavailable model or configuration must be replaced.
 
 ## When a provider retires a model
 
-A signal opens in the Inbox when the catalog marks a live release’s model deprecated or retired. Add the replacement as a candidate and run the comparison on the same examples. The judge, rubric, and dataset version are recorded with each run, so two comparisons on the same examples are comparable. Orlo does not re-run the comparison on its own.
+[Replace a deprecated or retired model](/console/tasks/model-retired). The Inbox links to affected releases. A replacement needs a deliberate comparison and release decision.
+
+## Related questions
+
+- [What if no answers returned?](/console/tasks/comparison-failed)
+- [What does too close to call mean?](/console/tasks/comparison-too-close)

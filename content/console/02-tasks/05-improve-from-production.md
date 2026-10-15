@@ -1,10 +1,11 @@
 ---
-title: "Improve from production"
+title: "How do I turn production results into better task examples?"
 description: "Turn a reviewed answer or agent step into new examples, compare again, and release the next task version."
+sidebar_title: "Improve from production"
 order: 5
 ---
 
-# Improve from production
+# How do I turn production results into better task examples?
 
 Use a production result to improve a task’s examples without changing the dataset an earlier comparison used. Reviewers decide what the evidence means; admins add accepted work to the standard, compare, and release.
 

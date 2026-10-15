@@ -1,14 +1,15 @@
 ---
-title: "The standard"
+title: "How do I define what a task should do?"
 description: "Describe a task, write its instructions, add examples and rules, and understand how versions work."
+sidebar_title: "Define the standard"
 order: 1
 ---
 
-# The standard
+# How do I define what a task should do?
+
+Open the task’s **Standard** tab to set its instructions, expected answer shape, examples, rules, and pinned skills. These define the work you will compare and release. Saving a new task version keeps earlier versions and does not replace the live release by itself.
 
 *Who can do this: Admins here, or members with the Task observer preset to read.*
-
-A task is one job you want AI to do. Its standard is everything an answer is held to: examples, rules, instructions, sources, and skills. Open a task and the **Standard** tab shows them together.
 
 ![The Standard tab of a task: version, instructions with a {{text}} placeholder, pinned skills, and rules with their severity](./assets/images/console/task-standard.png)
 
@@ -24,11 +25,7 @@ Pinned skills are prepended to the instructions in order, each labeled with its 
 
 ## Examples
 
-Examples are inputs with the answer your reviewers expect. Upload a CSV, JSON, or JSON Lines file; in a CSV the first column is the input and the other columns are the answer fields. Each upload makes a new dataset version, and the previous one stays. A comparison names the dataset version it ran on.
-
-Known organization credentials and recognizable secret values are removed from examples. Ordinary fields such as `token` or `session` keep their names and value types. When content changes, the console asks you to inspect it before comparing models.
-
-Examples also come from production: a reviewer’s correction, once promoted, becomes a new example, and an agent step can be added to the task’s examples. See [Checking answers](/console/tasks/live-answers-and-corrections).
+[Add examples to the task](/console/tasks/add-examples). Uploads and accepted production corrections create new dataset versions. Inspect any protected-value warning before comparing; ordinary fields such as `token` and `session` retain their value types.
 
 ## Rules
 

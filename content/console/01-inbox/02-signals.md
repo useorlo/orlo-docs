@@ -1,14 +1,15 @@
 ---
-title: "Signals"
+title: "What should I do when Orlo raises a signal?"
 description: "What Orlo raises on its own, what each signal means, and what to do about it."
+sidebar_title: "Respond to signals"
 order: 2
 ---
 
-# Signals
+# What should I do when Orlo raises a signal?
+
+Open the signal’s linked task or release, inspect the supporting results, and decide whether to correct examples, compare a replacement, or change the task. A signal asks for review; it does not automatically release a model or change your instructions.
 
 *Who can do this: Admins here. Task observers can see open signals.*
-
-The Inbox collects what needs a person: approvals waiting for a decision, comparisons that are too close to call, corrections to review, and signals.
 
 ## Signals
 

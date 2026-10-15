@@ -1,10 +1,11 @@
 ---
-title: "Review work from your team"
+title: "How do I open work someone invited me to review?"
 description: "Open an invitation, review an answer or held action, and record a decision within your access."
+sidebar_title: "Open assigned work"
 order: 5
 ---
 
-# Review work from your team
+# How do I open work someone invited me to review?
 
 An invitation can open an exact approval, comparison, agent run, or skill version. Accept it with the invited email, sign in, and open the assigned organization. Your access determines the actions available.
 

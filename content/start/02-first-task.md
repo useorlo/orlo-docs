@@ -1,12 +1,13 @@
 ---
-title: "Your first task"
+title: "How do I get my first checked task answer?"
 description: "Compare models on a built-in task, inspect returned answers, release a model, and send a checked request."
+sidebar_title: "First checked answer"
 order: 2
 ---
 
-# Your first task
+# How do I get my first checked task answer?
 
-Use **Support ticket routing** to learn the workflow. Orlo includes its instructions, rules, and three fictional examples; you do not need to prepare a file.
+Create the **Support ticket routing** starter, test provider access, compare its candidate answers, release a model, and send a test request. Orlo includes instructions, rules, and three fictional examples so you can complete the workflow before preparing your own dataset.
 
 You need admin access in the organization and a provider key. Model comparisons and live test requests use that provider account and can incur charges. Three examples demonstrate setup; add representative examples before relying on the result for production.
 

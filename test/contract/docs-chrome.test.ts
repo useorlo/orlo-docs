@@ -16,6 +16,7 @@ beforeAll(async () => {
   site = await prepareSite('edge-site')
   mkdirSync(join(site.contentDir, 'guides/deep'), { recursive: true })
   writeFileSync(join(site.contentDir, 'guides/deep/01-one.md'), '# Deep One\n')
+  writeFileSync(join(site.contentDir, 'guides/answer.md'), '---\ntitle: How do I recover a failed delivery?\nsidebar_title: Delivery recovery\n---\n\n# How do I recover a failed delivery?\n\nInspect the failure before replaying.\n')
   server = await startServer({ site, env: { F0_EDIT_URL: 'https://github.com/acme/docs/edit/main/content/{path}' } })
 })
 
@@ -87,5 +88,19 @@ describe('server-rendered HTML', () => {
     expect(html).toContain('class="f0-breadcrumbs"')
     expect(html).toMatch(/<a href="\/guides\/intro"[^>]*class="f0-pager-link f0-pager-prev"[^>]*rel="prev"/)
     expect(html).toContain('Edit this page')
+  })
+})
+
+describe('concise navigation labels', () => {
+  it('keeps the full question in page content, raw output and search', async () => {
+    const nav = await (await get(`${server.url}/api/navigation`)).json()
+    expect(nav.sidebar['/guides'].find((item: { path: string }) => item.path === '/guides/answer').title).toBe('Delivery recovery')
+    const page = await (await get(`${server.url}/api/content/guides/answer`)).json()
+    expect(page.title).toBe('How do I recover a failed delivery?')
+    expect(page.html).toContain('How do I recover a failed delivery?')
+    const raw = await get(`${server.url}/api/content/raw/guides/answer`)
+    expect(decodeURIComponent(raw.headers.get('x-page-title') ?? '')).toBe('How do I recover a failed delivery?')
+    const search = await (await get(`${server.url}/api/search?q=recover`)).json()
+    expect(search.results.find((item: { path: string }) => item.path === '/guides/answer').title).toBe('How do I recover a failed delivery?')
   })
 })

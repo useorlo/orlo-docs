@@ -1,12 +1,13 @@
 ---
-title: "Feedback and corrections"
+title: "How do I send feedback about a task answer?"
 description: "Send a score and a correction for a logged answer from your application, and what happens to it afterwards."
+sidebar_title: "Send feedback"
 order: 7
 ---
 
-# Feedback and corrections
+# How do I send feedback about a task answer?
 
-Feedback turns a production answer into a better example. The key needs `feedback.write`.
+Send `POST /v1/feedback` with the answer’s trace ID, a score, and an optional correction using a key with `feedback.write`. A correction must match the task’s answer shape. Review and promotion into a new dataset happen separately; submitting feedback does not change the live release.
 
 ```bash
 curl -X POST https://api.useorlo.com/v1/feedback \

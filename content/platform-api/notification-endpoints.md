@@ -39,3 +39,11 @@ Replace an existing subscription’s selected events:
 ## `DELETE /v1/notification-endpoints/:id`
 
 Returns `204` when removed, or `404` if it does not exist in this organization. Removing the endpoint stops future sends; a request already in flight may still arrive.
+
+## Delivery history and replay
+
+`GET /v1/notification-endpoints/:id/deliveries` returns `{ "deliveries": [...] }` with up to 50 recent records: `id`, `event_id`, `label`, `status`, `attempts`, `replays`, `last_error`, `created_at`, and `finished_at`. The read needs `org_config.read`; payloads and secrets are not included.
+
+`POST /v1/notification-endpoints/:id/deliveries/:delivery/replay` needs `org_config.write` and queues a failed delivery again, returning `{ "queued": true, "id": "..." }`. It preserves the event ID and respects destination cooldown. A full queue returns `409 QUEUE_FULL`; a delivery that is not failed returns `409 NOT_REPLAYABLE`.
+
+[Retry and retention behavior](/engineers/webhook-delivery-fails) explains the limits. An event notification never replaces the governed-step decision.

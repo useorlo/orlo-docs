@@ -255,7 +255,7 @@ function ensureLeadingSlash(path: string): string {
 /**
  * Get title from markdown file (frontmatter > h1 > filename)
  */
-async function getTitleFromMarkdown(filePath: string): Promise<{ title: string; order: number | null; hidden?: boolean }> {
+async function getTitleFromMarkdown(filePath: string): Promise<{ title: string; sidebarTitle?: string; order: number | null; hidden?: boolean }> {
   try {
     const doc = readFrontmatter(await readFile(filePath, 'utf-8'))
     
@@ -264,6 +264,7 @@ async function getTitleFromMarkdown(filePath: string): Promise<{ title: string; 
     if (doc.hasFrontmatter) {
       return {
         title: stringField(doc.data, 'title') ?? cleanFilename(filePath),
+        sidebarTitle: stringField(doc.data, 'sidebar_title') ?? undefined,
         order: typeof doc.data.order === 'number' ? doc.data.order : null,
         hidden: hiddenFromListings(doc.data, 'site'),
       }
@@ -371,12 +372,13 @@ async function scanDirectory(
         }
       } else if (isMarkdownFile(entry.name) && await isConfinedEntry(dirPath, entry, contentDir)) {
         // Parse markdown file for metadata
-        const { title, order: frontmatterOrder, hidden } = await getTitleFromMarkdown(entryPath)
+        const { title, sidebarTitle, order: frontmatterOrder, hidden } = await getTitleFromMarkdown(entryPath)
         if (hidden) continue // drafts are reachable by URL but not listed
         const filenameOrder = extractOrderFromFilename(entry.name)
         
+        // Short navigation labels must not replace titles in search or raw content.
         items.push({
-          title,
+          title: sidebarTitle ?? title,
           path: urlPath,
           type: 'file',
           order: frontmatterOrder ?? filenameOrder ?? 999,

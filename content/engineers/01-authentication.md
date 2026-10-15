@@ -1,12 +1,13 @@
 ---
-title: "Authentication"
+title: "How do I authenticate an application with Orlo?"
 description: "Connect your application with a runtime key and handle scopes, retries, errors, and rate limits."
+sidebar_title: "Authenticate requests"
 order: 1
 ---
 
-# Authentication
+# How do I authenticate an application with Orlo?
 
-Send application and SDK requests to the API with a runtime key:
+Send a runtime key as a bearer token to `https://api.useorlo.com`. Its scopes determine which API operations are allowed, and the key selects the organization. Keep the secret on your server or agent runtime; console users and personal AI-app connections use their own sign-in.
 
 ```bash
 curl https://api.useorlo.com/v1/tasks \

@@ -1,10 +1,13 @@
 ---
-title: "Models and the judge"
+title: "How do I choose available models for my organization?"
 description: "The model catalog, provider keys, which models a task may use, and which model scores comparisons."
+sidebar_title: "Available models"
 order: 2
 ---
 
-# Models and the judge
+# How do I choose available models for my organization?
+
+Open **Settings → Models** to inspect model status and recorded provider access, then choose each task’s shortlist under **Standard → Models**. Test the provider key before relying on a model; a catalog listing alone does not guarantee quota or a successful request.
 
 *Who can do this: Admins here.*
 
@@ -16,11 +19,7 @@ order: 2
 
 ## Provider keys
 
-Add keys under **Settings → Keys** for your model providers or an endpoint you run. A key belongs to the organization, is encrypted at rest, and can be labeled, tested, and removed. The console never returns the stored secret. [Provider key security](/engineers/provider-key-security) explains how Orlo stores and uses it.
-
-To replace a key, add and test the new one before removing the old one. Removing a key deactivates it in Orlo; it does not revoke it with the provider. Orlo can use another active key for the same provider. If none remains, requests that need that provider cannot proceed.
-
-An address you give on a credential must be public unless the people who run the deployment allow private addresses.
+[Add or replace a provider key](/console/settings/add-a-provider-key). Test access before depending on a model; saving a key alone does not confirm it works.
 
 ## Per-task shortlist
 
@@ -28,16 +27,7 @@ A task can keep a shortlist of the models it may use, so comparisons offer the r
 
 ## The judge
 
-The judge is the model that scores answers against the rubric in a comparison. It is never a candidate in the comparison it judges. Which model judges is chosen in this order:
-
-1. the comparison request names one,
-2. the task names one, under its **Standard → Models** section,
-3. the organization names one, under **Settings → Models**,
-4. otherwise Orlo picks automatically from the models the organization has a key for.
-
-The judge used is stored with each comparison. A second judge with an agreement threshold flags examples where the two disagree. **Judge shift** opens a signal when the judge’s view of the same model on the same examples moves between two comparisons.
-
-Reviewer corrections improve the examples the judge scores against.
+[Choose the comparison judge](/console/settings/choose-a-judge). A request-specific judge takes precedence over the task’s choice, then the organization default, then automatic selection from eligible models.
 
 ## Adapters
 

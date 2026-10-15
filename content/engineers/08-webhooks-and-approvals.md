@@ -1,12 +1,13 @@
 ---
-title: "Webhooks and approvals"
+title: "How do I receive approval decisions through webhooks?"
 description: "Receive a signed approval decision, check its current status, and resume the right agent step."
+sidebar_title: "Approval webhooks"
 order: 8
 ---
 
-# Webhooks and approvals
+# How do I receive approval decisions through webhooks?
 
-When a person approves or rejects an agent action, Orlo can notify your application. Your worker can then continue the saved run without keeping a connection open for the whole review.
+Register a public HTTPS webhook in **Settings → Notifications** and select approval events. Orlo sends a signed notification when the chosen lifecycle event occurs. Verify and save it, then read the current approval status before resuming a saved agent step.
 
 ## Choose how to receive updates
 
@@ -74,35 +75,13 @@ Use your HTTP framework’s raw-body support, with an appropriate request-size l
 
 ## 3. Accept quickly and process once
 
-Save the event and queue your worker durably, then return a `2xx` response within five seconds. A duplicate event should also receive `2xx` after you confirm it is already saved. Do not wait for the agent’s tool execution before acknowledging delivery.
+Save the verified event and queue your worker durably, then return `2xx` within five seconds. Deduplicate by the signed event ID. Do not wait for tool execution before acknowledging.
 
-Failed calls are retried after 1, 5, 15, 60, and 180 minutes. Each retry has a fresh signature timestamp and the same event ID. Delivery can repeat, arrive late, or arrive out of order. Retries are finite, so also reconcile your outstanding approvals periodically by ID.
+[Failed delivery, retries, and replay](/engineers/webhook-delivery-fails) explains the destination-specific retry schedule, back pressure, retention, and manual replay. Reconcile outstanding approvals by ID because delivery can be delayed or duplicated.
 
 ## 4. Read the decision and resume the saved step
 
-When a wrapper reports that approval is required, save the organization, session ID, step ID, approval ID, tool name, action class, and exact arguments in your runtime. Keep the original session open while waiting.
-
-After a webhook, read the current approval with a key that has `agent_governance.read`:
-
-```sh
-curl "$ORLO_API_URL/v1/agent-approvals/$APPROVAL_ID" \
-  -H "Authorization: Bearer $ORLO_API_KEY" \
-  -H "X-Orlo-Org-Id: $ORLO_ORG_ID"
-```
-
-| Current status | What your worker does |
-| --- | --- |
-| `pending` | Keep waiting; escalation is not an approval |
-| `approved`, with `consumed_at` unset | Retry the original governed step in the original session |
-| `rejected` | Stop that action and return the decision to your workflow |
-| `expired` | Handle the configured timeout outcome; do not treat expiry as approval |
-| `approved`, with `consumed_at` set | Reconcile the saved operation; do not execute it again just because another event arrived |
-
-The retry must use the same session, step ID, tool name, action class, and arguments. Orlo checks the request and current run state before the wrapper executes the tool. A webhook is a notification, not permission to bypass that check. A changed request needs a new decision.
-
-A consumed approval records authorization, not proof that the external action finished. Use your tool provider’s idempotency key and your own durable result record to handle a crash between authorization and execution. A closed or timed-out session cannot be resumed by an approval notification.
-
-The current published SDKs can retry governed steps after your application reads the status. Bounded wait and session-resume helpers are prepared in SDK source for the next release; they are not in TypeScript 0.0.2 or Python 0.1.1. See the SDK’s release notes before using new methods.
+[Resume the approved action](/engineers/resume-an-approved-step) using the current approval status and the original session, step ID, tool, action class, and arguments. Preserve that state before waiting. A notification does not authorize bypassing the governed-step check.
 
 ## Watch a running session
 

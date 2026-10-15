@@ -27,3 +27,7 @@ Inbox summarizes open signals, comparisons needing attention, and work waiting f
 **Live** shows recent requests. **Review** holds proposed corrections. **Standard** holds instructions, rules, examples, pinned skills, model choices, and the rubric. **Sources** manages documents. **Changes** holds comparisons and releases.
 
 [Review to release](/console/tasks/improve-from-production) follows one production issue through the next version. For a new workspace, use [Getting started](/start).
+
+## Find a specific answer
+
+[Browse questions about tasks, skills, access, and agent behavior](/start/find-an-answer). Each question has a direct answer and a focused guide.

@@ -1,10 +1,11 @@
 ---
-title: "Organize your team’s review"
+title: "How do I divide AI review responsibilities across my team?"
 description: "Assign responsibility for tasks, skills, agent permissions, and the evidence used to improve them."
+sidebar_title: "Assign review responsibilities"
 order: 3
 ---
 
-# Organize your team’s review
+# How do I divide AI review responsibilities across my team?
 
 Give each workflow a person responsible for its intended use and acceptance criteria. Use Orlo presets to let colleagues contribute without giving everyone administrative access.
 

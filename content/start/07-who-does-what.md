@@ -1,10 +1,11 @@
 ---
-title: "Who does what"
+title: "What can each organization member access?"
 description: "How access works in the console: admins, limited members with presets, and what each preset lets a person do."
+sidebar_title: "Roles and access"
 order: 7
 ---
 
-# Who does what
+# What can each organization member access?
 
 A person in an organization is an **admin here**, an **admin for the whole account**, or a **member with limited access** made of presets. Presets cover an area across the organization; they do not limit someone to one task, agent, or skill. Every console page in this documentation says which access it needs.
 

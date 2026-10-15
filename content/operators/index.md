@@ -14,3 +14,8 @@ Self-hosting lets your organization run Orlo in its own environment. fineSample 
 :::
 
 Use the deployment guide supplied with your release for privileged setup, secret configuration, and recovery commands. These public pages describe the preparation and operational outcomes to verify.
+
+## Related questions
+
+- [How do I upgrade?](/operators/upgrade)
+- [What must I back up?](/operators/backup-and-restore)

@@ -1,12 +1,13 @@
 ---
-title: "Skills in applications"
+title: "How do I load shared skills in developer tools and agents?"
 description: "Published skills reach Claude and ChatGPT through a connector, Claude Code through an installer, and your own agents through the SDK. The version is the same everywhere."
+sidebar_title: "Load shared skills"
 order: 6
 ---
 
-# Skills in applications
+# How do I load shared skills in developer tools and agents?
 
-A published skill version is one set of instructions with a content hash. The same version reaches four places. Skill managers and admins publish the defaults in [Shared skills](/console/skills/shared-skills). For a personal AI app, follow [Use shared skills](/start/team-skills).
+Use the read-only connector for Claude and ChatGPT, the installer for Claude Code, or the SDK for application agents. Each path can select an exact published skill version. A task pins that version in its own standard so later publication does not silently change released instructions.
 
 ## Claude and ChatGPT
 

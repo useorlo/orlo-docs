@@ -33,3 +33,9 @@ A check older than a day becomes unverified. A provider listing does not guarant
 ## Handle retirement
 
 Retired models cannot be used for new work or live inference. Historical comparisons and releases retain their references. Compare an available replacement on the task’s examples before creating a new release. The catalog’s public feed describes models; organization-specific access remains private.
+
+## OpenRouter access
+
+An organization’s OpenRouter credential connects compatible text models available to that account. Saving it in the console checks access and refreshes the catalog. Image-only and video-only endpoints are excluded. Read the organization-specific availability state before selecting a candidate; the public catalog alone does not establish account access.
+
+[Add and test a provider key](/console/settings/add-a-provider-key).

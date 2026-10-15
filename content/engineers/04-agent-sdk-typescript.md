@@ -1,12 +1,13 @@
 ---
-title: "Agent SDK for TypeScript"
+title: "How do I connect a TypeScript agent to Orlo?"
 description: "Govern an agent from Node.js with @orlo/agent-sdk: start a run, check every tool call, handle approvals, and choose what happens when Orlo is unreachable."
+sidebar_title: "TypeScript agents"
 order: 4
 ---
 
-# Agent SDK for TypeScript
+# How do I connect a TypeScript agent to Orlo?
 
-`@orlo/agent-sdk` wraps the agent-governance API for Node.js 20 or later. It has no runtime dependencies and does not own your orchestration: your framework runs the agent, the SDK asks Orlo before each tool call and reports each step. Source: [github.com/useorlo/agent-sdk](https://github.com/useorlo/agent-sdk), Apache-2.0. Package: [@orlo/agent-sdk on npm](https://www.npmjs.com/package/@orlo/agent-sdk).
+Install `@orlo/agent-sdk`, create an Orlo run, and wrap your tool dispatcher so each relevant tool asks for a decision before it executes. Your application keeps its model, provider, and orchestration. Orlo records submitted steps and permissions; tools outside the wrapped path are not covered.
 
 ```sh
 npm install @orlo/agent-sdk@0.0.2
@@ -92,19 +93,11 @@ await runtime.runToolStep({ stepId: 'tool_issue_refund', toolName: 'issue_refund
 
 Keep the original run open while waiting; `run.complete()` ends it. The retry must use the original session and step ID, not a newly started run. Persist that state if your process can restart.
 
-On that retry Orlo allows the call and consumes the approval, rejects it if the reviewer rejected, applies the rule’s timeout action if it expired, or asks for a new approval if the arguments changed. TypeScript 0.0.2 does not wait or poll. Your application can use [approval webhooks and exact status reads](/engineers/webhooks-and-approvals) to resume safely. Bounded waiting and run-resume helpers are prepared for the next SDK release.
+On that retry Orlo allows the call and consumes the approval, rejects it if the reviewer rejected, applies the rule’s timeout action if it expired, or asks for a new approval if the arguments changed. TypeScript 0.0.2 does not wait or poll. Your application can use [approval webhooks and exact status reads](/engineers/webhooks-and-approvals) to resume safely. Keep durable waiting and process recovery in your application.
 
 ## When Orlo is unreachable
 
-Each attempt has a timeout (3 s) and one retry; writes reuse an idempotency key across transport retries. See [retry boundaries](/engineers/authentication#idempotency). After five consecutive failures the client stops calling for 30 s and throws `OrloUnavailableError` at once. What happens to the tool call is the run’s fail mode per action class:
-
-```ts
-const run = await OrloAgentRun.start(client, { task_id }, {
-  failMode: { read: 'open', default: 'closed' },
-});
-```
-
-`closed`, the default for everything, stops the call. `open` runs it and reports afterwards, with delivery not guaranteed. A read can disclose data, so open reads are a deliberate choice.
+[Choose outage behavior](/engineers/orlo-unreachable). The default blocks every action class. Optional open behavior reports best effort and is not durable replay.
 
 ## Steps that do not wait
 
@@ -112,9 +105,7 @@ When a session starts, Orlo returns `blocking_step_types`: tool requests and ret
 
 ## Keep your model stream
 
-Orlo does not proxy the agent’s model request. Keep streaming through your provider client or framework, wrap its tool dispatcher, and report the completed output through the session. `runModelStep` operates on completed outputs; it is not a streaming adapter.
-
-When `blocking_step_types` includes `model_output`, await `run.governModelOutput()` before using the answer. If the check must happen before display, buffer the answer until that decision arrives. [The agent request diagram](/start/how-orlo-works#agent-permissions-check-actions-in-your-runtime) shows how model traffic and permission requests stay separate.
+[Keep the agent’s direct model stream](/engineers/streaming) and wrap its tools. Buffer output if it must pass rules before anyone sees it.
 
 ## Shared skills
 

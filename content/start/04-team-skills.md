@@ -1,12 +1,13 @@
 ---
-title: "Use shared skills"
+title: "How do I use a shared skill in my AI app?"
 description: "Find a published skill, connect your AI app, and confirm retrieval of the exact version."
+sidebar_title: "Skills in your AI app"
 order: 4
 ---
 
-# Use shared skills
+# How do I use a shared skill in my AI app?
 
-Use your team’s published procedures in an AI app without creating a task or a runtime key. You need an Orlo sign-in with **Skill contributor**, **Skill manager**, or admin access in the organization.
+Select a published skill in Orlo, connect your AI app under your own Orlo sign-in, and send the console’s exact-version request. Use **Check retrieval** to confirm the app received it. You need Skill contributor, Skill manager, or admin access; no task or runtime key is needed.
 
 ## 1. Choose published instructions
 
@@ -43,3 +44,8 @@ Return to Orlo and choose **Check retrieval**. Confirm the selected version, app
 Under **Connect → AI app connections**, disconnect an app when it no longer needs access. A connection is personal and scoped to one organization. Access also depends on your current membership permissions. Disconnecting or retiring a skill blocks future access; it cannot remove text already loaded into a conversation or downloaded as files.
 
 For Claude Code and application agents, see [Skills in applications](/engineers/skills-in-tools).
+
+## Related questions
+
+- [Can I use a personal AI account?](/start/personal-ai-account)
+- [Why has the app not retrieved the skill?](/start/skill-not-retrieved)

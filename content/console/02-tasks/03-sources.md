@@ -1,14 +1,15 @@
 ---
-title: "Sources"
+title: "How do I make a task answer from my documents?"
 description: "Give a task documents to answer from, see which passages an answer used, and keep the index current."
+sidebar_title: "Answer from documents"
 order: 3
 ---
 
-# Sources
+# How do I make a task answer from my documents?
+
+Add text, Markdown, or PDF documents in the task’s **Sources** tab and use a source-backed release. Orlo retrieves relevant passages for each request, supplies them to the model, and records their attribution beside the answer so reviewers can inspect the evidence.
 
 *Who can do this: Admins here.*
-
-A task’s sources are documents its answers may draw on. For each question, Orlo searches the sources, passes the best passages to the model, and records which passages the answer used.
 
 ## Add a document
 
@@ -26,7 +27,7 @@ Each passage records the embedding model that made it, and a question is matched
 
 ## Changes to sources
 
-The document collection and retrieval settings remain live. A release does not freeze copies of its sources: adding, removing, or re-embedding documents can change later answers without a new release. Earlier request records retain their retrieval attribution. After changing sources, compare again and inspect representative answers before relying on the change.
+[Source changes apply to later requests](/console/tasks/source-changes), even without a new release. Compare representative questions after changing the collection or retrieval settings.
 
 ## Good to know
 

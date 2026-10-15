@@ -1,12 +1,13 @@
 ---
-title: "Provider key security"
+title: "How does Orlo protect model provider keys?"
 description: "How Orlo protects provider credentials, where they are used, and how to replace or revoke a key."
+sidebar_title: "Provider key protection"
 order: 9
 ---
 
-# Provider key security
+# How does Orlo protect model provider keys?
 
-Your application can use an Orlo runtime key without holding a model provider key. Orlo stores the provider credential for your organization and uses it when a task, comparison, or source-processing job needs to call that provider.
+Orlo encrypts stored provider keys, limits their use to the owning organization, and sends them to the provider as server-side authentication. Credential reads never return the secret. Shared error handling and credential-aware output checks reject recognized credential echoes before accepting model responses.
 
 If your agent calls its model directly, the provider key stays in your runtime. You do not need to give Orlo that key to use [agent tool permissions](/start/how-orlo-works#agent-permissions-check-actions-in-your-runtime).
 

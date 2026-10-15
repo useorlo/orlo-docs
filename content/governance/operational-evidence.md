@@ -1,10 +1,11 @@
 ---
-title: "Read the evidence"
+title: "How do I find the evidence behind an AI result?"
 description: "Understand the records Orlo keeps and use them to inspect an AI workflow."
+sidebar_title: "Inspect result evidence"
 order: 1
 ---
 
-# Read the evidence
+# How do I find the evidence behind an AI result?
 
 Open **Evidence** for a task and time range, then follow records back to the work they describe. Related task, run, and skill pages provide the detailed workflow views.
 

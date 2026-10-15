@@ -10,13 +10,11 @@ Keep the deployment runbook with the release package and make it available to au
 
 ## Upgrades
 
-Read the release notes, back up data and required secrets, and test the upgrade in a separate environment. Follow the supplied migration and rollback instructions. Verify sign-in, one task request, one agent check, and configured notifications after the change.
+[Upgrade using a tested release and recovery plan](/operators/upgrade). Keep application images, configuration, and migrations aligned, then verify sign-in and each configured workflow.
 
 ## Backups and recovery
 
-A complete recovery plan includes persistent application data, uploaded documents and archives, and the encryption and signing material required by the deployment. **Back up operator MFA encryption material as well as the provider-credential encryption material.** Restoring data without the corresponding keys can leave credentials unreadable or require operator sign-in recovery.
-
-Store backups securely away from the running installation. Test restoration in an isolated environment and verify that authorized people can sign in and required credentials can be used. Do not assume all generated secrets can be recreated without consequences. Use the release-specific recovery guide for the exact inventory and commands.
+[Back up data and the keys needed to restore it](/operators/backup-and-restore). Test restoration in an isolated environment and follow the release-specific inventory for your installation.
 
 ## Provider and model changes
 

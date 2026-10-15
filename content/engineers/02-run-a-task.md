@@ -1,10 +1,11 @@
 ---
-title: "Run a task"
+title: "How do I run a task through the API?"
 description: "Call a task’s live release, read the validation block, and decide what your application does with a warning or a rejection."
+sidebar_title: "Run a task"
 order: 2
 ---
 
-# Run a task
+# How do I run a task through the API?
 
 `POST /v1/tasks/:id/run` sends an input to a selected live release and returns a complete answer with its validation result. In one request, Orlo selects the release, adds source passages when needed, calls the model with your provider credential, and checks the answer. The key needs `inference.run`.
 
@@ -75,6 +76,6 @@ Use [comparisons](/console/tasks/compare-and-release) to test a candidate before
 
 ## Consistency and response reuse
 
-When the release does not specify a temperature, task requests use `0`, matching comparisons. Chat requests can override it. A low temperature reduces variation but does not make responses deterministic.
+When the release does not specify a temperature, task requests use `0`, matching comparisons. Chat requests can override it. This reduces variation without guaranteeing deterministic answers.
 
-[Response reuse](/platform-api/tasks#reuse-identical-answers) is optional and off by default. For eligible repeated requests, it avoids another model call while still checking the answer and recording a separate request trace.
+[Enable eligible response reuse](/engineers/reuse-answers) to avoid repeated model calls. It is off by default; each returned answer still has its own validation and trace.

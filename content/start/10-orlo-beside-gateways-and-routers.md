@@ -1,12 +1,13 @@
 ---
-title: "Orlo beside gateways and routers"
+title: "Can I use Orlo with an existing gateway or router?"
 description: "Keep your existing model infrastructure while adding task checks, agent permissions, and production evidence."
+sidebar_title: "Existing gateways and routers"
 order: 10
 ---
 
-# Orlo beside gateways and routers
+# Can I use Orlo with an existing gateway or router?
 
-Use Orlo for the work your team needs to evaluate, release, check, and review. You can keep an existing gateway or router for your wider model infrastructure.
+Yes. Keep your existing gateway or router for model infrastructure, and use Orlo for task releases and answer checks or for permissions around agent tools. The two integrations have different request paths; shared skills can also reach employees’ AI apps without routing their model traffic through Orlo.
 
 ## Task requests
 

@@ -1,14 +1,15 @@
 ---
-title: "Agent permissions and limits"
+title: "How do I set an agent’s tool permissions and limits?"
 description: "Decide which tools an agent may call, how far a run may go, and which steps wait for a person."
+sidebar_title: "Tool permissions and limits"
 order: 1
 ---
 
-# Agent permissions and limits
+# How do I set an agent’s tool permissions and limits?
+
+Set tool rules and run limits in **Agent runs**. The SDK submits each wrapped tool request to Orlo before execution and enforces the returned decision. Unknown tools are blocked; tools that require approval wait for a person. Only calls submitted through the integration are covered.
 
 *Who can do this: Agent permissions managers and admins change rules and limits; Agent observers and operators read runs and decisions.*
-
-An agent picks its next step as it goes. Orlo does not approve the plan; it decides each step when the agent proposes it. Rules say what the decision is. Your agent’s runtime, through the SDK, enforces it.
 
 ![Permissions for an agent: each tool with its action class, decision, and calls in the last seven days, with built-in tools listed below](./assets/images/console/agent-rules.png)
 

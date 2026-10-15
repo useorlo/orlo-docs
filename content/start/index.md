@@ -29,3 +29,7 @@ A task defines a job, such as routing support tickets or summarizing a policy. C
 Production answers, permission decisions, approvals, and retrievals become records your team can inspect. Reviewed corrections and saved steps can become examples for the next comparison. [Follow that loop](/console/tasks/improve-from-production).
 
 [Concepts](/start/concepts) explains the terms. [Who does what](/start/who-does-what) explains access. If a step does not work, see [Troubleshooting](/start/troubleshooting).
+
+## Find a specific answer
+
+[Browse questions about tasks, skills, access, and agent behavior](/start/find-an-answer). Each question has a direct answer and a focused guide.

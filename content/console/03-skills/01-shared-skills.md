@@ -14,30 +14,27 @@ A skill is shared instructions with an owner and published versions. One skill c
 
 ## Author
 
-**Skills → New skill** takes a name (lowercase letters, numbers, and single hyphens, such as `support-triage`), an owner, a one-line description that says when to use it, and the instructions. A skill can carry up to 24 supporting text files under `references/`, `scripts/`, or `assets/`, plus a root `LICENSE`, `NOTICE`, or `README`, totaling at most 256 KiB. Scripts are distributed as text and never run.
+[How do I import an existing skill?](/console/skills/import-a-skill)
 
-Saving makes a new draft version; content is never edited in place. Two people editing at once get a conflict, and the second one reloads. Use **Import skill** for `.md`, `.zip`, `.skill`, or supported `.json` packages. Review the imported instructions and files before saving; import creates a draft, not a publication.
+Open **Skills → Import skill** and upload a `.md`, `.zip`, `.skill`, or supported `.json` package. Review its instructions and files, then save a draft. A skill manager or admin must publish that version before employees or application agents can retrieve it.
 
 ## Publish
 
-A version is a draft until you publish it. Publishing makes it the skill’s default: the version the connector and the installer offer by default. Earlier published versions stay readable. A task that pins a draft can be compared, so you can test the draft on the task’s examples before publishing, but it cannot be released.
+[How do I publish shared instructions?](/console/skills/publish-a-skill)
+
+Open the skill, select the version you have reviewed, and publish it. Publication makes that version available to the organization’s skills connector and runtime keys, and sets it as the default. Existing task releases keep their exact pinned version.
 
 ## Pin to a task
 
-A task version pins up to eight skill versions in order, one version per skill. They are prepended to the task’s instructions. Pinning is by exact version: publishing a newer default does not change what a released task runs. To move a task to a newer version, pin it, compare, and release.
+[How do I use a skill in a task release?](/console/skills/pin-a-skill)
 
-**Usage** on a version shows the tasks that pin it, the latest comparisons that ran with it, and the latest agent runs that declared it.
+Pin an exact skill version in the task’s standard, compare the task, and release it. Orlo applies the pinned instructions before the task prompt. Publishing a newer skill does not change the released task.
 
 ## Retire a version
 
-Retire a version to prevent new retrievals and new bindings. Retirement asks for a reason of up to 1,000 characters, which is recorded with who retired it. After that:
+[What happens when I retire a skill version?](/console/skills/retire-a-skill)
 
-- the version cannot be published again; save corrected instructions as a new version instead,
-- runtime keys and the AI-tool connector can no longer discover or fetch it,
-- a task that still pins it cannot be released until the task’s standard replaces it,
-- existing records keep their reference, so the history still says what ran.
-
-Retiring the default leaves the skill with no discoverable version until another is published. Existing task releases continue using their pinned versions until you replace the skill and release the updated task. Retirement does not stop those releases. If a task must stop immediately, archive it while you prepare the replacement. Retirement also cannot pull back files already installed or instructions already in an app’s context.
+Retirement blocks new retrievals and new bindings to that version. Existing task releases keep using their pinned instructions until you replace them and release again. If those tasks must stop now, archive them; retirement cannot remove instructions already downloaded or loaded into an AI conversation.
 
 ## Where a published version runs
 

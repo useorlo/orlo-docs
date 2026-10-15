@@ -1,12 +1,13 @@
 ---
-title: "Your first agent connection"
+title: "How do I verify my first agent connection?"
 description: "Verify a blocked and allowed tool call without invoking a model."
+sidebar_title: "Verify an agent connection"
 order: 3
 ---
 
-# Your first agent connection
+# How do I verify my first agent connection?
 
-Your agent keeps its own runtime, model connection, and provider. Orlo checks proposed tool actions before they run. [See how the paths connect](/start/how-orlo-works#agent-permissions-check-actions-in-your-runtime).
+Run the SDK connection check with a harmless tool blocked, add permission for that tool, and run the check again expecting it to be allowed. The console records both decisions. This verifies the wrapped call path without a model call or provider key.
 
 This check proves that a wrapped tool reaches Orlo and that its decision is enforced. It does not need a model or provider key.
 

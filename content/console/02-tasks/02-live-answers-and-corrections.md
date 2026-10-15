@@ -1,14 +1,15 @@
 ---
-title: "Live answers and corrections"
+title: "How do I review and correct a task answer?"
 description: "Read live answers with their rule results and sources, score them, and add corrections that become examples."
+sidebar_title: "Review and correct answers"
 order: 2
 ---
 
-# Live answers and corrections
+# How do I review and correct a task answer?
+
+Open a task’s **Live** tab or a review-queue item, inspect the answer and rule results, then record a score and the expected answer when a correction is needed. Accepted corrections can become a new dataset version for comparison; they do not change a live answer or release automatically.
 
 *Who can do this: Members with the Reviewer preset score and correct answers; Task observers read them; admins do both.*
-
-Every answer a release returns is logged against that release and the task version, with the result of each rule and the passages it drew on. Reviewers use the review queue to record corrections. The task’s Live and Review tabs also require Task observer access; presets can be combined.
 
 ## Read an answer
 

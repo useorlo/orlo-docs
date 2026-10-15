@@ -1,10 +1,11 @@
 ---
-title: "Python and LangGraph"
+title: "How do I connect a Python or LangGraph agent to Orlo?"
 description: "Govern a LangGraph or LangChain application with the orlo-langgraph adapter: a session, a governed model, a governed tool, and approvals."
+sidebar_title: "Python and LangGraph"
 order: 5
 ---
 
-# Python and LangGraph
+# How do I connect a Python or LangGraph agent to Orlo?
 
 `orlo-langgraph` connects a LangGraph or LangChain application to agent governance. LangGraph owns the graph, your application calls its model and tools, and Orlo checks the steps you submit. It uses the standard library for HTTP and needs Python 3.10 or later.
 
@@ -86,7 +87,7 @@ When your application has read an approved, unconsumed decision, resume the orig
 await send_email("ops@example.com", subject="Escalation", orlo_step_id=checkpoint["step_id"])
 ```
 
-Use [approval webhooks and exact status reads](/engineers/webhooks-and-approvals) to learn the decision. Python 0.1.1 does not wait automatically; waiting and session-resume helpers are prepared for the next SDK release.
+Use [approval webhooks and exact status reads](/engineers/webhooks-and-approvals) to learn the decision. Python 0.1.1 does not wait automatically. Preserve session state and durable waiting in your application.
 
 A rejected approval raises `OrloGovernanceBlocked`; an expired one applies the rule’s timeout action; changed arguments need a new approval.
 

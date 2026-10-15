@@ -1,12 +1,13 @@
 ---
-title: "Chat completions"
+title: "How do I use an OpenAI-compatible client with Orlo?"
 description: "Use the OpenAI chat request shape with released task instructions and a checked, complete answer."
+sidebar_title: "OpenAI-compatible clients"
 order: 3
 ---
 
-# Chat completions
+# How do I use an OpenAI-compatible client with Orlo?
 
-`POST /v1/chat/completions` accepts text chat messages and returns an OpenAI-style chat completion. Use a runtime key with `inference.run` and identify the task with `X-Orlo-Task-Id`.
+Send non-streaming text messages to `POST /v1/chat/completions` with a runtime key carrying `inference.run` and the task ID in `X-Orlo-Task-Id`. Orlo applies the released task instructions and returns a checked, complete answer in the chat-completion shape. The request’s `model` field does not choose the model.
 
 ```bash
 curl -X POST https://api.useorlo.com/v1/chat/completions \

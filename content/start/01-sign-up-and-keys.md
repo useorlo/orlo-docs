@@ -1,12 +1,13 @@
 ---
-title: "Sign up and access"
+title: "How do I create an Orlo workspace?"
 description: "Create an organization in the console, invite people, and create a runtime key with the scopes your application needs."
+sidebar_title: "Create a workspace"
 order: 1
 ---
 
-# Sign up and access
+# How do I create an Orlo workspace?
 
-Everything in Orlo belongs to an organization. People sign in to the console; applications and agents use runtime keys.
+Sign up at [app.useorlo.com](https://app.useorlo.com) with an account name, email, and password. Orlo creates your organization with you as its owner. People use their sign-in for the console; applications and agent SDKs use separately scoped runtime keys.
 
 ## Sign up
 
@@ -28,7 +29,7 @@ An invitation arrives by email and can point the person at one piece of work, su
 
 ## Provider keys
 
-Orlo calls the models you choose with your own provider credentials. Add them under **Settings → Keys** (provider keys): OpenAI, Anthropic, or an endpoint you run with vLLM or llama.cpp. A credential belongs to the organization and is encrypted at rest. Use **Test key** to check access. The catalog can also show models that need a key. A saved key or a model listing does not guarantee remaining quota or a successful model call.
+Orlo calls the models you choose with your own provider credentials. Add them under **Settings → Keys** (provider keys): a supported provider such as OpenAI, Anthropic, or OpenRouter, or an approved compatible model endpoint. A credential belongs to the organization and is encrypted at rest. Use **Test key** to check access. The catalog can also show models that need a key. A saved key or a model listing does not guarantee remaining quota or a successful model call.
 
 ## Runtime keys
 
