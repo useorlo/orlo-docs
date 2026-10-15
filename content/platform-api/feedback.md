@@ -25,6 +25,8 @@ Feedback belongs to a logged task request. Use its `trace_id` as `inference_log_
 
 ## Review a correction
 
+A signed-in member with review access can accept or reject a correction. Runtime keys can submit feedback, but cannot make review decisions.
+
 `PUT /v1/feedback/:id/status` accepts `{"status":"staged"}` or `{"status":"rejected"}`. Supported transitions are pending → staged, pending → rejected, and staged → rejected. Only a valid correction can be staged.
 
 This API permits trusted runtime keys with `feedback.write`; the scope is not limited to submitting a score. In the console, the Reviewer preset authorizes review decisions. Use the console when your process requires an attributable human review.

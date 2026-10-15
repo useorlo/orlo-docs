@@ -1836,12 +1836,15 @@
           },
           "404": {
             "$ref": "#/components/responses/Error404"
+          },
+          "403": {
+            "description": "PEOPLE_ONLY: sign in with a member account that has review access."
           }
         },
         "x-required-scopes": [
           "feedback.write"
         ],
-        "description": "Required scope: `feedback.write`."
+        "description": "Required scope: `feedback.write`. Requires a signed-in member with review access. Runtime keys, desktop connections, and management tokens cannot make human review decisions."
       }
     },
     "/v1/tasks/{taskId}/feedback/promote": {
@@ -4282,7 +4285,8 @@
                     "$ref": "#/components/schemas/GenericObject"
                   },
                   "created_by": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Orlo uses the signed-in member identity as the author."
                   }
                 }
               }
@@ -4302,12 +4306,15 @@
           },
           "404": {
             "$ref": "#/components/responses/Error404"
+          },
+          "403": {
+            "description": "PEOPLE_ONLY: sign in with a member account that has review access."
           }
         },
         "x-required-scopes": [
           "agent_governance.run"
         ],
-        "description": "Required scope: `agent_governance.run`."
+        "description": "Required scope: `agent_governance.run`. Requires a signed-in member with review access. Runtime keys, desktop connections, and management tokens cannot make human review decisions."
       }
     },
     "/v1/trace-samples/{id}/promote-to-dataset": {

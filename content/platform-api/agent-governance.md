@@ -91,6 +91,8 @@ The stream emits:
 
 These routes support imported traces, externally recorded steps, reviewed trace samples, and the trace-to-dataset loop.
 
+Annotations require a signed-in member with review access. Orlo records the author from that sign-in; an application key cannot label its own evidence as reviewed.
+
 Trace sample detail returns:
 
 - the stored trace sample
