@@ -1,6 +1,6 @@
 ---
-title: Tasks
-description: Define domain tasks, version them, and preview impact
+title: "Tasks"
+description: "Define domain tasks, version them, and preview impact"
 ---
 
 # Tasks
@@ -31,6 +31,7 @@ Key request fields:
 - `validation_config`
 - `prompt_template`
 - `config`
+- `skill_version_ids`: up to eight skill version ids, in order. Runtime keys can bind only published, non-retired versions. Authorized people can bind a draft for comparison, but cannot release it. Omitting the field on an update keeps prior references; an empty array removes them.
 
 ### `GET /v1/tasks`
 
@@ -46,24 +47,34 @@ List immutable task versions.
 
 ### `PUT /v1/tasks/:id`
 
-Update a task by creating a new immutable task version and moving the task head.
+Update a task by creating a new immutable task version and moving the task head. Send `expected_version_id` when saving from a version you reviewed; a stale version returns a conflict.
+
+### `PATCH /v1/tasks/:id`
+
+Rename a task without creating a version.
+
+### `GET /v1/tasks/:id/lifecycle`
+
+What the task has: versions, comparisons, releases, answers; and which of delete, archive, or restore applies.
+
+Archive, restore, and deletion are console actions for authorized people; runtime keys cannot perform them.
+
+### `GET /v1/tasks/:id/model-settings`, `PUT /v1/tasks/:id/model-settings`
+
+The task’s model shortlist and its judge choice.
 
 ### `POST /v1/tasks/:id/preview-impact`
 
-Preview the effect of proposed validation or prompt changes by replaying recent hot-tier inference logs.
+Recheck recorded answers against a proposed output schema or validation rules. Send `proposed_changes` with `output_schema` or `validation_config`, an optional `expected_version_id`, and `sample_size` from 1 to 200 (default 25).
 
-Useful for:
-
-- output schema tightening
-- validation policy changes
-- prompt-template updates
+The response includes current and projected pass rates, newly failing answers, and whether the preview completed. It does not call a model or test prompt changes. Use a comparison to test new instructions.
 
 ## Example
 
 ```bash
 curl https://api.useorlo.com/v1/tasks \
   -H 'Content-Type: application/json' \
-  -H 'X-Orlo-Org-Id: <org-uuid>' \
+  -H "Authorization: Bearer $ORLO_API_KEY" \
   -d '{
     "name": "Claims triage",
     "input_schema": { "type": "object" },
@@ -75,5 +86,5 @@ curl https://api.useorlo.com/v1/tasks \
 ## Notes
 
 - Task updates are versioned, not in-place edits of the active snapshot.
-- Task `config` is stored on the task head, while versioned prompt/schema/validation fields live on task versions.
+- Task-level settings are separate from versioned instructions and rules. See [release behavior](/platform-api/deployments) before changing sources or routing.
 

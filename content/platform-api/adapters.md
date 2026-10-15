@@ -1,6 +1,6 @@
 ---
-title: Adapters
-description: Register and manage LoRA adapters for self-hosted runtimes
+title: "Adapters"
+description: "Register and manage LoRA adapters for self-hosted runtimes"
 ---
 
 # Adapters

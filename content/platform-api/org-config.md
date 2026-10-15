@@ -1,11 +1,11 @@
 ---
-title: Org Config
-description: Read and update org-level configuration
+title: "Organization settings"
+description: "Read and update org-level configuration"
 ---
 
-# Org Config
+# Organization settings
 
-Org config stores tenant-level defaults and overrides.
+Organization settings provide defaults for tasks in that organization.
 
 ## Endpoints
 
@@ -29,6 +29,6 @@ Request shape:
 
 ## Notes
 
-- Updates invalidate Orlo's cached config view for the org.
-- This endpoint is useful for tenant-wide defaults, not task-versioned behavior.
+- Changes apply to organization defaults; they do not create a task version.
+- This endpoint is useful for organization-wide defaults, not task-versioned behavior.
 

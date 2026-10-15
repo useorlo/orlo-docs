@@ -1,71 +1,33 @@
 ---
-title: Operational Evidence
-description: What proof Orlo creates for governed AI systems
+title: "Read the evidence"
+description: "Understand the records Orlo keeps and use them to inspect an AI workflow."
+order: 1
 ---
 
-# Operational Evidence
+# Read the evidence
 
-Static AI policy says what should happen. Operational evidence shows what happened.
+Open **Evidence** for a task and time range, then follow records back to the work they describe. Related task, run, and skill pages provide the detailed workflow views.
 
-Orlo is built to create evidence at each stage of the AI production loop: definition, evaluation, deployment, runtime control, observation, and improvement.
-
-## Evidence Types
-
-| Evidence | What It Shows |
+| Record | What it establishes |
 | --- | --- |
-| Task definition | The intended AI job, owner, schema, prompt, validation behavior, and domain context |
-| Task version | The exact task configuration bound to evaluations and deployments |
-| Dataset | The examples or reviewed traces used to test quality |
-| Evaluation result | How candidate models, prompts, and strategies performed on task data |
-| Recommendation | Which option was selected and how much confidence the comparison supports |
-| Deployment snapshot | The frozen task version, model, strategy, validation policy, and runtime configuration |
-| Inference record | What was requested, how it was routed, what output was produced, and what checks ran |
-| Retrieval attribution | Which documents, chunks, or sources supported a grounded answer |
-| Approval record | Which action required review, who approved it, and when |
-| Agent session | The sequence of governed steps, tool decisions, limits, and trajectory evidence |
-| Feedback item | What users or reviewers corrected and whether it became future evaluation data |
-| Monitoring signal | Trends, drift, failures, review pressure, latency, and quality signals |
+| Comparison | Which task and dataset versions were tested, the candidates and scoring settings, and the returned answers |
+| Release | The selected model and task version, snapshotted validation and routing settings, and the comparison link when supplied |
+| Task request | The input, model response, release, rule results, and retrieval attribution recorded for that request |
+| Agent step | What the integration submitted, Orlo’s decision, and the result reported by the runtime |
+| Approval | The exact held call, decision, person who decided, and timing |
+| Skill retrieval | Which person and app retrieved a version, with its content hash |
+| Reviewed example | The correction or saved step added to a dataset version and its origin |
 
-## Why This Matters
+## Inspect one result
 
-Evidence lets teams answer practical governance questions:
+Find the request or run, confirm the task and version, and read the checks or permission decision. Follow the release to its comparison when one exists. For a source-backed answer, inspect the passages retrieved for that request rather than assuming the current documents are unchanged.
 
-- Was this AI task approved for production?
-- Which model and prompt were live at the time?
-- Was the response checked before use?
-- Was the answer grounded in approved material?
-- Did an agent request a sensitive action?
-- Was approval required, granted, denied, or timed out?
-- Did feedback lead to a better future evaluation?
-- Can an auditor reconstruct the decision path later?
+A release without a comparison link does not establish prior evaluation. A skill retrieval proves delivery, not that a model followed it. An imported trace records reported behavior, not prior enforcement. Use these distinctions when presenting the evidence.
 
-## Evidence Is Not Certification
+## Give reviewers appropriate access
 
-Orlo does not certify a system as compliant. It also does not replace:
+**Evidence auditor** provides history and metadata without event content. Add other presets only when a reviewer needs the corresponding task, skill, or agent details. Presets cover an area across the organization, not one resource. [Who does what](/start/who-does-what) explains the choices.
 
-- legal classification
-- risk registers
-- policy registers
-- remediation task management
-- procurement review
-- DPIA or FRIA workflows
-- audit-pack sign-off
-- regulatory filings
+## Preserve what your process needs
 
-Those systems still matter. Orlo makes them stronger by supplying runtime facts instead of screenshots, claims, and one-time assessment artifacts.
-
-## Practical Output
-
-A useful Orlo evidence pack usually includes:
-
-- the approved task and owner
-- the evaluated model candidates and result
-- the active deployment snapshot
-- validation and routing behavior
-- retrieval attribution for grounded tasks
-- approval history for sensitive actions
-- representative traces
-- feedback and issue history
-- monitoring trend summaries
-
-The pack should be reviewable by business, risk, compliance, security, legal, and audit teams without requiring them to inspect application code.
+Agree on retention and export requirements for your deployment before relying on a record for a formal review. Access to records is not a claim of tamper-proof storage, certification, or a completed audit package. Use the documented API for supported reads and follow your organization’s evidence handling process.

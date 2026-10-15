@@ -1,0 +1,74 @@
+/* Orlo brand for the f0 engine. Loaded after the theme through _brand.md custom_css.
+   Tokens follow useorlo.com: paper, ink, sage, and the accent set in _brand.md. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --font-family-sans: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-mono: 'IBM Plex Mono', 'JetBrains Mono', Consolas, monospace;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+
+  --color-bg-primary: #f5f6f2;
+  --color-bg-secondary: #eef1ec;
+  --color-bg-tertiary: #e9eee6;
+  --color-bg-hover: #eceee9;
+  --color-bg-active: #e3e7df;
+  --color-bg-code: #eceee9;
+  --color-text-primary: #202722;
+  --color-text-secondary: #616b63;
+  --color-text-tertiary: #8a948c;
+  --color-text-muted: #a9b1aa;
+  --color-border-primary: #dce1d9;
+  --color-border-secondary: #e6eae3;
+}
+
+[data-theme="dark"] {
+  --color-bg-primary: #202b24;
+  --color-bg-secondary: #26322b;
+  --color-bg-tertiary: #2d3a32;
+  --color-bg-hover: #2a3730;
+  --color-bg-active: #33413a;
+  --color-bg-code: #1a221d;
+  --color-text-primary: #f5f6f2;
+  --color-text-secondary: #b9c2bb;
+  --color-text-tertiary: #8d978f;
+  --color-text-muted: #6b756d;
+  --color-border-primary: #33413a;
+  --color-border-secondary: #2a3730;
+}
+
+html[data-theme="dark"] { background-color: #202b24; }
+
+::selection { background: #f0c7b6; color: #202722; }
+
+/* The theme sizes the content column and the fixed table of contents without
+   their padding, so between 1200px and about 1450px the text ran under the
+   table of contents. Border-box makes the widths mean what the rules say. */
+.toc, .main-content { box-sizing: border-box; }
+
+/* Wordmark: weight and tracking from the website, with its accent dot. */
+.header-logo span {
+  font-weight: 650;
+  letter-spacing: -0.05em;
+  font-size: 1.35rem;
+}
+.header-logo span::after {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  margin-left: 4px;
+  vertical-align: baseline;
+}
+
+/* Headings: tighter tracking, as on the website. */
+.markdown-content h1 { letter-spacing: -0.035em; font-weight: 600; }
+.markdown-content h2 { letter-spacing: -0.025em; font-weight: 600; }
+.markdown-content h3 { letter-spacing: -0.015em; font-weight: 600; }
+
+/* Table header and code use the mono face at the website's small size. */
+.markdown-content th { font-family: var(--font-family-mono); font-size: 0.75rem; letter-spacing: 0.03em; text-transform: uppercase; font-weight: 500; color: var(--color-text-secondary); }

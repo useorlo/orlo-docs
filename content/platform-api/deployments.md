@@ -1,6 +1,6 @@
 ---
-title: Deployments
-description: Freeze task versions onto models and activate deployments
+title: "Deployments"
+description: "Freeze task versions onto models and activate deployments"
 ---
 
 # Deployments
@@ -26,6 +26,7 @@ Key request fields:
 - `model_id`
 - optional `strategy`
 - optional `adapter_id` for `lora`
+- optional `evaluation_id` to link the release to the matching comparison
 
 ### `PUT /v1/deployments/:id/activate`
 
@@ -44,3 +45,5 @@ List deployments, optionally filtered by `task_id`.
 - LoRA deployments validate that the adapter belongs to the same task and base model.
 - Activation is per-task, so activating one deployment deactivates the previously active deployment for that task.
 
+
+The task version pins instructions, answer rules, and skill versions. Validation and routing settings are snapshotted. Documents and retrieval settings remain live; a release is not a frozen copy of the source collection. A comparison link establishes what was tested, not a guarantee of correctness.

@@ -1,12 +1,17 @@
 ---
 header_style: text_only
-accent_color: "#2563eb"
-footer_text: "© 2026 Orlo. Documentation for Orlo Open Core and Orlo Platform."
+accent_color: "#d94d2c"
+favicon: ./assets/images/favicon.svg
+og_image: ./assets/images/og-default.png
+custom_css: ./assets/css/custom.css
+footer_text: "© 2026 Orlo. A fineSample product."
 footer_links:
+  - label: Website
+    url: https://useorlo.com/
   - label: Platform API
-    url: /api
-  - label: Packages
-    url: /packages
-  - label: Guides
-    url: /guides
+    url: /platform-api
+  - label: Open source
+    url: /open-source
+  - label: Platform capabilities
+    url: /start/what-works-today
 ---

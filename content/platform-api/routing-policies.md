@@ -1,6 +1,6 @@
 ---
-title: Routing Policies
-description: Define routing objectives and SLA preferences per task
+title: "Routing Policies"
+description: "Define routing objectives and SLA preferences per task"
 ---
 
 # Routing Policies
@@ -45,4 +45,4 @@ When routing is active for a request, Orlo exposes the result in two places:
 ## Notes
 
 - Routing policies work against evaluated deployment candidates, not arbitrary models with no deployment snapshot.
-- Routing policy records are part of Orlo's control-plane data model.
+- Routing policy records are part of the task’s release configuration.

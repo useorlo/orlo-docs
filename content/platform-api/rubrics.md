@@ -1,6 +1,6 @@
 ---
-title: Rubrics
-description: Define reusable rubric criteria for evaluations
+title: "Rubrics"
+description: "Define reusable rubric criteria for evaluations"
 ---
 
 # Rubrics

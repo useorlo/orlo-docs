@@ -1,61 +1,34 @@
 ---
-title: Internal AI Operating Model
-description: How risk, compliance, security, platform, and business teams use Orlo to govern internal AI
+title: "Organize your team’s review"
+description: "Assign responsibility for tasks, skills, agent permissions, and the evidence used to improve them."
+order: 3
 ---
 
-# Internal AI Operating Model
+# Organize your team’s review
 
-Enterprise AI guardrails work when they are owned across functions. Risk and compliance define expectations, legal interprets obligations, security constrains access, platform teams implement controls, business owners accept operational risk, and internal audit checks whether evidence exists.
+Give each workflow a person responsible for its intended use and acceptance criteria. Use Orlo presets to let colleagues contribute without giving everyone administrative access.
 
-Orlo gives those stakeholders a shared operating layer for consequential AI work.
-
-## Stakeholder Responsibilities
-
-| Stakeholder | What They Need | How Orlo Helps |
-| --- | --- | --- |
-| Business owner | AI that works for a specific workflow | Tasks, datasets, evaluations, deployments, feedback |
-| Platform or ML team | Reliable production integration | APIs, gateway-backed access, routing, validation, monitoring |
-| Risk and compliance | Policy mapped to enforceable controls | Versioned tasks, approvals, limits, evidence, exceptions |
-| Legal | Reviewable facts about use, data, outputs, and oversight | Evaluation records, deployment snapshots, logs, approvals |
-| Security | Access control and constrained tool/data use | Credentials, API keys, org context, runtime limits, tool policies |
-| Data governance | Evidence of data source use and grounding | Dataset lineage, document ingestion, retrieval attribution |
-| Internal audit | Reconstructable operational records | Logs, traces, approvals, feedback, monitoring, change history |
-| Employees | Clear boundaries for responsible AI use | Approved tasks, validated outputs, review paths, escalation signals |
-
-## Operating Rhythm
-
-Use Orlo as the system of record for the AI runtime loop:
-
-1. **Inventory**: define AI tasks, owners, domains, and intended use.
-2. **Classify**: identify sensitivity, impact, data sources, and approval needs.
-3. **Evaluate**: test candidate models, prompts, retrieval strategies, and validation rules on task data.
-4. **Approve**: decide which configuration can be deployed and under what limits.
-5. **Deploy**: freeze the task version, model, strategy, and controls into a reproducible snapshot.
-6. **Enforce**: validate outputs, gate actions, ground answers, route safely, and require review when needed.
-7. **Monitor**: inspect logs, traces, feedback, approvals, drift signals, and incident patterns.
-8. **Improve**: promote reviewed examples back into evaluation datasets and update controls.
-9. **Verify**: let audit, risk, or compliance review the evidence trail.
-
-## Policy To Control Mapping
-
-| Policy Intent | Runtime Control |
+| Responsibility | Orlo access or workflow |
 | --- | --- |
-| AI systems must be approved before use | Deployment activation and versioned task ownership |
-| Sensitive outputs require review | Approval gates and review queues |
-| Answers must be grounded in approved sources | Retrieval attribution and citation checks |
-| Certain tools require authorization | Agent step policy checks and tool-level approvals |
-| Model changes must be traceable | Evaluation records and deployment snapshots |
-| Unsafe outputs must not reach users | Deterministic validation, blocking, fallback, and containment |
-| Incidents must improve controls | Feedback staging and promotion into future datasets |
+| Define and release a task | An admin manages the standard, comparisons, and releases |
+| Inspect task results | Task observer reads standards, comparisons, and live results |
+| Write shared procedures | Skill contributor saves drafts; Skill manager reviews and publishes |
+| Connect an agent | Agent operator sets it up; an admin supplies runtime credentials |
+| Set tool permissions | Agent permissions manager maintains rules and limits |
+| Decide a held action | Agent approver reviews the exact call |
+| Review examples | Reviewer assesses corrections, labels, and saved steps |
+| Inspect recorded history | Evidence auditor reads metadata; other presets can add relevant detail |
 
-## Adoption Pattern
+Presets can be combined. They apply across the organization within their area; a link to one task is not a resource-level restriction. Use [People and access](/console/settings/people-keys-and-notifications) to invite colleagues and set an expiry where needed.
 
-Start with one consequential workflow, not the whole enterprise.
+## A working rhythm
 
-Pick a task where the organization already cares about quality, approvals, and evidence. Define the task in Orlo, evaluate two or three model strategies, deploy behind runtime controls, and review the evidence with risk, compliance, security, and the business owner.
+1. Define the task’s intended use and representative examples.
+2. Compare candidates and inspect disagreements before releasing.
+3. Test application handling and agent permissions before real traffic.
+4. Review signals, held actions, and proposed corrections regularly.
+5. Add accepted examples, compare the next version, and record the release decision.
 
-That creates a repeatable pattern for the next workflow.
+Business, security, and legal teams determine the requirements for their context. Orlo records the configured behavior and submitted work; a review process must still decide whether the evidence meets those requirements.
 
-## Try It
-
-Use [Internal AI Governance Quickstart](/guides/platform/quickstarts/internal-ai-governance) to map a policy Q&A workflow to Orlo controls and evidence.
+Start with [one production improvement](/console/tasks/improve-from-production), then apply the same review process to the next workflow.

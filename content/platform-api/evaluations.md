@@ -1,6 +1,6 @@
 ---
-title: Evaluations
-description: Run asynchronous model evaluations and retrieve results
+title: "Evaluations"
+description: "Run asynchronous model evaluations and retrieve results"
 ---
 
 # Evaluations
@@ -40,16 +40,22 @@ Get evaluation status, per-model results, and Orlo's recommendation.
 
 List evaluations for the current org.
 
+## Check before running
+
+Read [Models and availability](/platform-api/models) and use their `id` UUIDs in `models`. `POST /v1/evaluations/check` accepts `task_id`, `models`, and optional scoring/configuration choices and checks the saved access information and judge selection. It does not make a fresh provider call.
+
+Use `expected_task_version_id` when starting work from a reviewed task version. A changed task is refused instead of silently testing newer instructions.
+
 ## Example
 
 ```bash
 curl https://api.useorlo.com/v1/evaluations/run \
   -H 'Content-Type: application/json' \
-  -H 'X-Orlo-Org-Id: <org-uuid>' \
+  -H "Authorization: Bearer $ORLO_API_KEY" \
   -d '{
     "task_id": "<task-id>",
     "dataset_id": "<dataset-id>",
-    "models": ["gpt-4.1-mini", "claude-3-5-haiku"],
+    "models": ["<first-model-uuid>", "<second-model-uuid>"],
     "extends": "DEFAULT_CLASSIFICATION"
   }'
 ```
@@ -59,3 +65,5 @@ curl https://api.useorlo.com/v1/evaluations/run \
 - Evaluation runs are queued and return `202`.
 - Results include uncertainty bounds and an Orlo recommendation when enough data is available.
 
+
+A run with no successful answers has no quality result to recommend. Inspect status and failures before reading scores or selecting a release. For large runs, use the status and paginated examples endpoints described in the OpenAPI reference.
