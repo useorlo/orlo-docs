@@ -46,3 +46,11 @@ Omitting `base_dataset_id` on append uses the latest version at write time. It d
 - Add `limit=50` for a bounded page. Pass the returned `next_cursor` as `after`, together with `limit`, to read the next page.
 
 Samples include their provenance when present. [Feedback promotion](/platform-api/feedback) and [saved agent steps](/platform-api/agent-governance#trace-import-and-review) also create dataset versions with their origins preserved.
+
+## Protect examples without changing their meaning
+
+On upload or promotion, Orlo removes known organization credentials and recognizable secret values. A field named `token`, `session`, or `credentials` is not itself a reason to change an example’s value or type. Evidence records use a stricter redaction policy. Examples promoted from evidence retain any redaction already applied to that evidence; use safe example values when a correction is needed.
+
+If content changes, the write response includes `redaction_warning` and `redacted_sample_count`. The affected samples retain `provenance.credential_redacted`; inspect their saved values before comparing models. If an older example changes during a copy, its previous search data is removed and `provenance.search_data_removed` records that fact. Earlier dataset versions remain unchanged.
+
+`503 EXAMPLE_PROTECTION_UNAVAILABLE` means Orlo could not check the organization’s stored credentials. No dataset version is saved. Resolve the credential-access problem before retrying.

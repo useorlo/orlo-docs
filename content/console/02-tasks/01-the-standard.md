@@ -18,7 +18,7 @@ A task is one job you want AI to do. Its standard is everything an answer is hel
 
 ## Instructions
 
-Instructions are the prompt a release sends the model. Write `{{field_name}}` where an input field goes; a field your application does not send stays visible as the placeholder, so a missing field shows up in the answer rather than disappearing. **Preview changes** fills in sample inputs without calling a model, and replays recent requests against the new instructions so you can see what would change.
+Instructions are the prompt a release sends the model. Use `{{field_name}}` to refer to an input field. Orlo supplies the input separately as data, so caller text does not become part of the saved instructions. The instruction preview shows this separation using an example. Compare models to test how instruction changes affect answers.
 
 Pinned skills are prepended to the instructions in order, each labeled with its name and version. See [Shared skills](/console/skills/shared-skills).
 
@@ -26,11 +26,13 @@ Pinned skills are prepended to the instructions in order, each labeled with its 
 
 Examples are inputs with the answer your reviewers expect. Upload a CSV, JSON, or JSON Lines file; in a CSV the first column is the input and the other columns are the answer fields. Each upload makes a new dataset version, and the previous one stays. A comparison names the dataset version it ran on.
 
+Known organization credentials and recognizable secret values are removed from examples. Ordinary fields such as `token` or `session` keep their names and value types. When content changes, the console asks you to inspect it before comparing models.
+
 Examples also come from production: a reviewer’s correction, once promoted, becomes a new example, and an agent step can be added to the task’s examples. See [Checking answers](/console/tasks/live-answers-and-corrections).
 
 ## Rules
 
-Rules run on every answer before it is returned, including answers served from cache.
+Rules run on every answer before it is returned, including reused answers when [response reuse is enabled](/platform-api/tasks#reuse-identical-answers).
 
 | Rule | Checks |
 | --- | --- |
@@ -40,7 +42,7 @@ Rules run on every answer before it is returned, including answers served from c
 | Pattern | The answer matches, or must not match, a regular expression |
 | Minimum and maximum length | The answer’s length |
 
-Each rule is an error or a warning, and the task says what a failed error rule means: **reject**, **retry**, or **warn**. Reject refuses the request with the rules that failed, so nothing reaches the customer. Retry runs the request once more on the task’s fallback model and refuses it if that fails too. Warn returns the answer marked invalid and leaves the decision to your application. Warnings always come back with the answer, and enough of them mark it to escalate, so your application can route it to a person. Custom patterns run in a sandbox; a pattern that cannot run safely is skipped and the skip is recorded as a warning.
+Each rule is an error or a warning, and the task says what a failed error rule means: **reject**, **retry**, or **warn**. Reject refuses the request with the rules that failed, so nothing reaches the customer. Retry runs the request once more on the task’s fallback model and refuses it if that fails too. Warn returns the answer marked invalid and leaves the decision to your application. Warnings always come back with the answer, and enough of them mark it to escalate, so your application can route it to a person. A required check that cannot complete does not count as a pass. Orlo refuses that answer with an indeterminate validation result and `abstain: true`, even when the task normally warns. Fix the check before retrying.
 
 ## Rubric
 

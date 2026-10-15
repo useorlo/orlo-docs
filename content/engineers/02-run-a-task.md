@@ -21,7 +21,7 @@ Request fields:
 
 | Field | Meaning |
 | --- | --- |
-| `input` | An object whose fields fill the `{{field}}` placeholders in the task’s instructions |
+| `input` | An object containing the data named by `{{field}}` references in the saved instructions; values are sent separately as data |
 | `deployment_id` | Optional. Select a live release belonging to this task; an inactive release is refused |
 | `explain` | Optional. `default`, `debug`, or `audit`; the last two add a `debug` block |
 
@@ -50,17 +50,18 @@ Response:
 
 | Field | Meaning |
 | --- | --- |
-| `valid` | No error-severity validation check failed |
+| `status` | `passed`, `failed`, or `indeterminate` when a check could not complete |
+| `valid` | The required checks completed and no error-severity check failed |
 | `warnings` | Messages describing failed checks or validation warnings |
 | `score` | 1 for a clean answer, lower by a tenth per warning, 0 when invalid |
 | `abstain` | The answer should not be used as it is |
 | `escalate` | Enough warnings that a person should look |
 
-Decide in your application what each means for the user: show the answer, hold it, or route it to a person. Use `trace_id` to connect the answer to [feedback](/engineers/feedback-and-corrections) and its console record. Evidence is recorded in the background, so the record may appear after the response.
+Decide in your application what each means for the user: show the answer, hold it, or route it to a person. Use `trace_id` to connect the answer to [feedback](/engineers/feedback-and-corrections) and its console record. The answer and its rule results are recorded before Orlo returns a successful response.
 
-What a failed rule does depends on the task’s setting. With **reject**, the request answers `422 VALIDATION_FAILED` with the same validation block and the `trace_id`, and no answer is returned. With **retry**, Orlo attempts a configured, available fallback model and checks that answer before deciding the result. With **warn**, the answer comes back with `valid: false`. An answer marked `abstain` is always refused.
+What a failed rule does depends on the task’s setting. With **reject**, the request answers `422 VALIDATION_FAILED` with the same validation block and the `trace_id`, and no answer is returned. With **retry**, Orlo attempts a configured, available fallback model and checks that answer before deciding the result. With **warn**, the answer comes back with `valid: false`. An answer marked `abstain` is always refused. If a required check cannot run, validation is `indeterminate` with `abstain: true`; the answer is refused even under warn behavior. Fix the rule before retrying. A fallback cannot repair a check that did not execute.
 
-When the model call itself fails or times out, Orlo tries a configured, available fallback model before returning an error. `504 INFERENCE_TIMEOUT` means the request could not complete within the inference timeout.
+Orlo can try one configured, available fallback after a temporary transport, throttling, or provider-server failure, while time remains. Authentication failures, unreadable responses, and suspected credential exposure do not trigger a fallback. `504 INFERENCE_TIMEOUT` means the request could not complete within its time limit. See [inference errors and recovery](/platform-api/inference#errors-and-recovery).
 
 ## Sources
 
@@ -71,3 +72,9 @@ For a source-backed release, `debug.retrieval` lists the passages supplied to th
 An explicit `deployment_id` must belong to this task and be live. An inactive release returns `409 RELEASE_NOT_LIVE`; a release from another task returns `404 DEPLOYMENT_NOT_FOUND`. Without an explicit ID, Orlo uses an eligible routing-policy choice, then the live release if no choice is available.
 
 Use [comparisons](/console/tasks/compare-and-release) to test a candidate before releasing it.
+
+## Consistency and response reuse
+
+When the release does not specify a temperature, task requests use `0`, matching comparisons. Chat requests can override it. A low temperature reduces variation but does not make responses deterministic.
+
+[Response reuse](/platform-api/tasks#reuse-identical-answers) is optional and off by default. For eligible repeated requests, it avoids another model call while still checking the answer and recording a separate request trace.

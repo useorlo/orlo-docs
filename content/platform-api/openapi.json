@@ -572,6 +572,16 @@
                 }
               }
             }
+          },
+          "503": {
+            "description": "EXAMPLE_PROTECTION_UNAVAILABLE: organization credentials could not be checked. No changes were saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "x-required-scopes": [
@@ -1228,15 +1238,12 @@
               "example": {
                 "messages": [
                   {
-                    "role": "system",
-                    "content": "Return a support category as JSON."
-                  },
-                  {
                     "role": "user",
                     "content": "I cannot sign in"
                   }
                 ],
-                "max_tokens": 256
+                "max_tokens": 256,
+                "stream": false
               }
             }
           }
@@ -1306,13 +1313,132 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/Error400"
+            "description": "INVALID_INPUT: correct the named field. Streaming requests are rejected before a model call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INVALID_INPUT",
+                  "message": "stream: Streaming is not supported for task inference. Set stream to false or omit it to receive a complete, checked answer."
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONSENSUS_CONFIGURATION_INVALID: Compare eligible candidates on the same task version and source settings, then correct the consensus configuration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "CONSENSUS_CONFIGURATION_INVALID",
+                  "message": "Compare eligible candidates on the same task version and source settings, then correct the consensus configuration."
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "VALIDATION_FAILED: The answer failed its rules or a required check was indeterminate. No answer was returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "VALIDATION_FAILED",
+                  "message": "The answer failed its rules or a required check was indeterminate. No answer was returned."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "INFERENCE_BUSY: Too many requests are running. Honor Retry-After and reduce concurrency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_BUSY",
+                  "message": "Too many requests are running. Honor Retry-After and reduce concurrency."
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before another attempt.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_TIMEOUT",
+                  "message": "The request was cancelled or exceeded its time limit."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Retrying after EVIDENCE_UNAVAILABLE may incur another model call.",
+            "headers": {
+              "Retry-After": {
+                "description": "Present for PROVIDER_BUSY or PROVIDER_PAUSED; seconds to wait.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "PROVIDER_BUSY": {
+                    "value": {
+                      "error": "PROVIDER_BUSY",
+                      "message": "The provider connection is busy. Try again shortly."
+                    }
+                  },
+                  "PROVIDER_PAUSED": {
+                    "value": {
+                      "error": "PROVIDER_PAUSED",
+                      "message": "The provider connection is temporarily paused after repeated failures."
+                    }
+                  },
+                  "EVIDENCE_UNAVAILABLE": {
+                    "value": {
+                      "error": "EVIDENCE_UNAVAILABLE",
+                      "message": "The answer could not be recorded. No answer was returned. Retrying can incur another model call."
+                    }
+                  },
+                  "RUNTIME_UNAVAILABLE": {
+                    "value": {
+                      "error": "RUNTIME_UNAVAILABLE",
+                      "message": "The model call failed and no fallback answered. Check provider access and availability."
+                    }
+                  }
+                }
+              }
+            }
           }
         },
         "x-required-scopes": [
           "inference.run"
         ],
-        "description": "Text, non-streaming chat using caller-supplied messages. Does not prepend saved prompt or skill instructions. Required scope: `inference.run`."
+        "description": "Return a complete checked answer using released task instructions and pinned skills. Caller system, developer and tool messages are treated as data. Streaming is not supported.\n\nRequired scope: `inference.run`."
       }
     },
     "/v1/tasks/{taskId}/run": {
@@ -1372,7 +1498,7 @@
             "$ref": "#/components/responses/Error400"
           },
           "422": {
-            "description": "Answer rejected by the task rules; no answer is returned.",
+            "description": "Answer rejected by the task rules; no answer is returned. VALIDATION_FAILED: The answer failed its rules or a required check was indeterminate. No answer was returned.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1405,6 +1531,100 @@
                     "score": 0,
                     "abstain": false,
                     "escalate": false
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "CONSENSUS_CONFIGURATION_INVALID: Compare eligible candidates on the same task version and source settings, then correct the consensus configuration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "CONSENSUS_CONFIGURATION_INVALID",
+                  "message": "Compare eligible candidates on the same task version and source settings, then correct the consensus configuration."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "INFERENCE_BUSY: Too many requests are running. Honor Retry-After and reduce concurrency.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_BUSY",
+                  "message": "Too many requests are running. Honor Retry-After and reduce concurrency."
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before another attempt.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_TIMEOUT",
+                  "message": "The request was cancelled or exceeded its time limit."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Retrying after EVIDENCE_UNAVAILABLE may incur another model call.",
+            "headers": {
+              "Retry-After": {
+                "description": "Present for PROVIDER_BUSY or PROVIDER_PAUSED; seconds to wait.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "examples": {
+                  "PROVIDER_BUSY": {
+                    "value": {
+                      "error": "PROVIDER_BUSY",
+                      "message": "The provider connection is busy. Try again shortly."
+                    }
+                  },
+                  "PROVIDER_PAUSED": {
+                    "value": {
+                      "error": "PROVIDER_PAUSED",
+                      "message": "The provider connection is temporarily paused after repeated failures."
+                    }
+                  },
+                  "EVIDENCE_UNAVAILABLE": {
+                    "value": {
+                      "error": "EVIDENCE_UNAVAILABLE",
+                      "message": "The answer could not be recorded. No answer was returned. Retrying can incur another model call."
+                    }
+                  },
+                  "RUNTIME_UNAVAILABLE": {
+                    "value": {
+                      "error": "RUNTIME_UNAVAILABLE",
+                      "message": "The model call failed and no fallback answered. Check provider access and availability."
+                    }
                   }
                 }
               }
@@ -1466,6 +1686,10 @@
                     "created_at": {
                       "type": "string",
                       "format": "date-time"
+                    },
+                    "redaction_warning": {
+                      "type": "string",
+                      "description": "Present on a write when credential-like values changed. Inspect saved examples before comparing models."
                     }
                   }
                 }
@@ -1477,6 +1701,16 @@
           },
           "404": {
             "$ref": "#/components/responses/Error404"
+          },
+          "503": {
+            "description": "EXAMPLE_PROTECTION_UNAVAILABLE: organization credentials could not be checked. No changes were saved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
           }
         },
         "x-required-scopes": [
@@ -4472,7 +4706,7 @@
     },
     "/v1/tasks/{taskId}/documents/reembed": {
       "post": {
-        "summary": "Embed the task\u2019s sources again with the current embedding model",
+        "summary": "Embed the task’s sources again with the current embedding model",
         "parameters": [
           {
             "name": "taskId",
@@ -5753,7 +5987,7 @@
     },
     "/v1/agent-sessions/{sessionId}/steps/{stepId}/add-to-standard": {
       "post": {
-        "summary": "Add a step to the task\u2019s examples",
+        "summary": "Add a step to the task’s examples",
         "parameters": [
           {
             "name": "sessionId",
@@ -6332,6 +6566,15 @@
           },
           "message": {
             "type": "string"
+          },
+          "trace_id": {
+            "type": "string",
+            "description": "Request identifier when available; keep it for troubleshooting."
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Error-specific context. VALIDATION_FAILED returns validation fields here, including status and entries. If a failed attempt also could not be recorded, evidence_recorded is false."
           }
         },
         "example": {
@@ -6370,7 +6613,21 @@
             "type": "string"
           },
           "config": {
-            "$ref": "#/components/schemas/GenericObject"
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Task-level settings. On update, retain other config values; this field replaces the object. Response reuse applies to live requests immediately.",
+            "properties": {
+              "response_cache": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
+                  }
+                }
+              }
+            }
           },
           "skill_version_ids": {
             "type": "array",
@@ -6442,7 +6699,21 @@
             "type": "string"
           },
           "config": {
-            "$ref": "#/components/schemas/GenericObject"
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Task-level settings. On update, retain other config values; this field replaces the object. Response reuse applies to live requests immediately.",
+            "properties": {
+              "response_cache": {
+                "type": "object",
+                "properties": {
+                  "enabled": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
+                  }
+                }
+              }
+            }
           },
           "skill_version_ids": {
             "type": "array",
@@ -6621,6 +6892,14 @@
           },
           "change_mode": {
             "type": "string"
+          },
+          "redaction_warning": {
+            "type": "string",
+            "description": "Present on a write when credential-like values changed. Inspect saved examples before comparing models."
+          },
+          "redacted_sample_count": {
+            "type": "integer",
+            "description": "Number of new or copied samples changed by credential protection during this write."
           }
         }
       },
@@ -6732,7 +7011,8 @@
         ],
         "properties": {
           "model": {
-            "type": "string"
+            "type": "string",
+            "description": "Accepted for client compatibility. The task release and routing settings select the model."
           },
           "messages": {
             "type": "array",
@@ -6744,33 +7024,58 @@
               ],
               "properties": {
                 "role": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "system",
+                    "developer",
+                    "user",
+                    "assistant",
+                    "tool"
+                  ]
                 },
                 "content": {
                   "type": "string"
                 }
               }
-            }
+            },
+            "minItems": 1,
+            "maxItems": 128,
+            "description": "Conversation data. Released task instructions and pinned skills always apply. Caller system, developer and tool messages become JSON-wrapped user data."
           },
           "temperature": {
-            "type": "number"
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2,
+            "description": "Overrides the release temperature. When neither specifies one, Orlo requests 0, matching comparisons."
           },
           "max_tokens": {
-            "type": "integer"
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16384
+          },
+          "max_completion_tokens": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16384,
+            "description": "Output-token limit; takes precedence over max_tokens."
+          },
+          "stream": {
+            "type": "boolean",
+            "enum": [
+              false
+            ],
+            "description": "Only complete answers are supported. true returns INVALID_INPUT (400) before a model call."
           }
         },
         "example": {
           "messages": [
             {
-              "role": "system",
-              "content": "Return a support category as JSON."
-            },
-            {
               "role": "user",
               "content": "I cannot sign in"
             }
           ],
-          "max_tokens": 256
+          "max_tokens": 256,
+          "stream": false
         }
       },
       "TaskRunRequest": {
@@ -6780,7 +7085,9 @@
         ],
         "properties": {
           "input": {
-            "$ref": "#/components/schemas/GenericObject"
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Task data, supplied separately from released instructions. {{field}} references name fields in this object."
           },
           "deployment_id": {
             "type": "string",
@@ -8791,6 +9098,15 @@
           },
           "escalate": {
             "type": "boolean"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "indeterminate"
+            ],
+            "description": "An indeterminate required check blocks the answer with abstain true, including under warn behavior."
           }
         },
         "required": [
@@ -9644,7 +9960,7 @@
       "runtimeKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Runtime key created by an admin in Settings \u2192 Keys. Each operation lists its required scope."
+        "description": "Runtime key created by an admin in Settings → Keys. Each operation lists its required scope."
       }
     }
   },

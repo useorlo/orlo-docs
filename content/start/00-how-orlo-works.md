@@ -25,29 +25,29 @@ Use this path when your application needs a result: route a support ticket, answ
 %%{init: {"theme":"base","themeCSS":".messageText, .loopText, .loopText tspan { fill: var(--color-text-secondary) !important; }","themeVariables":{"primaryColor":"#eef1ec","primaryTextColor":"#202722","primaryBorderColor":"#8a948c","lineColor":"#8a948c","actorBkg":"#eef1ec","actorBorder":"#8a948c","actorTextColor":"#202722","actorLineColor":"#8a948c","signalColor":"#8a948c","signalTextColor":"#616b63","noteBkgColor":"#e9eee6","noteBorderColor":"#8a948c","noteTextColor":"#202722","labelBoxBkgColor":"#eef1ec","labelBoxBorderColor":"#8a948c","labelTextColor":"#616b63","loopTextColor":"#616b63","fontFamily":"DM Sans, sans-serif"}}}%%
 sequenceDiagram
     accTitle: A task request returns a complete checked result
-    accDescr: The application sends input to Orlo. Orlo selects a live release, checks the cache, retrieves sources when needed, calls the provider if no cached answer is reusable, and checks the complete answer before returning a result. Evidence is recorded in the background.
+    accDescr: The application sends input to Orlo. Orlo selects a live release, reuses an eligible answer only when enabled, retrieves sources when needed, and calls the provider when a new answer is needed. Orlo checks the complete answer and records evidence before returning it.
     participant App as Your application
     participant Orlo
     participant Model as Your provider
     App->>Orlo: Input + runtime key
-    Note over Orlo: Select release<br/>Check cache
+    Note over Orlo: Select release<br/>Check for reuse if enabled
     opt No reusable cached answer
         Note over Orlo: Add sources if needed
         Orlo->>Model: Model request
         Model-->>Orlo: Complete answer
     end
     Note over Orlo: Check answer rules<br/>Fallback if needed and available
+    Note over Orlo: Record answer and rule results
     Orlo-->>App: Complete result + trace ID
-    Note over Orlo: Record evidence<br/>in the background
 ```
 
-1. **Send the input.** Call `POST /v1/tasks/:id/run` with a runtime key that has `inference.run`. Orlo uses the saved task instructions and pinned skills. With `POST /v1/chat/completions`, you supply the messages and identify the task with `X-Orlo-Task-Id`.
+1. **Send the input.** Call `POST /v1/tasks/:id/run` with a runtime key that has `inference.run`. Orlo uses the saved task instructions and pinned skills. With `POST /v1/chat/completions`, you supply conversation messages and identify the task with `X-Orlo-Task-Id`. The released instructions and pinned skills apply on both paths.
 2. **Use the selected release.** An explicit `deployment_id` on the task endpoint must name a live release for that task. Otherwise, Orlo uses an eligible routing-policy choice, then the live release if no choice is available. Use comparisons to test unreleased candidates.
-3. **Prepare the answer.** Orlo can reuse eligible cached answers for low-temperature requests without sources. Source-backed releases retrieve relevant passages at request time. When a model call is needed, Orlo uses your organization’s provider credential.
-4. **Check the complete answer.** Orlo applies the task’s answer rules. A configured, available fallback can be tried after a provider failure or when the task’s retry behavior calls for it. The fallback answer is checked too.
-5. **Return the result.** A successful task response includes `output`, `validation`, and `trace_id`. A successful chat response puts the answer in `choices[0].message.content` and the validation status in `x-orlo-validation`. A rejected answer returns an error; a warning can accompany an answer your application must decide whether to use.
+3. **Prepare the answer.** Enable [response reuse](/platform-api/tasks#reuse-identical-answers) to avoid repeated model calls for eligible, identical requests. It is off by default. Source-backed releases retrieve relevant passages at request time. When a model call is needed, Orlo uses your organization’s provider credential.
+4. **Check the complete answer.** Orlo applies the task’s answer rules. A configured, available fallback can be tried after a temporary provider failure or when the task’s retry behavior calls for it. The fallback answer is checked too.
+5. **Record and return the result.** A successful task response includes `output`, `validation`, and `trace_id`. A successful chat response puts the answer in `choices[0].message.content` and the validation status in `x-orlo-validation`. A rejected answer returns an error; a warning can accompany an answer your application must decide whether to use.
 
-The request waits for a complete result. These endpoints do not stream tokens. Request evidence is recorded in the background and may appear in the console after the response.
+The request waits for a complete result. These endpoints do not stream tokens. The answer and its rule results are recorded before a successful response leaves Orlo. Webhook and telemetry delivery happen separately.
 
 Start with [Run a task](/engineers/run-a-task) or [Chat completions](/engineers/chat-completions).
 

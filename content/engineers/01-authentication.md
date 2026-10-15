@@ -46,8 +46,10 @@ Errors are JSON with `error` and `message`:
 | `400 INVALID_INPUT` | A required field is missing or wrong; the message names it |
 | `404 NOT_FOUND` and the resource’s own codes | The id is not in this organization |
 | `409` with a named code | The record changed under you, for example `FEEDBACK_CHANGED` or `SKILL_PUBLICATION_CHANGED` |
-| `429` | Rate limited; wait for `Retry-After` |
+| `429`, including `INFERENCE_BUSY` | Rate or concurrency limited; wait for `Retry-After` |
 | `502 UPSTREAM_UNAVAILABLE`, `504 UPSTREAM_TIMEOUT` | The service was unavailable or the request timed out |
+
+For provider capacity, unavailable evidence, consensus configuration, validation, and streaming errors, see [inference errors and recovery](/platform-api/inference#errors-and-recovery).
 
 ## Rate limits
 

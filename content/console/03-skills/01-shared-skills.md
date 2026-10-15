@@ -37,7 +37,7 @@ Retire a version to prevent new retrievals and new bindings. Retirement asks for
 - a task that still pins it cannot be released until the task’s standard replaces it,
 - existing records keep their reference, so the history still says what ran.
 
-Retiring the default leaves the skill with no discoverable version until another is published. Existing task releases remain pinned to their recorded versions; replace the skill and release the updated task when those releases must stop using it. Retirement also cannot pull back files already installed or instructions already in an app’s context.
+Retiring the default leaves the skill with no discoverable version until another is published. Existing task releases continue using their pinned versions until you replace the skill and release the updated task. Retirement does not stop those releases. If a task must stop immediately, archive it while you prepare the replacement. Retirement also cannot pull back files already installed or instructions already in an app’s context.
 
 ## Where a published version runs
 
