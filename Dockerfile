@@ -30,8 +30,8 @@ WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-# Install all dependencies (dev dependencies are needed to build)
-RUN npm ci --no-audit --no-fund
+# Build tools are required even when the host injects NODE_ENV=production.
+RUN npm ci --include=dev --no-audit --no-fund
 
 # =============================================================================
 # src: split the build context into app source and site files
