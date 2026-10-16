@@ -23,7 +23,7 @@ Three layers, in order:
 
 1. **Rules.** Each answer runs through the task’s rules. Rule results contribute to scoring; inspect failed checks as well as the combined score.
 2. **Match.** The answer is compared with the expected answer: exact for classification, semantic for free text.
-3. **Judge.** A model that is never a candidate scores the answer against the rubric. It sees exactly what the candidate saw. With two judges and an agreement threshold, examples where they disagree are flagged for a person.
+3. **Judge.** A model that is never a candidate scores the answer against the rubric. It receives the task rubric, expected answer, and reference passages where configured. With two judges and an agreement threshold, examples where they disagree are flagged for a person.
 
 Each candidate’s score is an average across examples with a 95% confidence interval estimated from the scored examples. A candidate that is clearly behind after enough examples is dropped early to save budget.
 
@@ -35,9 +35,9 @@ Open any example to read the answers side by side, the rule results, the judge�
 
 ## Release
 
-**Release** pins the selected model and task version and snapshots validation and routing settings, then makes the release live. [Sources and retrieval settings remain live](/console/tasks/sources#changes-to-sources). The release records who made it and which comparison chose the model. A release linked to a comparison must use a matching task version and strategy, with an eligible model that returned usable results. Review the answers and your acceptance criteria; eligibility alone is not a guarantee of suitability.
+**Release** pins the selected model and task version and snapshots validation and routing settings, then makes the release live. [Sources and retrieval settings are saved with the release](/console/tasks/source-changes). The release records who made it and which comparison chose the model. A release linked to a comparison must use a matching task version and strategy, with an eligible model that returned usable results. Review the answers and your acceptance criteria; eligibility alone is not a guarantee of suitability.
 
-A release can also be made without a comparison, from first-run setup, from “release with sources,” or through the API. The record then shows no comparison, so a reviewer can tell the two apart.
+On an advisory task, a release can also be made without a comparison, from first-run setup, from “release with sources,” or through the API. The record then shows no comparison, so a reviewer can tell the two apart.
 
 A release that points at a draft skill or a retired skill version is refused, with the version named.
 
@@ -53,3 +53,9 @@ A release that points at a draft skill or a retired skill version is refused, wi
 
 - [What if no answers returned?](/console/tasks/comparison-failed)
 - [What does too close to call mean?](/console/tasks/comparison-too-close)
+
+## Require evidence before release
+
+A ranking comparison and a release test answer different questions. [Require a passing release test](/console/tasks/release-tests) to tie eligibility to a fixed paired test, declared tolerance, and exact candidate configuration. Required tasks refuse releases without qualifying evidence.
+
+[Inspect regression regions](/console/tasks/regression-regions) or [test sources on/off](/console/tasks/inspect-source-retrieval) when you need to understand the difference.

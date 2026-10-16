@@ -46,4 +46,8 @@ List deployments, optionally filtered by `task_id`.
 - Activation is per-task, so activating one deployment deactivates the previously active deployment for that task.
 
 
-The task version pins instructions, answer rules, and skill versions. Validation and routing settings are snapshotted. Documents and retrieval settings remain live; a release is not a frozen copy of the source collection. A comparison link establishes what was tested, not a guarantee of correctness.
+The task version pins instructions, answer rules, and skill versions. Validation and routing settings are snapshotted. Sources and retrieval settings are snapshotted with the release. Later source edits do not change that snapshot. A comparison link establishes what was tested, not a guarantee of correctness.
+
+## Release tests
+
+Supply `evaluation_candidate_id` with `evaluation_id` to select an exact passing release-test candidate, including when two candidates use the same model. Tasks with `config.release_policy.mode: "required"` require a qualifying candidate when creating, activating, or serving a release. [Read the adoption and rollback rules](/console/tasks/release-tests).

@@ -31,3 +31,10 @@ Inbox summarizes open signals, comparisons needing attention, and work waiting f
 ## Find a specific answer
 
 [Browse questions about tasks, skills, access, and agent behavior](/start/find-an-answer). Each question has a direct answer and a focused guide.
+
+## Test and learn
+
+- [Require a release test](/console/tasks/release-tests) and [find regressions](/console/tasks/regression-regions).
+- [Preview rules](/console/tasks/preview-rules) and [inspect source retrieval](/console/tasks/inspect-source-retrieval).
+- [Reduce repetitive approvals](/console/agent-runs/measured-permissions) with [independent review](/console/agent-runs/independent-review).
+- [Report action outcomes](/engineers/report-action-outcomes).

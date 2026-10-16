@@ -13,6 +13,6 @@ Open the task’s **Changes** tab and use **Undo** to make an eligible earlier r
 
 Review the earlier release’s model and pinned task version, then send a test request after the switch. Inspect the recorded release and validation result.
 
-Sources and retrieval settings remain live: undoing a release does not restore an older document collection. If the problem is in a source, [review that change separately](/console/tasks/source-changes).
+Each release retains its saved sources and retrieval settings. Returning to an earlier eligible release uses that saved snapshot. A task with required testing also checks the earlier release against its current release policy. [Review source changes](/console/tasks/source-changes).
 
 If the older release is ineligible, compare and release a supported replacement instead. [Handle a retired model](/console/tasks/model-retired).

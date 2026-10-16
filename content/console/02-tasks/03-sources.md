@@ -19,7 +19,7 @@ Open a task’s **Sources** tab and add text, Markdown, or a PDF. Text is split 
 
 Orlo uses keyword search and, when compatible embeddings are available, meaning search. It combines the results and excludes passages below the configured relevance threshold. The passages go to the model labeled with their document and page. The answer records them, and the console shows them beside each answer and beside each comparison example.
 
-A comparison on a task with sources uses the same retrieval for every candidate, so the models are compared on the same evidence.
+Candidates using the same source snapshot share retrieved passages. A release test can compare distinct configurations, including [sources on/off](/console/tasks/inspect-source-retrieval).
 
 ## Embed again
 

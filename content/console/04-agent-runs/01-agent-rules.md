@@ -24,7 +24,7 @@ A rule names a tool and a decision. Unknown tools are blocked: a tool with no ru
 | Require approval | The call waits for a person; see below |
 | Reject | The call does not run; the agent is told why |
 
-A rule can be narrowed by task, by release, by environment (such as `production`), by action class (`read`, `write`, `delete`, `network`, or `control`), and by risk tier. A rule that names `*` applies to every tool. When several rules match, the strictest decision wins. The agent declares the action class of each call, and the class that applies is the stricter of what the agent declared and what your rules say for that tool, so an agent cannot declare its way past a rule. Rules match on the tool and its action class, so to gate refunds, make the refund tool require approval.
+A rule can be narrowed by task, by release, by environment (such as `production`), by action class (`read`, `write`, `delete`, `network`, or `control`), and by risk tier. A rule that names `*` applies to every tool. When several rules match, the strictest decision wins. The agent declares the action class of each call, and the class that applies is the stricter of what the agent declared and what your rules say for that tool, so an agent cannot declare its way past a rule. Add typed argument conditions to narrow a permission, such as an amount threshold and allowed currency. Missing or wrongly typed arguments require approval.
 
 Some built-in bookkeeping tools are allowed unless a rule names them. The `orlo_setup_check` tool is intentionally subject to the normal permission rules.
 
@@ -45,3 +45,7 @@ The SDK decides per action class: `closed` stops the call, `open` runs it and re
 ## What a decision records
 
 Every governed step records the decision, the rules that matched, the latency of the decision, and, where a person was involved, the approval and who decided. The run’s timeline in **Agent runs** shows the steps in order, with the model calls and tool calls the agent reported.
+
+## Reduce repeated approvals
+
+[Measured permissions](/console/agent-runs/measured-permissions) combine argument conditions, shadow observations, independent reviews, and explicit enablement for one configuration. [Report action outcomes](/engineers/report-action-outcomes) to distinguish a permission decision from what happened after it.

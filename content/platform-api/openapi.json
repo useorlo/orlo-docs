@@ -6362,6 +6362,31 @@
               "default": 0
             },
             "description": ""
+          },
+          {
+            "name": "candidate_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "region_group",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "region_metric",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -6455,6 +6480,951 @@
           },
           "404": {
             "description": "APPROVAL_NOT_FOUND in this organization"
+          }
+        }
+      }
+    },
+    "/v1/agent-sessions/{sessionId}/actions/{actionId}/reports": {
+      "post": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Append an execution or business outcome",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "actionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "description": "Required scope: `agent_governance.run`. Reuse report_id and identical content for idempotent retries; changed content returns 409 ACTION_REPORT_CHANGED. Reports may arrive after a run ends and never change permission. Imported traces cannot supply governed action reports.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "report_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "recorded_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "source": {
+                      "type": "string",
+                      "enum": [
+                        "application_report"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "report_id": "11111111-1111-4111-8111-111111111111",
+                  "recorded_at": "2026-10-15T12:00:00Z",
+                  "source": "application_report"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "description": "ACTION_REPORT_CHANGED: this ID identifies different report content."
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionReportRequest"
+              },
+              "example": {
+                "report_id": "11111111-1111-4111-8111-111111111111",
+                "kind": "execution",
+                "outcome": "succeeded",
+                "duration_ms": 135
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "agent-governance"
+        ],
+        "summary": "Read outcomes and paginated report history",
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "actionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "agent_governance.read"
+        ],
+        "description": "Required scope: `agent_governance.read`.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "latest": {
+                      "type": "object",
+                      "properties": {
+                        "execution": {
+                          "type": "object",
+                          "properties": {
+                            "report_id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "detail": {
+                              "type": "string",
+                              "maxLength": 2000
+                            },
+                            "occurred_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "execution",
+                                "business"
+                              ]
+                            },
+                            "outcome": {
+                              "type": "string"
+                            },
+                            "criterion": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "duration_ms": {
+                              "type": "number",
+                              "nullable": true
+                            },
+                            "recorded_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "reported_by": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "source": {
+                              "type": "string",
+                              "enum": [
+                                "application_report"
+                              ]
+                            }
+                          },
+                          "nullable": true
+                        },
+                        "business": {
+                          "type": "object",
+                          "properties": {
+                            "report_id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "detail": {
+                              "type": "string",
+                              "maxLength": 2000
+                            },
+                            "occurred_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "execution",
+                                "business"
+                              ]
+                            },
+                            "outcome": {
+                              "type": "string"
+                            },
+                            "criterion": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "duration_ms": {
+                              "type": "number",
+                              "nullable": true
+                            },
+                            "recorded_at": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "reported_by": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "source": {
+                              "type": "string",
+                              "enum": [
+                                "application_report"
+                              ]
+                            }
+                          },
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "report_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "detail": {
+                            "type": "string",
+                            "maxLength": 2000
+                          },
+                          "occurred_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "execution",
+                              "business"
+                            ]
+                          },
+                          "outcome": {
+                            "type": "string"
+                          },
+                          "criterion": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "duration_ms": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "recorded_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "reported_by": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "source": {
+                            "type": "string",
+                            "enum": [
+                              "application_report"
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/evaluations/{id}/retrieval": {
+      "get": {
+        "tags": [
+          "evaluations"
+        ],
+        "summary": "Inspect source retrieval separately from answer quality",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "candidate_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`. Returns up to 10 examples and 6 bounded passage previews each. Matched passages do not establish relevance. Older records may be unavailable.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "candidate": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "candidate_key": {
+                          "type": "string"
+                        },
+                        "include_retrieval_context": {
+                          "type": "boolean"
+                        },
+                        "source_set_id": {
+                          "type": "string",
+                          "format": "uuid",
+                          "nullable": true
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "summary": {
+                          "type": "object",
+                          "properties": {
+                            "planned": {
+                              "type": "integer"
+                            },
+                            "checked": {
+                              "type": "integer"
+                            },
+                            "matched": {
+                              "type": "integer"
+                            },
+                            "no_match": {
+                              "type": "integer"
+                            },
+                            "skipped": {
+                              "type": "integer"
+                            },
+                            "shared_judge_reference": {
+                              "type": "boolean"
+                            }
+                          },
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "sample_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": [
+                              "disabled",
+                              "unrecorded",
+                              "skipped",
+                              "no_match",
+                              "matched"
+                            ]
+                          },
+                          "query": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "mode": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "notes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "passage_count": {
+                            "type": "integer"
+                          },
+                          "passages": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "source_id": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "chunk_id": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true
+                                },
+                                "page": {
+                                  "type": "integer",
+                                  "nullable": true
+                                },
+                                "text": {
+                                  "type": "string",
+                                  "maxLength": 2000
+                                },
+                                "truncated": {
+                                  "type": "boolean"
+                                },
+                                "structure": {
+                                  "type": "object",
+                                  "nullable": true,
+                                  "description": "Recorded heading_path, page/section ranges, kind, and optional ingestion receipt. A receipt includes document_sha256, chunk_sha256, passage order, parser/chunker identities, and structure_origin. Arbitrary upload metadata is excluded.",
+                                  "properties": {
+                                    "heading_path": {
+                                      "type": "array",
+                                      "maxItems": 6,
+                                      "items": {
+                                        "type": "string",
+                                        "maxLength": 300
+                                      }
+                                    },
+                                    "page_start": {
+                                      "type": "integer",
+                                      "nullable": true,
+                                      "minimum": 0
+                                    },
+                                    "page_end": {
+                                      "type": "integer",
+                                      "nullable": true,
+                                      "minimum": 0
+                                    },
+                                    "section_line_start": {
+                                      "type": "integer",
+                                      "nullable": true,
+                                      "minimum": 0
+                                    },
+                                    "section_line_end": {
+                                      "type": "integer",
+                                      "nullable": true,
+                                      "minimum": 0
+                                    },
+                                    "kind": {
+                                      "type": "string",
+                                      "enum": [
+                                        "text",
+                                        "table"
+                                      ]
+                                    },
+                                    "ingestion": {
+                                      "type": "object",
+                                      "nullable": true,
+                                      "properties": {
+                                        "version": {
+                                          "type": "integer",
+                                          "enum": [
+                                            1
+                                          ]
+                                        },
+                                        "source_kind": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "enum": [
+                                            "inline",
+                                            "pdf",
+                                            "prechunked"
+                                          ]
+                                        },
+                                        "document_sha256": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        },
+                                        "chunk_sha256": {
+                                          "type": "string",
+                                          "nullable": true,
+                                          "pattern": "^[a-f0-9]{64}$"
+                                        },
+                                        "chunk_index": {
+                                          "type": "integer",
+                                          "nullable": true,
+                                          "minimum": 0
+                                        },
+                                        "chunk_count": {
+                                          "type": "integer",
+                                          "nullable": true,
+                                          "minimum": 0
+                                        },
+                                        "parser": {
+                                          "type": "object",
+                                          "properties": {
+                                            "name": {
+                                              "type": "string",
+                                              "maxLength": 100
+                                            },
+                                            "version": {
+                                              "type": "string",
+                                              "maxLength": 100
+                                            }
+                                          }
+                                        },
+                                        "chunker": {
+                                          "type": "object",
+                                          "properties": {
+                                            "name": {
+                                              "type": "string",
+                                              "maxLength": 100
+                                            },
+                                            "version": {
+                                              "type": "string",
+                                              "maxLength": 100
+                                            }
+                                          }
+                                        },
+                                        "structure_origin": {
+                                          "type": "string",
+                                          "enum": [
+                                            "parsed",
+                                            "supplied"
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "passages_limited": {
+                            "type": "boolean"
+                          },
+                          "answer_failed": {
+                            "type": "boolean"
+                          },
+                          "answer_score": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "standard_passed": {
+                            "type": "boolean",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": "string",
+                      "format": "uuid",
+                      "nullable": true
+                    },
+                    "note": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "candidate": {
+                    "id": "11111111-1111-4111-8111-111111111111",
+                    "candidate_key": "sources-on",
+                    "include_retrieval_context": true,
+                    "source_set_id": "22222222-2222-4222-8222-222222222222",
+                    "model": "Example model",
+                    "summary": {
+                      "planned": 40,
+                      "checked": 40,
+                      "matched": 40,
+                      "no_match": 0,
+                      "skipped": 0,
+                      "shared_judge_reference": true
+                    }
+                  },
+                  "items": [
+                    {
+                      "sample_id": "33333333-3333-4333-8333-333333333333",
+                      "state": "matched",
+                      "query": "Refund policy",
+                      "mode": "full",
+                      "notes": [],
+                      "passage_count": 1,
+                      "passages": [
+                        {
+                          "source_id": "44444444-4444-4444-8444-444444444444",
+                          "chunk_id": "55555555-5555-4555-8555-555555555555",
+                          "name": "Policy.md",
+                          "page": null,
+                          "text": "Refund requests require review.",
+                          "truncated": false,
+                          "structure": {
+                            "heading_path": [
+                              "Policy",
+                              "Refunds"
+                            ],
+                            "page_start": null,
+                            "page_end": null,
+                            "section_line_start": 2,
+                            "section_line_end": 3,
+                            "kind": "text",
+                            "ingestion": null
+                          }
+                        }
+                      ],
+                      "passages_limited": false,
+                      "answer_failed": false,
+                      "answer_score": 1,
+                      "standard_passed": true
+                    }
+                  ],
+                  "next_cursor": null,
+                  "note": "Matched passages show what search supplied, not proof of relevance."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/evaluations/{id}/regions": {
+      "get": {
+        "tags": [
+          "evaluations"
+        ],
+        "summary": "Read paired regression regions for a candidate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "candidate_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "description": "Required scope: `evaluations.read`. Descriptive diagnostics do not alter the release verdict.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "version": {
+                      "type": "integer"
+                    },
+                    "baseline_candidate_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "candidate_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "groups": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "metrics": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "cells": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "group": {
+                            "type": "string"
+                          },
+                          "metric": {
+                            "type": "string"
+                          },
+                          "examples": {
+                            "type": "integer"
+                          },
+                          "paired": {
+                            "type": "integer"
+                          },
+                          "missing": {
+                            "type": "integer"
+                          },
+                          "difference": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "sparse": {
+                            "type": "boolean"
+                          },
+                          "baseline": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "candidate": {
+                            "type": "number",
+                            "nullable": true
+                          },
+                          "worse": {
+                            "type": "integer"
+                          },
+                          "better": {
+                            "type": "integer"
+                          },
+                          "unchanged": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    },
+                    "sparse_below": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        }
+      }
+    },
+    "/v1/tasks/{id}/suggest-rules": {
+      "post": {
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Draft an output schema from saved expected answers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "x-required-scopes": [
+          "tasks.write"
+        ],
+        "description": "Required scope: `tasks.write`. Reads at most 200 expected answers from the task-owned dataset. It does not save a version. Review and save the draft explicitly.",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "output_schema": {
+                      "type": "object",
+                      "additionalProperties": true
+                    },
+                    "dataset_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "dataset_version": {
+                      "type": "integer"
+                    },
+                    "available_count": {
+                      "type": "integer"
+                    },
+                    "limited": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "required_fields": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "example_count": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "output_schema": {
+                    "type": "object",
+                    "properties": {
+                      "decision": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "decision"
+                    ]
+                  },
+                  "required_fields": [
+                    "decision"
+                  ],
+                  "example_count": 20,
+                  "dataset_id": "11111111-1111-4111-8111-111111111111",
+                  "dataset_version": 1,
+                  "available_count": 20,
+                  "limited": false,
+                  "message": "Review the proposed fields and types before saving."
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dataset_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "expected_version_id": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                "required": [
+                  "dataset_id",
+                  "expected_version_id"
+                ]
+              },
+              "example": {
+                "dataset_id": "11111111-1111-4111-8111-111111111111",
+                "expected_version_id": "22222222-2222-4222-8222-222222222222"
+              }
+            }
           }
         }
       }
@@ -6643,6 +7613,9 @@
                     "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
                   }
                 }
+              },
+              "release_policy": {
+                "$ref": "#/components/schemas/ReleasePolicy"
               }
             }
           },
@@ -6729,6 +7702,9 @@
                     "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
                   }
                 }
+              },
+              "release_policy": {
+                "$ref": "#/components/schemas/ReleasePolicy"
               }
             }
           },
@@ -6924,8 +7900,7 @@
         "type": "object",
         "required": [
           "task_id",
-          "dataset_id",
-          "models"
+          "dataset_id"
         ],
         "properties": {
           "task_id": {
@@ -6960,11 +7935,28 @@
             "$ref": "#/components/schemas/GenericObject"
           },
           "config": {
-            "$ref": "#/components/schemas/GenericObject"
+            "$ref": "#/components/schemas/GenericObject",
+            "properties": {
+              "retrieval_diagnostic": {
+                "type": "boolean",
+                "description": "Requires a release test with two candidates using the same explicit model and task version, one with sources and one without; no deployment overrides. Both judges receive the same references."
+              }
+            }
           },
           "expected_task_version_id": {
             "type": "string",
             "format": "uuid"
+          },
+          "candidates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/components/schemas/ComparisonCandidate"
+            }
+          },
+          "release_test": {
+            "$ref": "#/components/schemas/ReleaseTestPlan"
           }
         },
         "example": {
@@ -6974,7 +7966,23 @@
             "11111111-1111-4111-8111-111111111111"
           ],
           "expected_task_version_id": "33333333-3333-4333-8333-333333333333"
-        }
+        },
+        "allOf": [
+          {
+            "anyOf": [
+              {
+                "required": [
+                  "models"
+                ]
+              },
+              {
+                "required": [
+                  "candidates"
+                ]
+              }
+            ]
+          }
+        ]
       },
       "DeploymentCreateRequest": {
         "type": "object",
@@ -7012,6 +8020,10 @@
             "type": "string",
             "format": "uuid",
             "description": "Optional comparison evidence. The task version and candidate must match, and the candidate must have produced usable results."
+          },
+          "evaluation_candidate_id": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "example": {
@@ -7630,6 +8642,11 @@
               "attribution"
             ],
             "nullable": true
+          },
+          "action_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Use this governed tool action ID for execution and business reports."
           }
         },
         "required": [
@@ -7746,16 +8763,48 @@
             "$ref": "#/components/schemas/GenericObject"
           },
           "config": {
-            "$ref": "#/components/schemas/GenericObject"
+            "$ref": "#/components/schemas/GenericObject",
+            "properties": {
+              "retrieval_diagnostic": {
+                "type": "boolean",
+                "description": "Requires a release test with two candidates using the same explicit model and task version, one with sources and one without; no deployment overrides. Both judges receive the same references."
+              }
+            }
           },
           "expected_task_version_id": {
             "type": "string",
             "format": "uuid"
+          },
+          "candidates": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 12,
+            "items": {
+              "$ref": "#/components/schemas/ComparisonCandidate"
+            }
+          },
+          "release_test": {
+            "$ref": "#/components/schemas/ReleaseTestPlan"
           }
         },
         "required": [
-          "task_id",
-          "models"
+          "task_id"
+        ],
+        "allOf": [
+          {
+            "anyOf": [
+              {
+                "required": [
+                  "models"
+                ]
+              },
+              {
+                "required": [
+                  "candidates"
+                ]
+              }
+            ]
+          }
         ]
       },
       "ModelAvailability": {
@@ -8769,6 +9818,38 @@
           },
           "updated_at": {
             "type": "string"
+          },
+          "argument_conditions": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "$ref": "#/components/schemas/ArgumentCondition"
+            }
+          },
+          "policy_version": {
+            "type": "integer"
+          },
+          "band_state": {
+            "type": "string",
+            "enum": [
+              "shadow",
+              "earning",
+              "enabled",
+              "suspended",
+              "retired"
+            ],
+            "nullable": true
+          },
+          "band_epoch": {
+            "type": "integer"
+          },
+          "band_scope_hash": {
+            "type": "string",
+            "nullable": true
+          },
+          "band_reason": {
+            "type": "string",
+            "nullable": true
           }
         },
         "required": [
@@ -9565,6 +10646,16 @@
                 "system_note": {
                   "type": "string",
                   "nullable": true
+                },
+                "candidate_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "candidate_key": {
+                  "type": "string"
+                },
+                "release_test": {
+                  "$ref": "#/components/schemas/ReleaseTestResult"
                 }
               }
             }
@@ -9594,6 +10685,41 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
+          },
+          "release_test": {
+            "$ref": "#/components/schemas/ReleaseTestPlan"
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "candidate_key": {
+                  "type": "string"
+                },
+                "model_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "task_version_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "include_retrieval_context": {
+                  "type": "boolean"
+                },
+                "specification_hash": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -9971,6 +11097,364 @@
             "format": "date-time"
           }
         }
+      },
+      "ComparisonCandidate": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+          },
+          "model_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "task_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "deployment_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "include_retrieval_context": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key",
+          "model_id"
+        ],
+        "description": "A deployment supplies its own version and source setting; omit task_version_id and include_retrieval_context when supplying deployment_id. Two candidates may use the same model."
+      },
+      "ReleaseTestPlan": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          },
+          "method": {
+            "type": "string",
+            "enum": [
+              "paired_fixed"
+            ]
+          },
+          "baseline_candidate_key": {
+            "type": "string"
+          },
+          "sample_count": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 100000
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.9,
+            "maximum": 0.999
+          },
+          "max_score_drop": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "version",
+          "method",
+          "baseline_candidate_key",
+          "sample_count",
+          "confidence",
+          "max_score_drop"
+        ]
+      },
+      "ReleasePolicy": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "advisory",
+              "required"
+            ]
+          },
+          "minimum_samples": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 100000
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.9,
+            "maximum": 0.999
+          },
+          "max_score_drop": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "required": [
+          "version",
+          "mode",
+          "minimum_samples",
+          "confidence",
+          "max_score_drop"
+        ]
+      },
+      "ReleaseTestResult": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "regressed",
+              "inconclusive",
+              "invalid"
+            ]
+          },
+          "paired_count": {
+            "type": "integer"
+          },
+          "planned_count": {
+            "type": "integer"
+          },
+          "mean_difference": {
+            "type": "number",
+            "nullable": true
+          },
+          "lower_bound": {
+            "type": "number",
+            "nullable": true
+          },
+          "upper_bound": {
+            "type": "number",
+            "nullable": true
+          },
+          "interval_method": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "max_score_drop": {
+            "type": "number"
+          },
+          "version": {
+            "type": "integer",
+            "enum": [
+              1
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "family_size": {
+            "type": "integer"
+          },
+          "standard_failures": {
+            "type": "integer"
+          }
+        }
+      },
+      "ArgumentCondition": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "eq",
+                  "ne"
+                ]
+              },
+              "value": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "path",
+              "operator",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "gt",
+                  "gte",
+                  "lt",
+                  "lte"
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "path",
+              "operator",
+              "value"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "in"
+                ]
+              },
+              "value": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 32,
+                "items": {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "boolean"
+                    }
+                  ]
+                }
+              }
+            },
+            "required": [
+              "path",
+              "operator",
+              "value"
+            ]
+          }
+        ],
+        "description": "Typed JSON Pointer comparison. Missing or incorrectly typed values are unknown; no coercion."
+      },
+      "ActionReportRequest": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "report_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "detail": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "execution"
+                ]
+              },
+              "outcome": {
+                "type": "string",
+                "enum": [
+                  "succeeded",
+                  "failed",
+                  "not_executed",
+                  "unknown"
+                ]
+              },
+              "duration_ms": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 604800000
+              }
+            },
+            "required": [
+              "report_id",
+              "kind",
+              "outcome"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "report_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "detail": {
+                "type": "string",
+                "maxLength": 2000
+              },
+              "occurred_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "business"
+                ]
+              },
+              "outcome": {
+                "type": "string",
+                "enum": [
+                  "met",
+                  "not_met",
+                  "unknown"
+                ]
+              },
+              "criterion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 200
+              }
+            },
+            "required": [
+              "report_id",
+              "kind",
+              "outcome",
+              "criterion"
+            ]
+          }
+        ]
       }
     },
     "securitySchemes": {
