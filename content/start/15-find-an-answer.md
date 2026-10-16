@@ -24,6 +24,11 @@ Choose the question that matches your next step. Each guide starts with the answ
 - [What happens when I change a task’s source documents?](/console/tasks/source-changes)
 - [What happens if someone changes examples while I am reviewing them?](/console/tasks/examples-changed)
 
+- [How do I require a passing test before a release?](/console/tasks/release-tests)
+- [How do I see where a candidate performs worse?](/console/tasks/regression-regions)
+- [How do I test a rule before saving it?](/console/tasks/preview-rules)
+- [How do I check whether sources improve answers?](/console/tasks/inspect-source-retrieval)
+
 ## Shared skills and access
 
 - [How do I import an existing skill?](/console/skills/import-a-skill)
@@ -50,6 +55,16 @@ Choose the question that matches your next step. Each guide starts with the answ
 - [How does my application resume an approved agent action?](/engineers/resume-an-approved-step)
 - [What happens when a webhook cannot be delivered?](/engineers/webhook-delivery-fails)
 - [How do I send Orlo traces to my observability service?](/engineers/export-traces)
+
+## Measured permissions and learning
+
+- [How do I reduce repetitive approvals without granting broad access?](/console/agent-runs/measured-permissions)
+- [What happens before a permission has enough evidence?](/console/agent-runs/permission-cold-start)
+- [Why did automatic permission pause?](/console/agent-runs/permission-paused)
+- [How do I review an action independently?](/console/agent-runs/independent-review)
+- [What do Orlo’s confidence bounds mean?](/console/agent-runs/confidence-bounds)
+- [How do I identify an agent configuration for measured permissions?](/engineers/permission-context)
+- [How do I report whether an agent action succeeded?](/engineers/report-action-outcomes)
 
 ## Self-hosting
 

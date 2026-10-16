@@ -26,9 +26,15 @@ The test uses a fixed set of examples and compares each candidate with the basel
 
 The interval uses a conservative bound on paired scores, adjusted for the number of alternatives. It measures the evidence in the declared examples; it does not establish judge accuracy or guarantee future answers. A small test can remain inconclusive even when both candidates score well. [Inspect where answers differ](/console/tasks/regression-regions).
 
+These are frequentist confidence bounds, not Bayesian probabilities of safety. [What the confidence bounds mean](/console/agent-runs/confidence-bounds) explains that distinction and the different methods used for release tests and permissions.
+
 ## Adopt the policy on a live task
 
 First create and activate a release from a passing test. Then require testing. If the live release lacks qualifying evidence, the policy change is refused and the current release stays in place. Only an authorized member can change the policy in the console.
+
+![Release policy panel with required testing, minimum paired examples, confidence, and allowed score loss](./assets/images/console/release-policy.jpg)
+
+*Example policy settings. Choose thresholds for your task; the minimum example count alone does not establish a pass.*
 
 A stricter policy can require another test. Earlier releases remain available for rollback only while they meet the current policy and availability requirements. Required testing uses the tested generation settings: temperature zero where supported and a 4,096-token output budget. Consensus and LoRA releases do not have a qualifying test path. A fallback also needs a qualifying release for the same standard and source snapshot.
 

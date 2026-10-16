@@ -9,6 +9,10 @@ order: 14
 
 Open a completed release test and expand **Where answers differ**. Select a candidate and input grouping to see paired differences by overall score, rule results, rubric criteria, and declared output fields. Open a cell to inspect the examples behind it.
 
+![Paired differences by criterion and input length, with empty groups marked as sparse](./assets/images/console/regression-regions.jpg)
+
+*Open a populated cell to inspect paired answers. An empty group provides no comparison evidence.*
+
 The grid helps locate a problem that a headline average can hide. Output fields use exact JSON matches against expected answers. Input groups use fixed length ranges and categorical fields declared in the input schema. Missing or failed calls remain visible rather than becoming successful pairs.
 
 Groups with fewer than 20 usable pairs are marked sparse. That label is a reading aid, not a significance test. The grid is descriptive: selecting a favorable group does not change the release verdict. The view covers up to 12 rubric criteria, 12 output fields, and two declared categorical input fields.

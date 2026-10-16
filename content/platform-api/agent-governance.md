@@ -115,6 +115,19 @@ Configure [agent permissions and limits](/console/agent-runs/agent-rules) in the
 
 `POST /v1/agent-sessions/:session_id/steps/:step_id/add-to-standard` adds a step to the task’s examples.
 
+## Measured permissions
+
+Tool permissions can include typed `argument_conditions`. Measured bands use those conditions with shadow observations, independent reviews, and explicit member enablement for one configuration. Start runs with [model and application revision metadata](/engineers/permission-context).
+
+The console provides historical preview, **View evidence and status**, lifecycle actions, and independent review. These are member actions; runtime keys cannot create their own reviewed evidence, enable a band, or resume it. See [measured permissions](/console/agent-runs/measured-permissions).
+
+## Action reports
+
+- `POST /v1/agent-sessions/:session_id/actions/:action_id/reports` — append an execution or business outcome; requires `agent_governance.run`.
+- `GET /v1/agent-sessions/:session_id/actions/:action_id/reports` — latest outcomes and paginated history; requires `agent_governance.read`.
+
+Use the `action_id` returned by a governed tool request. Reports record what the application says happened; they do not authorize execution. [Request examples, receipts, and retry behavior](/engineers/report-action-outcomes).
+
 ## Approvals
 
 - `GET /v1/agent-approvals`

@@ -22,6 +22,8 @@ Application APIs and SDKs use a runtime key at `https://api.useorlo.com`. Employ
 | [Python and LangGraph](/engineers/python-and-langgraph) | The same, from a LangGraph or LangChain application |
 | [Skills in your AI tools](/engineers/skills-in-tools) | Claude and ChatGPT through the connector, Claude Code through the installer, your own agents through the SDK |
 | [Feedback and corrections](/engineers/feedback-and-corrections) | Send scores and corrections from your application |
+| [Declare agent configuration](/engineers/permission-context) | Identify the model and application revision used for measured permission evidence |
+| [Report action outcomes](/engineers/report-action-outcomes) | Record tool execution and later business results separately |
 | [Webhooks and approvals](/engineers/webhooks-and-approvals) | Receive signed decisions and resume a saved agent step |
 
 The full endpoint list is in the [API reference](/platform-api).

@@ -17,4 +17,8 @@ The inspection distinguishes passages supplied, no matching passages, search ski
 
 Open an example to read its query and passage previews. New ingestions retain Markdown section ancestry, PDF pages, and **Source provenance**: source and passage hashes, passage order, and parser/chunker versions. Prechunked uploads identify structure supplied by the caller. Older passages can lack these records. Previews are bounded; they are not full document downloads.
 
+![Source inspection showing a retrieved policy passage, its section, and expandable provenance](./assets/images/console/source-provenance.jpg)
+
+*Read the passage beside its answer result. Expand Source provenance to identify the saved source and passage revision.*
+
 A release keeps the source snapshot it was tested with. [Source changes require a new release](/console/tasks/source-changes).

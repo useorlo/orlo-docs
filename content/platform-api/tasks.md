@@ -69,6 +69,12 @@ Recheck recorded answers against a proposed output schema or validation rules. S
 
 The response includes current and projected pass rates, newly failing answers, and whether the preview completed. It does not call a model or test prompt changes. Use a comparison to test new instructions.
 
+### `POST /v1/tasks/:id/suggest-rules`
+
+Suggest an editable output schema from the task’s saved expected answers. Send `dataset_id` and `expected_version_id`. The response includes `output_schema`, the source dataset/version, examined counts, and whether the suggestion was limited. The endpoint reads at most 200 examples and does not save a task version or call a model. A changed task version returns `409 TASK_VERSION_CHANGED`.
+
+Review the field types and required fields before saving through the task update endpoint. Suggestions do not infer business policy or safe ranges. [Preview proposed rules](/console/tasks/preview-rules).
+
 ## Example
 
 ```bash
