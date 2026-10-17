@@ -11,6 +11,8 @@ Choose the question that matches your next step. Each guide starts with the answ
 ## Get started
 
 - [How do I get my first checked task answer?](/start/first-task)
+- [How do I compare support-routing models with Orlo?](/start/support-routing-tutorial)
+- [How do I replay an evaluation without a model key?](/start/replay-evaluation)
 - [How do I verify an agent connection?](/start/first-agent)
 - [How do I use a shared skill in my AI app?](/start/team-skills)
 

@@ -16,6 +16,10 @@ Choose the path that matches the work you want to do. You can add the other path
 
 Invited to review work? [Open and review your assignment](/start/review-work).
 
+## Try a worked evaluation
+
+[Compare models on 500 public support tickets](/start/support-routing-tutorial), from importing examples to inspecting answers and replaying scores. To explore the results without an account or provider key, [replay the saved studies](/start/replay-evaluation).
+
 ## Open your workspace
 
 [Sign up or accept an invitation](/start/sign-up-and-keys). In the console, the welcome card helps you choose a path and return to saved work. To reopen it, open your profile menu and choose **Getting started**. It shows the paths your access permits.

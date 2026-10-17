@@ -51,6 +51,8 @@ A release that points at a draft skill or a retired skill version is refused, wi
 
 ## Related questions
 
+- [How do I run a complete comparison with the public support-routing dataset?](/start/support-routing-tutorial)
+
 - [What if no answers returned?](/console/tasks/comparison-failed)
 - [What does too close to call mean?](/console/tasks/comparison-too-close)
 

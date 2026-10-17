@@ -35,7 +35,7 @@ If no model returned an answer, there is no scored result to choose from. Check 
 
 Continue setup to select a model with usable results and create its release. For an existing task, use **Changes**. Check what was tested before deciding which model should answer requests.
 
-The release pins the task version and model and snapshots validation and routing settings. It does not freeze the document collection; [sources remain live](/console/tasks/sources#changes-to-sources).
+The release pins the task version and model and snapshots validation, routing and source settings. [Source changes take effect with a new release](/console/tasks/source-changes).
 
 ## 5. Send a test request
 
@@ -46,6 +46,10 @@ Use the setup test request or **Connect → Connect your application**. Send thi
 ```
 
 Inspect the returned answer and validation result, then open the request in the task’s **Live** tab. The record identifies the model, release, and task version.
+
+## Try a larger worked example
+
+The [support-routing tutorial](/start/support-routing-tutorial) uses a separate public dataset of 500 synthetic tickets, with a written policy, saved results and independent scoring. It walks through a comparison and review; it does not release a model.
 
 ## Continue with your own work
 
