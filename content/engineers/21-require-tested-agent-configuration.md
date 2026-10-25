@@ -22,7 +22,7 @@ The qualification covers:
 - exact shared instruction versions and source-set version; and
 - tool-schema and permission-specification hashes.
 
-Changing any of these produces a different configuration. A label used to identify a comparison arm is not part of the executable identity.
+Changing any of these produces a different configuration. At session start, Orlo also verifies that the qualification still names the task’s current version and that the run binds the exact tested shared instruction versions. A label used to identify a comparison arm is not part of the executable identity.
 
 ## Require the binding
 
@@ -67,6 +67,6 @@ Orlo performs one indexed qualification check when the session starts and record
 
 `identity_assurance: declared` means Orlo records the artifact identity supplied by the integration. It does not prove the bytes running elsewhere. Use `verified` only when your build or deployment integration independently establishes the artifact digest.
 
-Adopting another passing configuration makes it active and keeps prior qualifications for deliberate rollback. Retired shared instructions or unavailable sources make a qualification unusable even if it passed earlier.
+Adopting another passing configuration makes it active and keeps prior qualifications for deliberate rollback. A task standard change or any added, removed, or changed shared instruction requires new evidence. Retired shared instructions or unavailable sources make a qualification unusable even if it passed earlier.
 
 [Test a complete workflow first](/console/tasks/test-complete-agent-workflows). [Create the production session](/platform-api/agent-governance#sessions).

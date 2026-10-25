@@ -50,11 +50,23 @@ await runner.run(assignment, {
   },
 }, async ({ run, scenario, candidate, signal }) => {
   const result = await runSupportAgent({ run, scenario, candidate, signal });
-  return { status: 'completed', metrics: result.metrics };
+  return {
+    status: 'completed',
+    metrics: {
+      turns: result.turns,
+      tool_calls: result.toolCalls,
+      duration_ms: result.durationMs,
+      cost_usd: result.costUsd, // Required when the scenario sets a cost budget.
+    },
+  };
 });
 ```
 
 The runtime key needs `agent_governance.run` to claim work and deliver receipts. Use a stable `runner_id`. Claim calls return one assignment or a `retry_after_ms`; respect that delay. Orlo limits active scenario work per organization and comparison, while `runScenarioTrials` limits concurrency inside your process.
+
+A completed receipt must report non-negative `turns`, `tool_calls`, and `duration_ms`; it must also report `cost_usd` when the scenario has a cost budget. Orlo derives governed tool-call count from its own step receipts and compares it with the runner report. Missing or inconsistent coverage makes the trial invalid. Exceeding a declared budget makes it failed.
+
+A completed receipt must report non-negative `turns`, `tool_calls`, and `duration_ms`; it must also report `cost_usd` when the scenario has a cost budget. Orlo derives governed tool-call count from its own step receipts and compares it with the runner report. Missing or inconsistent coverage makes the trial invalid. Exceeding a declared budget makes it failed.
 
 ## Handle approvals without repeating side effects
 
@@ -68,11 +80,13 @@ return {
 };
 ```
 
-The receipt pauses the trial. After the approval event arrives, read the approval’s current status. For an approval, call the runner again with the saved session and checkpoint reference. For a rejection, record the correct non-execution outcome; do not run the tool. Orlo binds approval to the exact original action and will not resume a rejected trial.
+The receipt pauses the trial for a bounded continuation period. After the approval event arrives, read the approval’s current status. For an approval, call the runner again with the saved session and checkpoint reference. Resume is idempotent and re-enters the organization and comparison capacity limit. For a rejection, record the correct non-execution outcome; do not run the tool. Orlo binds approval to the exact original action and will not resume a rejected or expired trial.
 
 ## Retry delivery, not execution
 
 Lifecycle receipts are idempotent. If `ScenarioTrialDeliveryError` is raised, store its `receipt` and redeliver that exact receipt with `recordScenarioTrialReceipt`. Do not rerun the agent or a tool merely because the receipt acknowledgement was lost.
+
+Agent failures and budget failures stay in the fixed evidence. A person can retry only a failure that Orlo classifies as safe infrastructure failure. If a runner stops reporting after possible external work, Orlo marks the attempt uncertain and does not replay it automatically. Start a new comparison when the result may have produced a side effect.
 
 Cleanup failure makes the trial invalid. Missing or contradictory mandatory evidence cannot qualify a configuration. A correct rejection can pass when the scenario expects the action to remain unapplied.
 

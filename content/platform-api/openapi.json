@@ -7807,6 +7807,122 @@
         "description": "Required scope: `evaluations.read`."
       }
     },
+    "/v1/scenario-trials/{trialId}/evidence": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Inspect one trial\u2019s verifier evidence",
+        "description": "Returns bounded, presentation-safe verifier evidence for one trial. Required scope: `evaluations.read`.",
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "parameters": [
+          {
+            "name": "trialId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "66666666-6666-4666-8666-666666666666"
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Frozen verifier results, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "trial",
+                    "evidence",
+                    "next_cursor"
+                  ],
+                  "properties": {
+                    "trial": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "status"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "evidence": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ScenarioVerifierResult"
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    }
+                  }
+                },
+                "example": {
+                  "trial": {
+                    "id": "66666666-6666-4666-8666-666666666666",
+                    "status": "completed"
+                  },
+                  "evidence": [
+                    {
+                      "version": 1,
+                      "verifier_key": "case_resolved",
+                      "verifier_version": "1",
+                      "implementation_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                      "dimension": "outcome",
+                      "evidence_source": "authoritative_state",
+                      "status": "passed",
+                      "mandatory": true,
+                      "evidence_reference": "case:1042:revision:7",
+                      "reason": "The case reached the expected resolved state.",
+                      "evidence": {
+                        "status": "resolved"
+                      }
+                    }
+                  ],
+                  "next_cursor": null
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          }
+        }
+      }
+    },
     "/v1/scenario-comparisons/{id}/trials/claim": {
       "post": {
         "tags": [
@@ -7971,7 +8087,8 @@
                 "metrics": {
                   "turns": 3,
                   "tool_calls": 1,
-                  "cost_usd": 0.01
+                  "cost_usd": 0.01,
+                  "duration_ms": 4200
                 },
                 "cleanup": {
                   "status": "succeeded"
@@ -8015,6 +8132,14 @@
                         "string",
                         "null"
                       ]
+                    },
+                    "approval_status": {
+                      "type": "string",
+                      "const": "approved"
+                    },
+                    "replayed": {
+                      "type": "boolean",
+                      "description": "True when the same approved continuation was already resumed."
                     }
                   }
                 },
@@ -8022,12 +8147,17 @@
                   "trial_id": "66666666-6666-4666-8666-666666666666",
                   "session_id": "88888888-8888-4888-8888-888888888888",
                   "status": "running",
-                  "checkpoint_reference": "checkpoint-1042"
+                  "checkpoint_reference": "checkpoint-1042",
+                  "approval_status": "approved",
+                  "replayed": false
                 }
               }
             }
           },
           "409": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          },
+          "503": {
             "$ref": "#/components/responses/ErrorGeneric"
           }
         },
@@ -12828,7 +12958,33 @@
             "type": "string"
           },
           "metrics": {
-            "$ref": "#/components/schemas/GenericObject"
+            "type": "object",
+            "description": "Required for completed trials. Cost is required when the frozen scenario declares a cost budget.",
+            "required": [
+              "turns",
+              "tool_calls",
+              "duration_ms"
+            ],
+            "properties": {
+              "turns": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "tool_calls": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Must equal the governed tool-request receipts recorded by Orlo."
+              },
+              "duration_ms": {
+                "type": "number",
+                "minimum": 0
+              },
+              "cost_usd": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": true
           },
           "failure": {
             "$ref": "#/components/schemas/GenericObject"
