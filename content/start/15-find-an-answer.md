@@ -30,6 +30,7 @@ Choose the question that matches your next step. Each guide starts with the answ
 - [How do I see where a candidate performs worse?](/console/tasks/regression-regions)
 - [How do I test a rule before saving it?](/console/tasks/preview-rules)
 - [How do I check whether sources improve answers?](/console/tasks/inspect-source-retrieval)
+- [How do I test a complete agent workflow?](/console/tasks/test-complete-agent-workflows)
 
 ## Shared skills and access
 
@@ -57,6 +58,8 @@ Choose the question that matches your next step. Each guide starts with the answ
 - [How does my application resume an approved agent action?](/engineers/resume-an-approved-step)
 - [What happens when a webhook cannot be delivered?](/engineers/webhook-delivery-fails)
 - [How do I send Orlo traces to my observability service?](/engineers/export-traces)
+- [How do I run complete agent workflow tests?](/engineers/test-complete-agent-workflows)
+- [How do I require a tested agent configuration in production?](/engineers/require-tested-agent-configuration)
 
 ## Measured permissions and learning
 

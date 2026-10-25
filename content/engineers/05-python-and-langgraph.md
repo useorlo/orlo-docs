@@ -94,3 +94,7 @@ A rejected approval raises `OrloGovernanceBlocked`; an expired one applies the r
 ## When Orlo is unreachable
 
 Each attempt has a timeout (3 s) and one retry with the same idempotency key. After five failures the client raises `OrloUnavailableError` for 30 s. The session’s `fail_mode` decides per action class; the default is `{"default": "closed"}`, which stops every tool call. `session.close()` waits for background reports; `session.unsent_steps` counts reports that could not be delivered. Persist critical records in your application if they must survive a process failure.
+
+## Complete agent workflow tests
+
+Use the scenario runner to execute frozen multi-turn assignments against an isolated environment, return independent outcome evidence, and preserve approval checkpoints without moving your agent into Orlo. [Run complete agent workflow tests](/engineers/test-complete-agent-workflows) explains the lifecycle. When the task requires it, pass the adopted `qualified_configuration` when the production session starts; [require a tested agent configuration](/engineers/require-tested-agent-configuration) shows the exact binding.

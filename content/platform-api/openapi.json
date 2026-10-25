@@ -59,6 +59,10 @@
     },
     {
       "name": "agent-governance"
+    },
+    {
+      "name": "scenario-tests",
+      "description": "Complete agent workflow scenarios, trial assignments, evidence, and qualifications."
     }
   ],
   "paths": {
@@ -7428,6 +7432,712 @@
           }
         }
       }
+    },
+    "/v1/tasks/{taskId}/scenarios": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "List scenario versions for a task",
+        "responses": {
+          "200": {
+            "description": "Newest-first scenario versions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "scenarios": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "scenario_key": {
+                            "type": "string"
+                          },
+                          "version": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "family_key": {
+                            "type": "string"
+                          },
+                          "partition": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    }
+                  }
+                },
+                "example": {
+                  "scenarios": [
+                    {
+                      "id": "44444444-4444-4444-8444-444444444444",
+                      "scenario_key": "approval_rejected",
+                      "version": 1,
+                      "name": "Stop after rejection",
+                      "family_key": "approval_rejected",
+                      "partition": "confirmatory",
+                      "created_at": "2026-10-25T12:00:00Z"
+                    }
+                  ],
+                  "next_cursor": null
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "22222222-2222-4222-8222-222222222222"
+          }
+        ],
+        "description": "Required scope: `tasks.read`."
+      }
+    },
+    "/v1/scenario-versions/{id}": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Get one frozen scenario version",
+        "responses": {
+          "200": {
+            "description": "Frozen scenario version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "specification": {
+                      "$ref": "#/components/schemas/ScenarioDefinition"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "description": "Required scope: `evaluations.read`."
+      }
+    },
+    "/v1/tasks/{taskId}/scenario-comparisons": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "List complete-workflow comparisons for a task",
+        "responses": {
+          "200": {
+            "description": "Newest-first comparisons",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "comparisons": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "progress": {
+                            "$ref": "#/components/schemas/GenericObject"
+                          },
+                          "result": {
+                            "$ref": "#/components/schemas/GenericObject"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "22222222-2222-4222-8222-222222222222"
+          }
+        ],
+        "description": "Required scope: `tasks.read`."
+      }
+    },
+    "/v1/scenario-comparisons/{id}": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Read comparison progress and result",
+        "responses": {
+          "200": {
+            "description": "Comparison, frozen candidates, result, and qualifications",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "task_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "plan": {
+                      "$ref": "#/components/schemas/ScenarioComparisonPlan"
+                    },
+                    "progress": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "candidate_key": {
+                            "type": "string"
+                          },
+                          "manifest": {
+                            "$ref": "#/components/schemas/ScenarioCandidateManifest"
+                          },
+                          "manifest_hash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$",
+                            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                          }
+                        }
+                      }
+                    },
+                    "result": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    },
+                    "qualifications": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
+                    },
+                    "qualifiable": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "example": {
+                  "id": "44444444-4444-4444-8444-444444444444",
+                  "task_id": "22222222-2222-4222-8222-222222222222",
+                  "status": "running",
+                  "progress": {
+                    "planned": 14,
+                    "finished": 8,
+                    "running": 2,
+                    "awaiting_approval": 1
+                  },
+                  "candidates": [],
+                  "result": null,
+                  "qualifications": [],
+                  "qualifiable": true
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "description": "Required scope: `evaluations.read`."
+      }
+    },
+    "/v1/scenario-comparisons/{id}/trials": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "List bounded trial evidence",
+        "responses": {
+          "200": {
+            "description": "Newest-first trial attempts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "trials": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GenericObject"
+                      }
+                    },
+                    "next_cursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "uuid"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "evaluations.read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "44444444-4444-4444-8444-444444444444"
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "description": "Required scope: `evaluations.read`."
+      }
+    },
+    "/v1/scenario-comparisons/{id}/trials/claim": {
+      "post": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Claim one scenario trial",
+        "responses": {
+          "200": {
+            "description": "Assignment or retry guidance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assignment": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ScenarioTrialAssignment"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "comparison_status": {
+                      "type": "string"
+                    },
+                    "retry_after_ms": {
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "assignment": null,
+                  "comparison_status": "running",
+                  "retry_after_ms": 1000
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "44444444-4444-4444-8444-444444444444"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "runner_id"
+                ],
+                "properties": {
+                  "runner_id": {
+                    "type": "string"
+                  },
+                  "lease_seconds": {
+                    "type": "integer",
+                    "minimum": 30,
+                    "maximum": 900
+                  }
+                }
+              },
+              "example": {
+                "runner_id": "support-test-runner-1",
+                "lease_seconds": 300
+              }
+            }
+          }
+        },
+        "description": "Required scope: `agent_governance.run`."
+      }
+    },
+    "/v1/scenario-trials/{trialId}/receipt": {
+      "post": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Record an idempotent trial lifecycle receipt",
+        "responses": {
+          "200": {
+            "description": "Receipt state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "trial_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "receipt_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "recorded": {
+                      "type": "boolean"
+                    },
+                    "scenario_assessment": {
+                      "$ref": "#/components/schemas/GenericObject"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "parameters": [
+          {
+            "name": "trialId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "66666666-6666-4666-8666-666666666666"
+          },
+          {
+            "name": "X-Orlo-Scenario-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "One-trial token from the assignment. Do not log it."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioTrialReceipt"
+              },
+              "example": {
+                "receipt_id": "77777777-7777-4777-8777-777777777777",
+                "session_id": "88888888-8888-4888-8888-888888888888",
+                "status": "completed",
+                "metrics": {
+                  "turns": 3,
+                  "tool_calls": 1,
+                  "cost_usd": 0.01
+                },
+                "cleanup": {
+                  "status": "succeeded"
+                },
+                "verifier_results": []
+              }
+            }
+          }
+        },
+        "description": "Required scope: `agent_governance.run`."
+      }
+    },
+    "/v1/scenario-trials/{trialId}/resume": {
+      "post": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "Resume an approved paused trial",
+        "responses": {
+          "200": {
+            "description": "Approved continuation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "trial_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "session_id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "running"
+                    },
+                    "checkpoint_reference": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  }
+                },
+                "example": {
+                  "trial_id": "66666666-6666-4666-8666-666666666666",
+                  "session_id": "88888888-8888-4888-8888-888888888888",
+                  "status": "running",
+                  "checkpoint_reference": "checkpoint-1042"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/ErrorGeneric"
+          }
+        },
+        "x-required-scopes": [
+          "agent_governance.run"
+        ],
+        "parameters": [
+          {
+            "name": "trialId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "66666666-6666-4666-8666-666666666666"
+          },
+          {
+            "name": "X-Orlo-Scenario-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "description": "Required scope: `agent_governance.run`."
+      }
+    },
+    "/v1/tasks/{taskId}/scenario-qualifications": {
+      "get": {
+        "tags": [
+          "scenario-tests"
+        ],
+        "summary": "List adopted configurations for a task",
+        "responses": {
+          "200": {
+            "description": "Qualifications, active first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "qualifications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "task_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "comparison_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "candidate_key": {
+                            "type": "string"
+                          },
+                          "manifest": {
+                            "$ref": "#/components/schemas/ScenarioCandidateManifest"
+                          },
+                          "configuration_hash": {
+                            "type": "string",
+                            "pattern": "^[a-f0-9]{64}$",
+                            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                          },
+                          "evidence_summary": {
+                            "$ref": "#/components/schemas/GenericObject"
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "qualifications": []
+                }
+              }
+            }
+          }
+        },
+        "x-required-scopes": [
+          "tasks.read"
+        ],
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "22222222-2222-4222-8222-222222222222"
+          }
+        ],
+        "description": "Required scope: `tasks.read`."
+      }
     }
   },
   "components": {
@@ -8397,6 +9107,32 @@
               }
             },
             "description": "Exact published skill versions the agent loaded; verified by Orlo and recorded on the run."
+          },
+          "qualified_configuration": {
+            "$ref": "#/components/schemas/QualifiedScenarioConfiguration",
+            "description": "Active adopted manifest required when the task complete-workflow policy is required."
+          },
+          "test_context": {
+            "type": "object",
+            "description": "Runner-only context copied from one claimed scenario assignment.",
+            "required": [
+              "kind",
+              "trial_id",
+              "execution_token"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "scenario_trial"
+              },
+              "trial_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "execution_token": {
+                "type": "string"
+              }
+            }
           }
         },
         "example": {
@@ -9199,6 +9935,27 @@
           },
           "updated_at": {
             "type": "string"
+          },
+          "activity_kind": {
+            "type": "string",
+            "enum": [
+              "production",
+              "scenario_test"
+            ]
+          },
+          "scenario_qualification_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "scenario_configuration_hash": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$"
           }
         },
         "required": [
@@ -11455,6 +12212,653 @@
             ]
           }
         ]
+      },
+      "ScenarioVerifierDeclaration": {
+        "type": "object",
+        "required": [
+          "key",
+          "version",
+          "implementation_hash",
+          "dimension",
+          "evidence_source",
+          "mandatory",
+          "specification"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "example": "case_status"
+          },
+          "version": {
+            "type": "string",
+            "example": "1"
+          },
+          "implementation_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "outcome",
+              "permission",
+              "interaction",
+              "efficiency"
+            ]
+          },
+          "evidence_source": {
+            "type": "string",
+            "enum": [
+              "authoritative_state",
+              "permission_receipt",
+              "application_report",
+              "human_judgment",
+              "model_judgment"
+            ]
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "specification": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
+        }
+      },
+      "ScenarioDefinition": {
+        "type": "object",
+        "required": [
+          "version",
+          "key",
+          "name",
+          "family_key",
+          "partition",
+          "environment",
+          "simulator",
+          "initial_state",
+          "interactions",
+          "tools",
+          "verifiers",
+          "budgets"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1
+          },
+          "key": {
+            "type": "string",
+            "example": "approval_rejected"
+          },
+          "name": {
+            "type": "string",
+            "example": "Stop after an approval is rejected"
+          },
+          "family_key": {
+            "type": "string",
+            "example": "approval_rejected"
+          },
+          "partition": {
+            "type": "string",
+            "enum": [
+              "development",
+              "confirmatory"
+            ]
+          },
+          "environment": {
+            "type": "object",
+            "required": [
+              "name",
+              "version",
+              "implementation_hash"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "implementation_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            }
+          },
+          "simulator": {
+            "type": "object",
+            "required": [
+              "kind",
+              "version",
+              "implementation_hash"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "scripted",
+                  "model"
+                ]
+              },
+              "version": {
+                "type": "string"
+              },
+              "implementation_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "provider": {
+                "type": "string"
+              },
+              "model_id": {
+                "type": "string"
+              },
+              "settings_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            }
+          },
+          "initial_state": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "interactions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "required": [
+                "after_turn",
+                "actor",
+                "content"
+              ],
+              "properties": {
+                "after_turn": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "actor": {
+                  "type": "string",
+                  "enum": [
+                    "user",
+                    "environment"
+                  ]
+                },
+                "content": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "tools": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "schema_hash",
+                "effect"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "schema_hash": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$",
+                  "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                },
+                "effect": {
+                  "type": "string",
+                  "enum": [
+                    "read",
+                    "write"
+                  ]
+                }
+              }
+            }
+          },
+          "verifiers": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "$ref": "#/components/schemas/ScenarioVerifierDeclaration"
+            }
+          },
+          "budgets": {
+            "type": "object",
+            "required": [
+              "max_turns",
+              "max_tool_calls",
+              "max_duration_ms",
+              "max_cost_usd"
+            ],
+            "properties": {
+              "max_turns": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 256
+              },
+              "max_tool_calls": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1024
+              },
+              "max_duration_ms": {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 3600000
+              },
+              "max_cost_usd": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              }
+            }
+          }
+        }
+      },
+      "ScenarioCandidateManifest": {
+        "type": "object",
+        "required": [
+          "version",
+          "key",
+          "artifact",
+          "runtime",
+          "model",
+          "task_version_id",
+          "skill_version_ids",
+          "source_set_version_id",
+          "tool_schema_hash",
+          "permission_specification_hash"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1
+          },
+          "key": {
+            "type": "string",
+            "example": "candidate"
+          },
+          "artifact": {
+            "type": "object",
+            "required": [
+              "name",
+              "version",
+              "digest",
+              "identity_assurance"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "digest": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              "identity_assurance": {
+                "type": "string",
+                "enum": [
+                  "declared",
+                  "verified"
+                ]
+              }
+            }
+          },
+          "runtime": {
+            "type": "object",
+            "required": [
+              "name",
+              "version"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              }
+            }
+          },
+          "model": {
+            "type": "object",
+            "required": [
+              "provider",
+              "requested_model_id",
+              "settings_hash"
+            ],
+            "properties": {
+              "provider": {
+                "type": "string"
+              },
+              "requested_model_id": {
+                "type": "string"
+              },
+              "settings_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$",
+                "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              }
+            }
+          },
+          "task_version_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "skill_version_ids": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "source_set_version_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "tool_schema_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "permission_specification_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          }
+        }
+      },
+      "QualifiedScenarioConfiguration": {
+        "type": "object",
+        "required": [
+          "qualification_id",
+          "manifest"
+        ],
+        "properties": {
+          "qualification_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "manifest": {
+            "$ref": "#/components/schemas/ScenarioCandidateManifest"
+          }
+        }
+      },
+      "ScenarioComparisonPlan": {
+        "type": "object",
+        "required": [
+          "version",
+          "method",
+          "baseline_candidate_key",
+          "candidate_keys",
+          "scenarios",
+          "repetitions",
+          "primary_outcome",
+          "confidence",
+          "max_success_drop"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1
+          },
+          "method": {
+            "type": "string",
+            "const": "paired_scenario_fixed"
+          },
+          "baseline_candidate_key": {
+            "type": "string"
+          },
+          "candidate_keys": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 11,
+            "items": {
+              "type": "string"
+            }
+          },
+          "scenarios": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "scenario_version_id",
+                "family_key"
+              ],
+              "properties": {
+                "scenario_version_id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "family_key": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "repetitions": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "primary_outcome": {
+            "type": "string",
+            "const": "verified_success"
+          },
+          "confidence": {
+            "type": "number",
+            "minimum": 0.9,
+            "maximum": 0.999
+          },
+          "max_success_drop": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      },
+      "ScenarioVerifierResult": {
+        "type": "object",
+        "required": [
+          "version",
+          "verifier_key",
+          "verifier_version",
+          "implementation_hash",
+          "dimension",
+          "evidence_source",
+          "status",
+          "mandatory",
+          "evidence_reference",
+          "reason"
+        ],
+        "properties": {
+          "version": {
+            "type": "integer",
+            "const": 1
+          },
+          "verifier_key": {
+            "type": "string"
+          },
+          "verifier_version": {
+            "type": "string"
+          },
+          "implementation_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "example": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          "dimension": {
+            "type": "string",
+            "enum": [
+              "outcome",
+              "permission",
+              "interaction",
+              "efficiency"
+            ]
+          },
+          "evidence_source": {
+            "type": "string",
+            "enum": [
+              "authoritative_state",
+              "permission_receipt",
+              "application_report",
+              "human_judgment",
+              "model_judgment"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "unknown",
+              "error"
+            ]
+          },
+          "mandatory": {
+            "type": "boolean"
+          },
+          "evidence_reference": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "evidence": {
+            "$ref": "#/components/schemas/GenericObject"
+          }
+        }
+      },
+      "ScenarioTrialAssignment": {
+        "type": "object",
+        "required": [
+          "trial_id",
+          "task_id",
+          "execution_token",
+          "scenario",
+          "candidate",
+          "repetition",
+          "attempt",
+          "lease_expires_at"
+        ],
+        "properties": {
+          "trial_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "task_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "execution_token": {
+            "type": "string",
+            "description": "One-trial credential; do not log it."
+          },
+          "scenario": {
+            "$ref": "#/components/schemas/ScenarioDefinition"
+          },
+          "candidate": {
+            "$ref": "#/components/schemas/ScenarioCandidateManifest"
+          },
+          "repetition": {
+            "type": "integer"
+          },
+          "attempt": {
+            "type": "integer"
+          },
+          "lease_expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ScenarioTrialReceipt": {
+        "type": "object",
+        "required": [
+          "receipt_id",
+          "session_id",
+          "status",
+          "cleanup"
+        ],
+        "properties": {
+          "receipt_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "completed",
+              "failed",
+              "invalid",
+              "cancelled",
+              "awaiting_approval"
+            ]
+          },
+          "approval_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "checkpoint_reference": {
+            "type": "string"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "failure": {
+            "$ref": "#/components/schemas/GenericObject"
+          },
+          "cleanup": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "succeeded",
+                  "failed"
+                ]
+              },
+              "detail": {
+                "type": "string"
+              }
+            }
+          },
+          "verifier_results": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "$ref": "#/components/schemas/ScenarioVerifierResult"
+            }
+          }
+        }
       }
     },
     "securitySchemes": {

@@ -109,7 +109,7 @@ Configure [agent permissions and limits](/console/agent-runs/agent-rules) in the
 
 ## Sessions and skills
 
-`POST /v1/agent-sessions` takes `task_id` and optionally `external_run_id`, `goal`, `framework`, `risk_tier`, `autonomy_level`, `metadata`, and `skill_versions`: up to eight `{skill_id, version_id, content_hash}` references, which Orlo verifies against published, non-retired versions before the session starts (`409 SKILL_VERSION_UNAVAILABLE` otherwise). The response includes `blocking_step_types`, the step types whose decision the runtime must wait for.
+`POST /v1/agent-sessions` takes `task_id` and optionally `external_run_id`, `goal`, `framework`, `risk_tier`, `autonomy_level`, `metadata`, `qualified_configuration`, and `skill_versions`: up to eight `{skill_id, version_id, content_hash}` references, which Orlo verifies against published, non-retired versions before the session starts (`409 SKILL_VERSION_UNAVAILABLE` otherwise). The response includes `blocking_step_types`, the step types whose decision the runtime must wait for. A task that requires complete-workflow evidence expects `qualified_configuration` with the active qualification ID and exact tested manifest. Scenario runners use the separate one-trial `test_context`; ordinary production applications must not invent one. See [complete agent workflow tests](/platform-api/scenario-tests).
 
 `GET /v1/agent-steps` lists steps across runs since a time (`since`, `limit` up to 5,000, `task_id`), for overviews.
 

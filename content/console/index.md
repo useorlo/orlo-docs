@@ -34,7 +34,7 @@ Inbox summarizes open signals, comparisons needing attention, and work waiting f
 
 ## Test and learn
 
-- [Require a release test](/console/tasks/release-tests) and [find regressions](/console/tasks/regression-regions).
+- [Require a release test](/console/tasks/release-tests), [test a complete agent workflow](/console/tasks/test-complete-agent-workflows), and [find regressions](/console/tasks/regression-regions).
 - [Preview rules](/console/tasks/preview-rules) and [inspect source retrieval](/console/tasks/inspect-source-retrieval).
 - [Reduce repetitive approvals](/console/agent-runs/measured-permissions) with [independent review](/console/agent-runs/independent-review).
 - [Understand cold start](/console/agent-runs/permission-cold-start), [resolve a paused permission](/console/agent-runs/permission-paused), and [read the confidence bounds](/console/agent-runs/confidence-bounds).

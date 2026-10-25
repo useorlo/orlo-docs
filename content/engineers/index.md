@@ -24,6 +24,8 @@ Application APIs and SDKs use a runtime key at `https://api.useorlo.com`. Employ
 | [Feedback and corrections](/engineers/feedback-and-corrections) | Send scores and corrections from your application |
 | [Declare agent configuration](/engineers/permission-context) | Identify the model and application revision used for measured permission evidence |
 | [Report action outcomes](/engineers/report-action-outcomes) | Record tool execution and later business results separately |
+| [Run complete agent workflow tests](/engineers/test-complete-agent-workflows) | Execute frozen multi-turn scenarios in your own test environment |
+| [Require a tested agent configuration](/engineers/require-tested-agent-configuration) | Bind production sessions to an adopted passing manifest |
 | [Webhooks and approvals](/engineers/webhooks-and-approvals) | Receive signed decisions and resume a saved agent step |
 
 The full endpoint list is in the [API reference](/platform-api).

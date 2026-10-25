@@ -110,3 +110,7 @@ When a session starts, Orlo returns `blocking_step_types`: tool requests and ret
 ## Shared skills
 
 `OrloAgentRun.startWithSkills` loads exact published versions, verifies their content hashes, and records them on the run. See [Skills in your AI tools](/engineers/skills-in-tools#your-own-agents).
+
+## Complete agent workflow tests
+
+Use the scenario runner to execute frozen multi-turn assignments against an isolated environment, return independent outcome evidence, and preserve approval checkpoints without moving your agent into Orlo. [Run complete agent workflow tests](/engineers/test-complete-agent-workflows) explains the lifecycle. When the task requires it, pass the adopted `qualified_configuration` when the production session starts; [require a tested agent configuration](/engineers/require-tested-agent-configuration) shows the exact binding.
