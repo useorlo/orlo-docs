@@ -26,7 +26,7 @@ Changing any of these produces a different configuration. At session start, Orlo
 
 ## Require the binding
 
-Set **Release policy → Complete agent workflow → Required**. Existing tasks stay advisory until an administrator changes this setting. In required mode, start the session with:
+In the console, open the agent task’s **Changes**, choose **Complete workflow policy** under **Complete workflow tests**, and set **Complete agent workflows** to **Required**. Existing tasks stay advisory until an administrator changes this setting. In required mode, start the session with:
 
 ```json
 {

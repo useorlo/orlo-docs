@@ -59,7 +59,7 @@ The first method is a fixed-sample paired frequentist comparison. Failures remai
 
 A pass does not change production. On a completed confirmatory comparison, choose **Use configuration** next to a passed configuration. Orlo records the exact tested manifest. Earlier qualifications stay available, and **Restore** rolls back to one deliberately.
 
-Tasks stay advisory until an administrator requires a tested configuration. In **Changes**, open **Task inference, if this agent also calls Orlo for answers**, choose **Task inference policy**, set **Complete agent workflows** to **Required**, and choose **Save policy**. Required mode refuses a production session with no active qualification, a changed task standard, different shared instructions, or any other manifest change. The check occurs when the session starts; normal permission and revocation checks still apply to every action.
+Tasks stay advisory until an administrator requires a tested configuration. In **Changes**, under **Complete workflow tests**, choose **Complete workflow policy**, set **Complete agent workflows** to **Required**, and choose **Save policy**. Required mode refuses a production session with no active qualification, a changed task standard, different shared instructions, or any other manifest change. The check occurs when the session starts; normal permission and revocation checks still apply to every action.
 
 ## What this test establishes
 
