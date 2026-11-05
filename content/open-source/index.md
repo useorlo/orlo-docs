@@ -14,7 +14,7 @@ order: 0
 | --- | --- |
 | Repository | [github.com/useorlo/agent-sdk](https://github.com/useorlo/agent-sdk) |
 | Latest SDK | [TypeScript 0.0.3 and Python 0.1.2](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.3), with GitHub build attestations |
-| npm | [@orlo/agent-sdk](https://www.npmjs.com/package/@orlo/agent-sdk), version 0.0.2, with npm provenance; use the latest release archive for resource permissions and complete-workflow testing |
+| npm | [@orlo/agent-sdk](https://www.npmjs.com/package/@orlo/agent-sdk), version 0.0.3, with npm provenance |
 | Requires | Node.js 20 or later; no runtime dependencies |
 | Includes | `OrloAgentClient`, `OrloAgentRun`, the generic runtime adapter, the tool registry, step callbacks, the `orlo-agent-check` connection check, and the `orlo-skills` installer for Claude Code |
 

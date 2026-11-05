@@ -10,12 +10,10 @@ order: 4
 Install `@orlo/agent-sdk`, create an Orlo run, and wrap your tool dispatcher so each relevant tool asks for a decision before it executes. Your application keeps its model, provider, and orchestration. Orlo records submitted steps and permissions; tools outside the wrapped path are not covered.
 
 ```sh
-gh release download v0.0.3 --repo useorlo/agent-sdk --pattern orlo-agent-sdk-0.0.3.tgz
-gh attestation verify orlo-agent-sdk-0.0.3.tgz --repo useorlo/agent-sdk
-npm install ./orlo-agent-sdk-0.0.3.tgz
+npm install --save-exact @orlo/agent-sdk@0.0.3
 ```
 
-The 0.0.3 release is distributed as an attested archive and through the console. The npm package currently serves 0.0.2; use the archive for resource permissions and complete-workflow testing.
+The console also offers the matching archive. Both the npm package and public download are verified from the same release, with npm provenance and GitHub build attestations.
 
 ## Check the connection first
 
