@@ -28,6 +28,10 @@ A rule can be narrowed by task, by release, by environment (such as `production`
 
 Some built-in bookkeeping tools are allowed unless a rule names them. The `orlo_setup_check` tool is intentionally subject to the normal permission rules.
 
+## Resource access
+
+Use the same permission to limit returned fields, require record filters, restrict destinations and cap results. Identity-dependent conditions use verified person facts. See [limit customer data access](/console/agent-runs/resource-permissions). These limits require a compatible data handler in your integration.
+
 ## Limits
 
 A limit caps how far one run may go: steps, tool calls, writes, external side effects, and how long the run may sit idle. Limits are set per organization, task, or release, and the narrowest wins. A run that reaches a limit is contained: Orlo answers `contain` with the action it recommends, from more monitoring through read-only mode to handing over to a person.

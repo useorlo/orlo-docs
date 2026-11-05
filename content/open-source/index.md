@@ -13,7 +13,7 @@ order: 0
 | | |
 | --- | --- |
 | Repository | [github.com/useorlo/agent-sdk](https://github.com/useorlo/agent-sdk) |
-| Package | [@orlo/agent-sdk](https://www.npmjs.com/package/@orlo/agent-sdk), version 0.0.2, with npm provenance |
+| Package | [@orlo/agent-sdk](https://www.npmjs.com/package/@orlo/agent-sdk), version 0.0.3, with npm provenance |
 | Requires | Node.js 20 or later; no runtime dependencies |
 | Includes | `OrloAgentClient`, `OrloAgentRun`, the generic runtime adapter, the tool registry, step callbacks, the `orlo-agent-check` connection check, and the `orlo-skills` installer for Claude Code |
 
@@ -21,7 +21,7 @@ How to use it is on [Agent SDK for TypeScript](/engineers/agent-sdk-typescript).
 
 ## The Python adapter
 
-`orlo-langgraph` is the adapter for LangGraph and LangChain applications. Its source is in the [public SDK repository](https://github.com/useorlo/agent-sdk), with a versioned archive on the [release page](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.2). The console offers the same archive with its checksum and install command. See [Python and LangGraph](/engineers/python-and-langgraph).
+`orlo-langgraph` is the adapter for LangGraph and LangChain applications. Its source is in the [public SDK repository](https://github.com/useorlo/agent-sdk), with a versioned archive on the [release page](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.3). The console offers the same archive with its checksum and install command. See [Python and LangGraph](/engineers/python-and-langgraph).
 
 ## Public evaluation datasets
 

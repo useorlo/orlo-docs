@@ -71,6 +71,12 @@ Choose the question that matches your next step. Each guide starts with the answ
 - [How do I identify an agent configuration for measured permissions?](/engineers/permission-context)
 - [How do I report whether an agent action succeeded?](/engineers/report-action-outcomes)
 
+## Resource access
+
+- [How do I limit what customer data an agent may return?](/console/agent-runs/resource-permissions)
+- [How do I apply record and field limits in my application?](/engineers/resource-permissions)
+- [How does Orlo verify the person using an agent?](/engineers/agent-identity)
+
 ## Self-hosting
 
 - [What must I back up to restore Orlo?](/operators/backup-and-restore)

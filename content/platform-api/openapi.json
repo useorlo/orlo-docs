@@ -1380,20 +1380,6 @@
               }
             }
           },
-          "504": {
-            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": "INFERENCE_TIMEOUT",
-                  "message": "The request was cancelled or exceeded its time limit."
-                }
-              }
-            }
-          },
           "503": {
             "description": "Provider capacity or availability, or unavailable evidence. Busy and paused responses carry Retry-After. Do not retry automatically when EVIDENCE_UNAVAILABLE includes details.retry_recommended=false; the provider may already have charged for the call.",
             "headers": {
@@ -1439,6 +1425,20 @@
                       "message": "The model call failed and no fallback answered. Check provider access and availability."
                     }
                   }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_TIMEOUT",
+                  "message": "The request was cancelled or exceeded its time limit."
                 }
               }
             }
@@ -1506,6 +1506,20 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           },
+          "409": {
+            "description": "CONSENSUS_CONFIGURATION_INVALID: Compare eligible candidates on the same task version and source settings, then correct the consensus configuration.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "CONSENSUS_CONFIGURATION_INVALID",
+                  "message": "Compare eligible candidates on the same task version and source settings, then correct the consensus configuration."
+                }
+              }
+            }
+          },
           "422": {
             "description": "Answer rejected by the task rules; no answer is returned. VALIDATION_FAILED: The answer failed its rules or a required check was indeterminate. No answer was returned.",
             "content": {
@@ -1545,20 +1559,6 @@
               }
             }
           },
-          "409": {
-            "description": "CONSENSUS_CONFIGURATION_INVALID: Compare eligible candidates on the same task version and source settings, then correct the consensus configuration.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": "CONSENSUS_CONFIGURATION_INVALID",
-                  "message": "Compare eligible candidates on the same task version and source settings, then correct the consensus configuration."
-                }
-              }
-            }
-          },
           "429": {
             "description": "INFERENCE_BUSY: Too many requests are running. Honor Retry-After and reduce concurrency.",
             "content": {
@@ -1577,20 +1577,6 @@
                 "description": "Seconds to wait before another attempt.",
                 "schema": {
                   "type": "string"
-                }
-              }
-            }
-          },
-          "504": {
-            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                },
-                "example": {
-                  "error": "INFERENCE_TIMEOUT",
-                  "message": "The request was cancelled or exceeded its time limit."
                 }
               }
             }
@@ -1640,6 +1626,20 @@
                       "message": "The model call failed and no fallback answered. Check provider access and availability."
                     }
                   }
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "INFERENCE_TIMEOUT: The request was cancelled or exceeded its time limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "INFERENCE_TIMEOUT",
+                  "message": "The request was cancelled or exceeded its time limit."
                 }
               }
             }
@@ -1848,11 +1848,11 @@
           "400": {
             "$ref": "#/components/responses/Error400"
           },
-          "404": {
-            "$ref": "#/components/responses/Error404"
-          },
           "403": {
             "description": "PEOPLE_ONLY: sign in with a member account that has review access."
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
           }
         },
         "x-required-scopes": [
@@ -3342,6 +3342,9 @@
                       "items": {
                         "$ref": "#/components/schemas/AgentStepType"
                       }
+                    },
+                    "resource_identity": {
+                      "$ref": "#/components/schemas/ResourceIdentitySummary"
                     }
                   }
                 }
@@ -3555,13 +3558,34 @@
               "schema": {
                 "$ref": "#/components/schemas/GovernAgentStepRequest"
               },
-              "example": {
-                "step_id": "lookup-order-1",
-                "step_type": "tool_request",
-                "tool_name": "lookup_order",
-                "action_class": "read",
-                "input": {
-                  "order_id": "order-1042"
+              "examples": {
+                "ordinary": {
+                  "value": {
+                    "step_id": "lookup-order-1",
+                    "step_type": "tool_request",
+                    "tool_name": "lookup_order",
+                    "action_class": "read",
+                    "input": {
+                      "order_id": "order-1042"
+                    }
+                  }
+                },
+                "resource": {
+                  "value": {
+                    "step_id": "read-profile-1",
+                    "step_type": "tool_request",
+                    "tool_name": "read_customer_profile",
+                    "action_class": "read",
+                    "input": {
+                      "customer_id": "customer-1"
+                    },
+                    "resource": {
+                      "version": 1,
+                      "resource_type": "customer_profile",
+                      "operation": "read",
+                      "resource_id": "customer-1"
+                    }
+                  }
                 }
               }
             }
@@ -3574,12 +3598,62 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GovernAgentStepResponse"
+                },
+                "example": {
+                  "decision": "allow",
+                  "action_id": "00000000-0000-4000-8000-000000000002",
+                  "resource_identity": {
+                    "source": "authentication_verified",
+                    "provider": "corp-sso",
+                    "claim_names": [
+                      "/subject/id",
+                      "/subject/groups"
+                    ]
+                  },
+                  "resource_contract": {
+                    "version": 1,
+                    "resource": {
+                      "version": 1,
+                      "resource_type": "customer_profile",
+                      "operation": "read",
+                      "resource_id": "customer-1"
+                    },
+                    "access_limits": {
+                      "allowed_fields": [
+                        "account_status",
+                        "customer_name"
+                      ],
+                      "required_filters": [
+                        {
+                          "field": "case_assignee_id",
+                          "operator": "eq",
+                          "value": "staff-1"
+                        },
+                        {
+                          "field": "case_status",
+                          "operator": "eq",
+                          "value": "open"
+                        }
+                      ],
+                      "max_rows": 1
+                    },
+                    "policy_versions": [
+                      {
+                        "id": "00000000-0000-4000-8000-000000000003",
+                        "version": 1
+                      }
+                    ],
+                    "authorization_hash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                  }
                 }
               }
             }
           },
           "400": {
             "$ref": "#/components/responses/Error400"
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
           }
         },
         "x-required-scopes": [
@@ -3892,6 +3966,10 @@
                       "items": {
                         "$ref": "#/components/schemas/AgentToolPolicy"
                       }
+                    },
+                    "permission_specification_hash": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
                     }
                   }
                 }
@@ -3903,6 +3981,83 @@
           "agent_governance.read"
         ],
         "description": "Required scope: `agent_governance.read`."
+      },
+      "post": {
+        "summary": "Create one tool permission with optional resource scope",
+        "description": "Requires a signed person with permission-management access. Runtime keys cannot change rules. Existing task/deployment/environment/argument selectors remain supported.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourcePolicy"
+              },
+              "example": {
+                "task_id": "00000000-0000-4000-8000-000000000001",
+                "tool_name": "read_customer_profile",
+                "action_class": "read",
+                "decision": "allow",
+                "resource_selector": {
+                  "resource_type": "customer_profile",
+                  "operation": "read"
+                },
+                "context_conditions": [
+                  {
+                    "path": "/subject/groups",
+                    "operator": "contains",
+                    "value": "support",
+                    "required_source": "authentication_verified",
+                    "identity_provider": "corp-sso"
+                  }
+                ],
+                "access_limits": {
+                  "allowed_fields": [
+                    "customer_name",
+                    "account_status"
+                  ],
+                  "required_filters": [
+                    {
+                      "field": "case_assignee_id",
+                      "operator": "eq",
+                      "value_from": "/subject/id",
+                      "required_source": "authentication_verified",
+                      "identity_provider": "corp-sso"
+                    },
+                    {
+                      "field": "case_status",
+                      "operator": "eq",
+                      "value": "open"
+                    }
+                  ],
+                  "max_rows": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Saved versioned permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourcePolicy"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ResourceInvalid"
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
       }
     },
     "/v1/runtime-limits": {
@@ -4318,11 +4473,11 @@
               }
             }
           },
-          "404": {
-            "$ref": "#/components/responses/Error404"
-          },
           "403": {
             "description": "PEOPLE_ONLY: sign in with a member account that has review access."
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
           }
         },
         "x-required-scopes": [
@@ -4727,7 +4882,7 @@
     },
     "/v1/tasks/{taskId}/documents/reembed": {
       "post": {
-        "summary": "Embed the task\u2019s sources again with the current embedding model",
+        "summary": "Embed the task’s sources again with the current embedding model",
         "parameters": [
           {
             "name": "taskId",
@@ -6008,7 +6163,7 @@
     },
     "/v1/agent-sessions/{sessionId}/steps/{stepId}/add-to-standard": {
       "post": {
-        "summary": "Add a step to the task\u2019s examples",
+        "summary": "Add a step to the task’s examples",
         "parameters": [
           {
             "name": "sessionId",
@@ -7812,7 +7967,7 @@
         "tags": [
           "scenario-tests"
         ],
-        "summary": "Inspect one trial\u2019s verifier evidence",
+        "summary": "Inspect one trial’s verifier evidence",
         "description": "Returns bounded, presentation-safe verifier evidence for one trial. Required scope: `evaluations.read`.",
         "x-required-scopes": [
           "evaluations.read"
@@ -8268,6 +8423,403 @@
         ],
         "description": "Required scope: `tasks.read`."
       }
+    },
+    "/v1/tool-policies/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "put": {
+        "summary": "Update resource scope and limits with version checking",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "task_id": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "uuid"
+                  },
+                  "deployment_id": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "tool_name": {
+                    "type": "string"
+                  },
+                  "environment": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "action_class": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "enum": [
+                      "read",
+                      "write",
+                      "delete",
+                      "network",
+                      "control",
+                      null
+                    ]
+                  },
+                  "decision": {
+                    "enum": [
+                      "allow",
+                      "allow_with_warning",
+                      "reject",
+                      "require_approval"
+                    ]
+                  },
+                  "risk_tier": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/AgentRiskTier"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "approval_timeout_seconds": {
+                    "type": "number",
+                    "nullable": true
+                  },
+                  "timeout_action": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/AgentTimeoutAction"
+                      }
+                    ],
+                    "nullable": true
+                  },
+                  "created_at": {
+                    "type": "string"
+                  },
+                  "updated_at": {
+                    "type": "string"
+                  },
+                  "argument_conditions": {
+                    "type": "array",
+                    "maxItems": 16,
+                    "items": {
+                      "$ref": "#/components/schemas/ArgumentCondition"
+                    }
+                  },
+                  "policy_version": {
+                    "type": "integer",
+                    "readOnly": true
+                  },
+                  "band_state": {
+                    "type": "string",
+                    "enum": [
+                      "shadow",
+                      "earning",
+                      "enabled",
+                      "suspended",
+                      "retired"
+                    ],
+                    "nullable": true
+                  },
+                  "band_epoch": {
+                    "type": "integer"
+                  },
+                  "band_scope_hash": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "band_reason": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "resource_selector": {
+                    "$ref": "#/components/schemas/ResourceSelector"
+                  },
+                  "context_conditions": {
+                    "type": "array",
+                    "maxItems": 16,
+                    "items": {
+                      "$ref": "#/components/schemas/ResourceCondition"
+                    }
+                  },
+                  "access_limits": {
+                    "$ref": "#/components/schemas/ResourceLimits"
+                  },
+                  "expected_policy_version": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "required": [
+                  "expected_policy_version"
+                ]
+              },
+              "example": {
+                "expected_policy_version": 1,
+                "access_limits": {
+                  "allowed_fields": [
+                    "customer_name"
+                  ],
+                  "max_rows": 1
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated permission; current resource restrictions apply to active sessions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourcePolicy"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/ResourceConflict"
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
+      }
+    },
+    "/v1/orgs/identity-providers": {
+      "get": {
+        "summary": "List organization identity profiles",
+        "description": "Signed owners and admins only. Runtime/management keys and delegated presets cannot configure identity trust.",
+        "responses": {
+          "200": {
+            "description": "Profiles",
+            "active state": null,
+            "trust epoch": null,
+            "key refresh time and bounded error code": null,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "providers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "IDENTITY_ADMIN_REQUIRED"
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
+      }
+    },
+    "/v1/orgs/identity-providers/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_-]{1,64}$"
+          }
+        }
+      ],
+      "put": {
+        "summary": "Save an owner/admin-managed identity validation profile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResourceIdentityProfile"
+              },
+              "example": {
+                "issuer": "https://identity.example",
+                "audiences": [
+                  "support-app"
+                ],
+                "client_ids": [
+                  "support-app"
+                ],
+                "token_kind": "id_token",
+                "algorithms": [
+                  "RS256"
+                ],
+                "max_lifetime_seconds": 3600,
+                "claims": [
+                  {
+                    "claim": "sub",
+                    "path": "/subject/id",
+                    "type": "string"
+                  },
+                  {
+                    "claim": "groups",
+                    "path": "/subject/groups",
+                    "type": "string_set"
+                  }
+                ],
+                "jwks_url": "https://identity.example/.well-known/jwks.json"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved profile; trust epoch increases on edits",
+            "invalidating previous facts": null
+          },
+          "400": {
+            "$ref": "#/components/responses/ResourceInvalid"
+          },
+          "403": {
+            "description": "IDENTITY_ADMIN_REQUIRED"
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Retire identity trust",
+        "responses": {
+          "200": {
+            "description": "Retired; previous facts no longer satisfy identity requirements"
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
+      }
+    },
+    "/v1/orgs/identity-providers/{id}/test": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "post": {
+        "summary": "Verify a sample token against locally cached keys without storing it",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "identity_token": {
+                    "type": "string",
+                    "maxLength": 16384,
+                    "writeOnly": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification status, stable reason and mapped claim names only",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "verified": {
+                      "type": "boolean"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "detail": {
+                      "type": "string"
+                    },
+                    "retryable": {
+                      "type": "boolean"
+                    },
+                    "claim_names": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "unavailable_claims": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "verified": true,
+                  "reason": "IDENTITY_VERIFIED",
+                  "claim_names": [
+                    "/subject/id",
+                    "/subject/groups"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "agent-governance"
+        ],
+        "security": [
+          {
+            "consoleSession": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -8378,6 +8930,12 @@
             }
           }
         }
+      },
+      "ResourceInvalid": {
+        "description": "INVALID_RESOURCE_PERMISSION, INVALID_IDENTITY_PROFILE or IDENTITY_KEYS_INVALID. Unknown fields/operators, invalid types and unresolved constraints cannot grant access."
+      },
+      "ResourceConflict": {
+        "description": "POLICY_VERSION_CHANGED, RESOURCE_PERMISSION_SPECIFICATION_CHANGED, IDENTITY_SUBJECT_CHANGED, IDENTITY_TOKEN_NOT_NEWER, IDENTITY_REFRESH_CONFLICT, RESOURCE_REPORT_MISMATCH or ACTION_REPORT_CHANGED. Refresh configuration or retry only the exact originally approved action."
       }
     },
     "schemas": {
@@ -8450,7 +9008,7 @@
                   "enabled": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
                   }
                 }
               },
@@ -8539,7 +9097,7 @@
                   "enabled": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0\u20130.1, without sources, adapters or consensus."
+                    "description": "Opt into eligible exact-response reuse for up to five minutes. Prompt releases only, temperature 0–0.1, without sources, adapters or consensus."
                   }
                 }
               },
@@ -9263,6 +9821,12 @@
                 "type": "string"
               }
             }
+          },
+          "identity_token": {
+            "type": "string",
+            "maxLength": 16384,
+            "writeOnly": true,
+            "description": "Signed person JWT; verified by the configured identity profile. Never persisted as token text."
           }
         },
         "example": {
@@ -9397,6 +9961,15 @@
           },
           "parent_span_id": {
             "type": "string"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceResource"
+          },
+          "identity_token": {
+            "type": "string",
+            "maxLength": 16384,
+            "writeOnly": true,
+            "description": "Same person; newer facts refresh the run. Identical retries are verified under current trust."
           }
         },
         "required": [
@@ -9513,6 +10086,12 @@
             "type": "string",
             "format": "uuid",
             "description": "Use this governed tool action ID for execution and business reports."
+          },
+          "resource_contract": {
+            "$ref": "#/components/schemas/ResourceContract"
+          },
+          "resource_identity": {
+            "$ref": "#/components/schemas/ResourceIdentitySummary"
           }
         },
         "required": [
@@ -9550,6 +10129,9 @@
           },
           "risk_tier": {
             "$ref": "#/components/schemas/AgentRiskTier"
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceResource"
           }
         },
         "required": [
@@ -10737,6 +11319,18 @@
           "band_reason": {
             "type": "string",
             "nullable": true
+          },
+          "resource_selector": {
+            "$ref": "#/components/schemas/ResourceSelector"
+          },
+          "context_conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceCondition"
+            }
+          },
+          "access_limits": {
+            "$ref": "#/components/schemas/ResourceLimits"
           }
         },
         "required": [
@@ -12291,6 +12885,64 @@
                 "type": "number",
                 "minimum": 0,
                 "maximum": 604800000
+              },
+              "resource_access": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "authorization_hash",
+                  "status",
+                  "limit_types"
+                ],
+                "properties": {
+                  "authorization_hash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "status": {
+                    "enum": [
+                      "applied",
+                      "unsupported",
+                      "failed",
+                      "unknown"
+                    ]
+                  },
+                  "limit_types": {
+                    "type": "array",
+                    "maxItems": 9,
+                    "items": {
+                      "enum": [
+                        "allowed_fields",
+                        "required_filters",
+                        "removed_fields",
+                        "masked_fields",
+                        "max_rows",
+                        "max_bytes",
+                        "max_duration_ms",
+                        "max_result_age_ms",
+                        "allowed_destinations"
+                      ]
+                    }
+                  },
+                  "applied_limit_types": {
+                    "type": "array",
+                    "maxItems": 9,
+                    "description": "The limits the handler confirmed when it did not confirm all of them; status is then unknown.",
+                    "items": {
+                      "enum": [
+                        "allowed_fields",
+                        "required_filters",
+                        "removed_fields",
+                        "masked_fields",
+                        "max_rows",
+                        "max_bytes",
+                        "max_duration_ms",
+                        "max_result_age_ms",
+                        "allowed_destinations"
+                      ]
+                    }
+                  }
+                }
               }
             },
             "required": [
@@ -12391,7 +13043,15 @@
             "type": "boolean"
           },
           "specification": {
-            "$ref": "#/components/schemas/GenericObject"
+            "$ref": "#/components/schemas/GenericObject",
+            "properties": {
+              "resource": {
+                "$ref": "#/components/schemas/ResourceSelector"
+              },
+              "access_limits": {
+                "$ref": "#/components/schemas/ResourceLimits"
+              }
+            }
           }
         }
       },
@@ -12549,6 +13209,9 @@
                     "read",
                     "write"
                   ]
+                },
+                "resource": {
+                  "$ref": "#/components/schemas/ResourceSelector"
                 }
               }
             }
@@ -13015,13 +13678,592 @@
             }
           }
         }
+      },
+      "ResourceSelector": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "resource_type",
+          "operation"
+        ],
+        "properties": {
+          "resource_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "ResourceResource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "resource_type",
+          "operation"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "resource_type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "resource_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "ResourceCondition": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "operator",
+          "value",
+          "required_source",
+          "identity_provider"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^/subject/"
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "in",
+              "contains"
+            ]
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string",
+                "maxLength": 256
+              },
+              {
+                "type": "array",
+                "maxItems": 64,
+                "items": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              }
+            ]
+          },
+          "required_source": {
+            "const": "authentication_verified"
+          },
+          "identity_provider": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "ResourceFilter": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "field",
+          "operator"
+        ],
+        "description": "Exactly one of value or value_from. in requires 1–32 scalar values. Ordered operators require a finite number. value_from supports eq and requires the named verified provider/source. Resolved contracts contain only fixed values.",
+        "properties": {
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "operator": {
+            "enum": [
+              "eq",
+              "in",
+              "gt",
+              "gte",
+              "lt",
+              "lte"
+            ]
+          },
+          "value": {
+            "description": "String up to 1000 characters",
+            "finite number": null,
+            "boolean": null,
+            "": null,
+            "or bounded scalar array": null
+          },
+          "value_from": {
+            "type": "string",
+            "pattern": "^/subject/"
+          },
+          "required_source": {
+            "const": "authentication_verified"
+          },
+          "identity_provider": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      },
+      "ResourceFieldList": {
+        "type": "array",
+        "maxItems": 64,
+        "items": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "ResourceCeiling": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000000000000
+      },
+      "ResourceLimits": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "At most 16 KB. All returned limits are mandatory. Empty allowed fields/destinations or incompatible compositions block. Filters combine with AND; field/destination sets intersect; ceilings take the minimum. Missing constraints do not authorize unknown executor behavior.",
+        "properties": {
+          "allowed_fields": {
+            "$ref": "#/components/schemas/ResourceFieldList"
+          },
+          "removed_fields": {
+            "$ref": "#/components/schemas/ResourceFieldList"
+          },
+          "allowed_destinations": {
+            "$ref": "#/components/schemas/ResourceFieldList"
+          },
+          "required_filters": {
+            "type": "array",
+            "maxItems": 32,
+            "items": {
+              "$ref": "#/components/schemas/ResourceFilter"
+            }
+          },
+          "masked_fields": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "field",
+                "method"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "maxLength": 256
+                },
+                "method": {
+                  "type": "string",
+                  "maxLength": 256
+                }
+              }
+            }
+          },
+          "max_rows": {
+            "$ref": "#/components/schemas/ResourceCeiling"
+          },
+          "max_bytes": {
+            "$ref": "#/components/schemas/ResourceCeiling"
+          },
+          "max_duration_ms": {
+            "$ref": "#/components/schemas/ResourceCeiling"
+          },
+          "max_result_age_ms": {
+            "$ref": "#/components/schemas/ResourceCeiling"
+          }
+        }
+      },
+      "ResourcePolicy": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "deployment_id": {
+            "type": "string",
+            "nullable": true
+          },
+          "tool_name": {
+            "type": "string"
+          },
+          "environment": {
+            "type": "string",
+            "nullable": true
+          },
+          "action_class": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "read",
+              "write",
+              "delete",
+              "network",
+              "control",
+              null
+            ]
+          },
+          "decision": {
+            "enum": [
+              "allow",
+              "allow_with_warning",
+              "reject",
+              "require_approval"
+            ]
+          },
+          "risk_tier": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AgentRiskTier"
+              }
+            ],
+            "nullable": true
+          },
+          "approval_timeout_seconds": {
+            "type": "number",
+            "nullable": true
+          },
+          "timeout_action": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AgentTimeoutAction"
+              }
+            ],
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "argument_conditions": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "$ref": "#/components/schemas/ArgumentCondition"
+            }
+          },
+          "policy_version": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "band_state": {
+            "type": "string",
+            "enum": [
+              "shadow",
+              "earning",
+              "enabled",
+              "suspended",
+              "retired"
+            ],
+            "nullable": true
+          },
+          "band_epoch": {
+            "type": "integer"
+          },
+          "band_scope_hash": {
+            "type": "string",
+            "nullable": true
+          },
+          "band_reason": {
+            "type": "string",
+            "nullable": true
+          },
+          "resource_selector": {
+            "$ref": "#/components/schemas/ResourceSelector"
+          },
+          "context_conditions": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "$ref": "#/components/schemas/ResourceCondition"
+            }
+          },
+          "access_limits": {
+            "$ref": "#/components/schemas/ResourceLimits"
+          },
+          "expected_policy_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "tool_name",
+          "decision"
+        ]
+      },
+      "ResourceContract": {
+        "type": "object",
+        "required": [
+          "version",
+          "resource",
+          "access_limits",
+          "policy_versions",
+          "authorization_hash"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "resource": {
+            "$ref": "#/components/schemas/ResourceResource"
+          },
+          "access_limits": {
+            "$ref": "#/components/schemas/ResourceLimits"
+          },
+          "policy_versions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "version"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "version": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          },
+          "authorization_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "Exact action linkage. Not a portable signed token."
+          }
+        }
+      },
+      "ResourceIdentitySummary": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "enum": [
+              "authentication_verified",
+              "unknown"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "claim_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reason": {
+            "description": "Present when source is unknown.",
+            "enum": [
+              "IDENTITY_MISSING",
+              "IDENTITY_TOKEN_TYPE_UNSUPPORTED",
+              "IDENTITY_TOKEN_INVALID",
+              "IDENTITY_ISSUER_UNKNOWN",
+              "IDENTITY_KEYS_STALE",
+              "IDENTITY_ALGORITHM_UNSUPPORTED",
+              "IDENTITY_KEY_UNKNOWN",
+              "IDENTITY_SIGNATURE_INVALID",
+              "IDENTITY_TOKEN_EXPIRED",
+              "IDENTITY_CLAIMS_INVALID",
+              "IDENTITY_LIFETIME_EXCEEDED",
+              "IDENTITY_CLIENT_UNTRUSTED",
+              "IDENTITY_NOT_A_PERSON",
+              "IDENTITY_PROVIDER_RETIRED",
+              "IDENTITY_TRUST_CHANGED"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "description": "The unsupported token type or algorithm, such as HS256 or opaque."
+          },
+          "retryable": {
+            "type": "boolean",
+            "description": "A key refresh or a fresh token may fix it."
+          },
+          "unavailable_claims": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Claims the provider withheld or sent in an unusable shape. Conditions on them stay unknown."
+          }
+        }
+      },
+      "ResourceIdentityProfile": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "issuer",
+          "audiences",
+          "client_ids",
+          "token_kind",
+          "algorithms",
+          "max_lifetime_seconds",
+          "claims"
+        ],
+        "description": "At most eight profiles per organization. Exactly one of jwks or jwks_url. Access tokens additionally require expected_typ, person_claim and person_value. Public asymmetric signing keys only. JWKS requests require public HTTPS, reject redirects and cap responses at 64 KB.",
+        "properties": {
+          "issuer": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 1000
+          },
+          "audiences": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          "client_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "string",
+              "maxLength": 256
+            }
+          },
+          "token_kind": {
+            "enum": [
+              "id_token",
+              "access_token"
+            ]
+          },
+          "algorithms": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "enum": [
+                "RS256",
+                "PS256",
+                "ES256",
+                "EdDSA"
+              ]
+            }
+          },
+          "max_lifetime_seconds": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 86400
+          },
+          "clock_skew_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 60,
+            "default": 30
+          },
+          "person_claim": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "person_value": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "expected_typ": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "jwks_url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 1000
+          },
+          "jwks": {
+            "type": "object",
+            "required": [
+              "keys"
+            ],
+            "properties": {
+              "keys": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 20,
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "claims": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 16,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "claim",
+                "path",
+                "type"
+              ],
+              "properties": {
+                "claim": {
+                  "type": "string",
+                  "maxLength": 256
+                },
+                "path": {
+                  "type": "string",
+                  "pattern": "^/subject/[a-zA-Z0-9_-]+$"
+                },
+                "type": {
+                  "enum": [
+                    "string",
+                    "string_set"
+                  ]
+                }
+              }
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
       "runtimeKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Runtime key created by an admin in Settings \u2192 Keys. Each operation lists its required scope."
+        "description": "Runtime key created by an admin in Settings → Keys. Each operation lists its required scope."
+      },
+      "consoleSession": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Signed-in console session. Permission writes require permission-management access; identity trust requires an owner or admin. Runtime keys cannot perform these operations."
       }
     }
   },

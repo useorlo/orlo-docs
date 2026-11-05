@@ -10,7 +10,7 @@ order: 4
 Install `@orlo/agent-sdk`, create an Orlo run, and wrap your tool dispatcher so each relevant tool asks for a decision before it executes. Your application keeps its model, provider, and orchestration. Orlo records submitted steps and permissions; tools outside the wrapped path are not covered.
 
 ```sh
-npm install @orlo/agent-sdk@0.0.2
+npm install @orlo/agent-sdk@0.0.3
 ```
 
 ## Check the connection first

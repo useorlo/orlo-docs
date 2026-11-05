@@ -18,6 +18,8 @@ Application APIs and SDKs use a runtime key at `https://api.useorlo.com`. Employ
 | [Provider key security](/engineers/provider-key-security) | How credentials are protected, used, and revoked |
 | [Run a task](/engineers/run-a-task) | Call a task’s live release and act on the rule results |
 | [Chat completions](/engineers/chat-completions) | Call a task through the OpenAI-compatible endpoint without changing your client |
+| [Apply resource permissions](/engineers/resource-permissions) | Limit records, fields and destinations through one tool permission |
+| [Verify a person](/engineers/agent-identity) | Use signed identity for group permissions and per-person filters |
 | [Agent SDK for TypeScript](/engineers/agent-sdk-typescript) | Keep your model connection and check tool actions from Node.js |
 | [Python and LangGraph](/engineers/python-and-langgraph) | The same, from a LangGraph or LangChain application |
 | [Skills in your AI tools](/engineers/skills-in-tools) | Claude and ChatGPT through the connector, Claude Code through the installer, your own agents through the SDK |

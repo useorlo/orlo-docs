@@ -24,7 +24,7 @@ Choose TypeScript or Python in the console. Use its versioned install command an
 For TypeScript:
 
 ```sh
-npm install @orlo/agent-sdk@0.0.2
+npm install @orlo/agent-sdk@0.0.3
 npx --no-install orlo-agent-check --expect blocked
 ```
 

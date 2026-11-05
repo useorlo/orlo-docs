@@ -17,7 +17,7 @@ The connector can search published skills, load an exact non-retired version, an
 
 ## Claude Code
 
-First install `@orlo/agent-sdk@0.0.2` in your project. The package includes an installer that pins one exact version into a project:
+First install `@orlo/agent-sdk@0.0.3` in your project. The package includes an installer that pins one exact version into a project:
 
 ```sh
 npx --no-install orlo-skills install --skill <skill-id> --version <version-id> --project /path/to/project

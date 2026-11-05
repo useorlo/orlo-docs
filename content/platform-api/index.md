@@ -21,6 +21,7 @@ It covers the production path around an AI task: tasks and versions, examples, c
 | Feedback | `feedback.*` | [Feedback](/platform-api/feedback) |
 | Documents (sources) | `documents.*` | [Documents and sources](/platform-api/documents-and-rag) |
 | Skills | `skills.read`; writes are people-only | [Skills](/platform-api/skills) |
+| Resource permissions | Existing agent scopes; administration is people-only | [Resource permissions](/platform-api/resource-permissions) |
 | Agent governance | `agent_governance.*` | [Agent governance](/platform-api/agent-governance) |
 | Complete agent workflow tests | `tasks.*`, `evaluations.*`, `agent_governance.run`; human decisions are people-only | [Scenario tests](/platform-api/scenario-tests) |
 | Quality signals | `monitoring.read` | [Quality signals](/platform-api/quality-signals) |

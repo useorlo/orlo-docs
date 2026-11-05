@@ -9,14 +9,14 @@ order: 5
 
 `orlo-langgraph` connects a LangGraph or LangChain application to agent governance. LangGraph owns the graph, your application calls its model and tools, and Orlo checks the steps you submit. It uses the standard library for HTTP and needs Python 3.10 or later.
 
-Use `orlo-langgraph` 0.1.1 from the public [SDK release](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.2). The console offers the same verified archive and install command. Download `orlo_langgraph-0.1.1.tar.gz` from that release and check its SHA-256 before installing:
+Use `orlo-langgraph` 0.1.2 from the public [SDK release](https://github.com/useorlo/agent-sdk/releases/tag/v0.0.3). The console offers the same verified archive and install command. Download `orlo_langgraph-0.1.2.tar.gz` from that release and check its SHA-256 before installing:
 
 ```sh
-shasum -a 256 orlo_langgraph-0.1.1.tar.gz
-pip install './orlo_langgraph-0.1.1.tar.gz[langgraph]'
+shasum -a 256 orlo_langgraph-0.1.2.tar.gz
+pip install './orlo_langgraph-0.1.2.tar.gz[langgraph]'
 ```
 
-Expected SHA-256: `7bf790e4d2a55366f82b834416b85e695c9c701139ea7a3fb12c0a5380fdd2d6`. Install `langgraph` alongside it. The extra supplies optional LangChain integration dependencies. [Source and release notes](https://github.com/useorlo/agent-sdk) are public.
+Compare the archive hash with `SHA256SUMS` from the same release. Verify its build origin with `gh attestation verify orlo_langgraph-0.1.2.tar.gz --repo useorlo/agent-sdk`. Install `langgraph` alongside it. The extra supplies optional LangChain integration dependencies. [Source and release notes](https://github.com/useorlo/agent-sdk) are public.
 
 ## Check the connection first
 
