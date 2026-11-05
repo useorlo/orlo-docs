@@ -8,6 +8,8 @@ order: 0
 
 Orlo gives teams a shared record of AI work: what was tested, which version answered, which agent actions were permitted, and what people reviewed. Use that record to decide whether a task is ready, investigate a result, and improve the next release.
 
+Runtime decisions, not policy documents. Each proposed agent step receives a decision before it runs, from the rules your team set, and the SDK in your application enforces it. The record shows the step, the rule that matched, and any approval, so a reviewer reads what happened rather than what a policy said should happen.
+
 | Question | Where to look |
 | --- | --- |
 | Why was this model selected? | The comparison’s examples, returned answers, scores, and release link |

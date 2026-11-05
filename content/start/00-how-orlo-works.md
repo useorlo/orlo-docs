@@ -70,6 +70,8 @@ flowchart TB
     class O orlo;
 ```
 
+Decided at runtime, before each step runs. Enforced in your process by the SDK.
+
 Before a wrapped tool runs, the SDK sends the proposed step to `steps/govern`. Integrations can also use the dedicated `tools/check` endpoint. Orlo decides whether the action may proceed; the SDK enforces the decision in your runtime. An allowed action runs locally. A rejection stops it. A request for approval leaves it waiting for a person. A containment decision stops the run.
 
 Orlo does not make or proxy this agent’s model call. Model-call records and completed outputs are normally reported in the background. Tool requests and retrieval steps wait for Orlo; model outputs and tool results also wait when the session’s rules or schemas require checks. The SDK follows the session’s `blocking_step_types` contract.
